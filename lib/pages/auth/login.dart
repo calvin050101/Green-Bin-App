@@ -1,5 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:green_bin/pages/auth/create_account.dart';
 import 'package:green_bin/widgets/cust_form_field.dart';
+
+import '../../helper/helper_functions.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,6 +15,28 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  void loginUser() async {
+    // show loading circle
+    showDialog(
+      context: context,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+      barrierDismissible: false,
+    );
+
+    // try sign in
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      if (context.mounted) Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      if (context.mounted) Navigator.pop(context);
+      displayMessageToUser(e.code, context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +105,14 @@ class _LoginPageState extends State<LoginPage> {
                 ),
 
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CreateAccountPage(),
+                      ),
+                    );
+                  },
                   child: Text(
                     "Create One",
                     style: TextStyle(
@@ -103,7 +136,7 @@ class _LoginPageState extends State<LoginPage> {
       width: double.infinity,
       height: 50.0,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: loginUser,
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF00B0FF),
           shape: RoundedRectangleBorder(

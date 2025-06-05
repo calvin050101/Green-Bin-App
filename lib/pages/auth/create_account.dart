@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../../helper/helper_functions.dart';
 import '../../widgets/cust_form_field.dart';
 
 class CreateAccountPage extends StatefulWidget {
@@ -15,6 +18,57 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+
+  void registerUser() async {
+    // show loading circle
+    final BuildContext dialogContext = context;
+
+    showDialog(
+      context: dialogContext,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
+
+    // make sure passwords match
+    if (_passwordController.text != _confirmPasswordController.text) {
+      if (dialogContext.mounted) {
+        Navigator.pop(dialogContext);
+      }
+      displayMessageToUser("Passwords don't match", context);
+      return;
+    }
+
+    // try creating the user
+    try {
+      // create user
+      UserCredential? userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+            email: _emailController.text,
+            password: _passwordController.text,
+          );
+
+      createUserDocument(userCredential);
+
+      if (dialogContext.mounted) {
+        Navigator.pop(dialogContext);
+      }
+    } on FirebaseAuthException catch (e) {
+      Navigator.pop(context);
+
+      displayMessageToUser(e.code, context);
+    }
+  }
+
+  Future<void> createUserDocument(UserCredential? userCredential) async {
+    if (userCredential != null && userCredential.user != null) {
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(userCredential.user!.email)
+          .set({
+            "username": _usernameController.text,
+            "email": _emailController.text,
+          });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +91,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
               color: Colors.white,
               iconSize: 24.0,
               onPressed: () {
-                // Navigator.pop(context);
+                Navigator.pop(context);
               },
             ),
           ),
@@ -119,7 +173,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       width: double.infinity,
       height: 50.0,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: registerUser,
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF00B0FF),
           shape: RoundedRectangleBorder(

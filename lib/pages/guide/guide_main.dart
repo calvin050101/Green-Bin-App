@@ -8,17 +8,20 @@ class GuideMainPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.transparent),
 
-      body: Column(
-        children: [
-          Text(
-            'Waste Guide',
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-              fontSize: 32,
-              fontFamily: 'Poppins',
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          children: [
+            Text(
+              'Waste Guide',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 32,
+                fontFamily: 'Poppins',
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

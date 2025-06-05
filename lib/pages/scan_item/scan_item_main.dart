@@ -31,17 +31,20 @@ class ScanItemMainPage extends StatelessWidget {
         ),
       ),
 
-      body: Column(
-        children: [
-          Text(
-            'Scan Item',
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-              fontSize: 32,
-              fontFamily: 'Poppins',
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          children: [
+            Text(
+              'Scan Item',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 32,
+                fontFamily: 'Poppins',
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
 
     );

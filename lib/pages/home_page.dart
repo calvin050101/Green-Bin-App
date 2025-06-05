@@ -1,7 +1,37 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  User? currentUser = FirebaseAuth.instance.currentUser;
+
+  Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
+    return await FirebaseFirestore.instance
+        .collection("users")
+        .doc(currentUser!.email)
+        .get();
+  }
+
+  bodyBuilder(context, snapshot) {
+    // loading
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return const Center(child: CircularProgressIndicator());
+    } else if (snapshot.hasError) {
+      return Text("Error: ${snapshot.error}");
+    } else if (!snapshot.hasData) {
+      return Text("No data");
+    } else {
+      Map<String, dynamic>? user = snapshot.data!.data();
+      return showHome(user, context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,26 +51,48 @@ class HomePage extends StatelessWidget {
         backgroundColor: Colors.transparent,
       ),
 
-      body: Column(
-        children: [
-          const SizedBox(height: 20),
-
-          topContainer(context),
-
-          const SizedBox(height: 40),
-
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: pointsProgressContainer(context),
-          ),
-          const SizedBox(height: 20),
-
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: funFactContainer(context),
-          ),
-        ],
+      body: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+        future: getUserData(),
+        builder: (context, snapshot) => bodyBuilder(context, snapshot),
       ),
+    );
+  }
+
+  Column showHome(user, BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 20),
+
+        topContainer(context),
+
+        const SizedBox(height: 40),
+
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Text(
+            "Welcome, ${user!["username"]}",
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w500,
+              fontSize: 20,
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: pointsProgressContainer(context),
+        ),
+        const SizedBox(height: 20),
+
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: funFactContainer(context),
+        ),
+      ],
     );
   }
 

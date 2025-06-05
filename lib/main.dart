@@ -1,7 +1,12 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:green_bin/pages/main_wrapper_screen.dart';
+import 'package:green_bin/pages/auth/auth.dart';
 
-void main() {
+import 'firebase_options.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
@@ -20,9 +25,9 @@ class MyApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: Color(0xFFF9FBE7),
       ),
-      title: 'Flutter Demo',
+      title: 'GreenBin',
       debugShowCheckedModeBanner: false,
-      home: const MainWrapperScreen(),
+      home: AuthPage(),
     );
   }
 }

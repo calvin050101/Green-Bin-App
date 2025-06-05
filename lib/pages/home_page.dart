@@ -202,60 +202,11 @@ class HomePage extends StatelessWidget {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 20),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: topContainerButton(
-                          context,
-                          Theme.of(context).colorScheme.primary,
-                          'Scan and Sort',
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: topContainerButton(
-                          context,
-                          Theme.of(context).colorScheme.secondary,
-                          'Waste Guide',
-                        ),
-                      ),
-                    ],
-                  ),
                 ],
               ),
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  TextButton topContainerButton(
-    BuildContext context,
-    Color btnColor,
-    String btnText,
-  ) {
-    return TextButton(
-      style: TextButton.styleFrom(
-        foregroundColor: Colors.white,
-        backgroundColor: btnColor,
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
-        ),
-      ),
-      onPressed: () {},
-      child: Text(
-        btnText,
-        style: TextStyle(
-          fontFamily: 'OpenSans',
-          fontWeight: FontWeight.w600,
-          fontSize: 16,
-        ),
       ),
     );
   }

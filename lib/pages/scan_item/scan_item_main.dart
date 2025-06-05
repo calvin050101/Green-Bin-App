@@ -24,7 +24,7 @@ class ScanItemMainPage extends StatelessWidget {
               color: Colors.white,
               iconSize: 24.0,
               onPressed: () {
-                // Navigator.pop(context);
+                Navigator.pop(context);
               },
             ),
           ),

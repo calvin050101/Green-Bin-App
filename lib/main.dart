@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:green_bin/pages/auth/create_account.dart';
-// import 'package:green_bin/pages/auth/login.dart';
-// import 'package:green_bin/pages/home_page.dart';
+import 'package:green_bin/pages/main_wrapper_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,7 +22,7 @@ class MyApp extends StatelessWidget {
       ),
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      home: CreateAccountPage(),
+      home: const MainWrapperScreen(),
     );
   }
 }

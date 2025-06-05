@@ -73,6 +73,16 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
+    - family: Montserrat
+      fonts:
+        - asset: lib/fonts/Montserrat/Montserrat-Bold.ttf
+          weight: 700
+        - asset: lib/fonts/Montserrat/Montserrat-Light.ttf
+          weight: 300
+        - asset: lib/fonts/Montserrat/Montserrat-Medium.ttf
+        - asset: lib/fonts/Montserrat/Montserrat-Regular.ttf
+        - asset: lib/fonts/Montserrat/Montserrat-SemiBold.ttf
+          weight: 600
     - family: OpenSans
       fonts:
         - asset: lib/fonts/OpenSans/OpenSans-Bold.ttf

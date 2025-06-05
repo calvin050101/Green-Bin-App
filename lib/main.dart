@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:green_bin/home_page.dart';
+import 'package:green_bin/pages/auth/login.dart';
+// import 'package:green_bin/pages/home_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,10 +19,11 @@ class MyApp extends StatelessWidget {
           secondary: Color(0xFF03A9F4),
           surface: Color(0xFF333333),
         ),
+        scaffoldBackgroundColor: Color(0xFFF9FBE7),
       ),
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      home: LoginPage(),
     );
   }
 }

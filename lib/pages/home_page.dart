@@ -20,7 +20,6 @@ class HomePage extends StatelessWidget {
         ),
         backgroundColor: Colors.transparent,
       ),
-      backgroundColor: const Color(0xFFF9FBE7),
 
       body: Column(
         children: [
@@ -31,59 +30,63 @@ class HomePage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: pointsProgressContainer(context),
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: 20),
 
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Color(0xFFD6D6D6), width: 2),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Did you know?",
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.surface,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                        fontFamily: 'OpenSans',
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.check_circle,
-                          color: Theme.of(context).colorScheme.primary,
-                          size: 50,
-                        ),
-                        SizedBox(width: 10),
-                        Expanded(
-                          child: Text(
-                            'Recycling 1 ton of paper is equivalent to saving 17 trees, '
-                            'and saves up to 3 cubic yards.',
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.surface,
-                              fontFamily: 'OpenSans',
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            child: funFactContainer(context),
           ),
         ],
+      ),
+    );
+  }
+
+  Container funFactContainer(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Color(0xFFD6D6D6), width: 2),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Did you know?",
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.surface,
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                fontFamily: 'OpenSans',
+              ),
+            ),
+            SizedBox(height: 10),
+            Row(
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: 50,
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    'Recycling 1 ton of paper is equivalent to saving 17 trees, '
+                    'and saves up to 3 cubic yards.',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.surface,
+                      fontFamily: 'OpenSans',
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

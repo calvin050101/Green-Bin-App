@@ -24,8 +24,11 @@ class HomePage extends StatelessWidget {
       body: Column(
         children: [
           const SizedBox(height: 20),
+
           topContainer(context),
+
           const SizedBox(height: 40),
+
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: pointsProgressContainer(context),

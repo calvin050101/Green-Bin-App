@@ -1,21 +1,48 @@
 import 'package:flutter/material.dart';
-import 'package:green_bin/widgets/cust_form_field.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+import '../../widgets/cust_form_field.dart';
+
+class CreateAccountPage extends StatefulWidget {
+  const CreateAccountPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<CreateAccountPage> createState() => _CreateAccountPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _CreateAccountPageState extends State<CreateAccountPage> {
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.transparent),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leadingWidth: 70,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 16.0, top: 8.0, bottom: 8.0),
+          child: Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              color: const Color(0xFF00B0FF),
+              shape: BoxShape.circle,
+            ),
+            child: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              color: Colors.white,
+              iconSize: 24.0,
+              onPressed: () {
+                // Navigator.pop(context);
+              },
+            ),
+          ),
+        ),
+      ),
 
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -34,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(height: 40),
 
             Text(
-              'Login',
+              'Create Account',
               style: TextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: 32,
@@ -43,6 +70,15 @@ class _LoginPageState extends State<LoginPage> {
             ),
 
             SizedBox(height: 20),
+
+            CustFormField(
+              controller: _usernameController,
+              keyboardType: TextInputType.name,
+              hintText: 'Username',
+              isPassword: false,
+            ),
+
+            const SizedBox(height: 20.0),
 
             CustFormField(
               controller: _emailController,
@@ -60,38 +96,18 @@ class _LoginPageState extends State<LoginPage> {
               isPassword: true,
             ),
 
+            const SizedBox(height: 20.0),
+
+            CustFormField(
+              controller: _confirmPasswordController,
+              keyboardType: TextInputType.visiblePassword,
+              hintText: 'Confirm Password',
+              isPassword: true,
+            ),
+
             const SizedBox(height: 30.0),
 
             continueButton(),
-
-            const SizedBox(height: 40.0),
-
-            // "Don't have an Account? Create One" text
-            Row(
-              children: [
-                Text(
-                  "Don't have an Account? ",
-                  style: TextStyle(
-                    color: Colors.brown[700],
-                    fontSize: 16.0,
-                    fontFamily: 'Montserrat',
-                  ),
-                ),
-
-                GestureDetector(
-                  onTap: () {},
-                  child: Text(
-                    "Create One",
-                    style: TextStyle(
-                      color: Colors.brown[700],
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Montserrat',
-                    ),
-                  ),
-                ),
-              ],
-            ),
           ],
         ),
       ),

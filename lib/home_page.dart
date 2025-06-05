@@ -12,6 +12,7 @@ class HomePage extends StatelessWidget {
             "GreenBin",
             style: TextStyle(
               color: Theme.of(context).colorScheme.primary,
+              fontFamily: 'Poppins',
               fontWeight: FontWeight.w600,
               fontSize: 32,
             ),
@@ -51,8 +52,9 @@ class HomePage extends StatelessWidget {
                       "Did you know?",
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.surface,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w600,
                         fontSize: 16,
+                        fontFamily: 'OpenSans',
                       ),
                     ),
                     SizedBox(height: 10),
@@ -67,7 +69,11 @@ class HomePage extends StatelessWidget {
                         Expanded(
                           child: Text(
                             'Recycling 1 ton of paper is equivalent to saving 17 trees, '
-                                'and saves up to 3 cubic yards.',
+                            'and saves up to 3 cubic yards.',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.surface,
+                              fontFamily: 'OpenSans',
+                            ),
                           ),
                         ),
                       ],
@@ -101,8 +107,9 @@ class HomePage extends StatelessWidget {
               "You have saved 8.5 kg CO₂ by recycling.",
               style: TextStyle(
                 color: Theme.of(context).colorScheme.surface,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w600,
                 fontSize: 16,
+                fontFamily: 'OpenSans',
               ),
             ),
 
@@ -126,8 +133,9 @@ class HomePage extends StatelessWidget {
                   "150/180 Points",
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.surface,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                     fontSize: 16,
+                    fontFamily: 'OpenSans',
                   ),
                 ),
 
@@ -137,6 +145,7 @@ class HomePage extends StatelessWidget {
                     color: Theme.of(context).colorScheme.primary,
                     fontWeight: FontWeight.w500,
                     fontSize: 16,
+                    fontFamily: 'OpenSans',
                   ),
                 ),
               ],
@@ -175,6 +184,7 @@ class HomePage extends StatelessWidget {
                       color: Theme.of(context).colorScheme.surface,
                       fontWeight: FontWeight.w700,
                       fontSize: 20,
+                      fontFamily: 'Poppins',
                     ),
                   ),
                   Text(
@@ -182,6 +192,7 @@ class HomePage extends StatelessWidget {
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.surface,
                       fontSize: 16,
+                      fontFamily: 'Poppins',
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -232,7 +243,14 @@ class HomePage extends StatelessWidget {
         ),
       ),
       onPressed: () {},
-      child: Text(btnText),
+      child: Text(
+        btnText,
+        style: TextStyle(
+          fontFamily: 'OpenSans',
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
+      ),
     );
   }
 }

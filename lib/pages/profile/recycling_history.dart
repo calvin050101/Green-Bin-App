@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class SettingsPage extends StatelessWidget {
-  const SettingsPage({super.key});
+class RecyclingHistoryPage extends StatelessWidget {
+  const RecyclingHistoryPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ class SettingsPage extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              'Settings',
+              'Recycling History',
               style: TextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: 32,

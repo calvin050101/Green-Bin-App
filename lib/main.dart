@@ -1,6 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:green_bin/pages/auth/auth.dart';
+import 'package:green_bin/pages/profile/recycling_history.dart';
+import 'package:green_bin/pages/profile/settings.dart';
+import 'package:green_bin/pages/scan_item/scan_item_main.dart';
 
 import 'firebase_options.dart';
 
@@ -27,7 +30,13 @@ class MyApp extends StatelessWidget {
       ),
       title: 'GreenBin',
       debugShowCheckedModeBanner: false,
-      home: AuthPage(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => AuthPage(),
+        '/scan-item': (context) => ScanItemMainPage(),
+        '/recycling-history': (context) => RecyclingHistoryPage(),
+        '/settings': (context) => SettingsPage(),
+      },
     );
   }
 }

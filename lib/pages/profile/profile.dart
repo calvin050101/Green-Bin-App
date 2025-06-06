@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:green_bin/pages/profile/recycling_history.dart';
-import 'package:green_bin/pages/profile/settings.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -43,17 +41,17 @@ class _ProfilePageState extends State<ProfilePage> {
             const SizedBox(height: 30),
 
             pageDirectButton(
-                route: (context) => const RecyclingHistoryPage(),
-                buttonText: "Recycling History",
-                context: context
+              route: '/recycling-history',
+              buttonText: "Recycling History",
+              context: context,
             ),
 
             const SizedBox(height: 10),
 
             pageDirectButton(
-                route: (context) => const SettingsPage(),
-                buttonText: "Settings",
-                context: context
+              route: '/settings',
+              buttonText: "Settings",
+              context: context,
             ),
 
             const SizedBox(height: 20),
@@ -75,15 +73,13 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   InkWell pageDirectButton({
-    required Widget Function(BuildContext) route,
+    required String route,
     required String buttonText,
     required BuildContext context,
   }) {
     return InkWell(
       onTap: () {
-        Navigator.push(
-          context, MaterialPageRoute(builder: route),
-        );
+        Navigator.pushNamed(context, route);
       },
 
       child: Container(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'scan_item/scan_item_main.dart';
 import '../widgets/cust_bottom_navbar.dart';
 import 'home_page.dart';
 import 'guide/guide_main.dart';
@@ -30,10 +29,7 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
   }
 
   void _handleRecycleButtonPressed() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const ScanItemMainPage()),
-    );
+    Navigator.pushNamed(context, '/scan-item');
   }
 
   @override

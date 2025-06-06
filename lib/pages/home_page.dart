@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:green_bin/services/database_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,29 +10,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  User? currentUser = FirebaseAuth.instance.currentUser;
-
-  Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
-    return await FirebaseFirestore.instance
-        .collection("users")
-        .doc(currentUser!.email)
-        .get();
-  }
-
-  bodyBuilder(context, snapshot) {
-    // loading
-    if (snapshot.connectionState == ConnectionState.waiting) {
-      return const Center(child: CircularProgressIndicator());
-    } else if (snapshot.hasError) {
-      return Text("Error: ${snapshot.error}");
-    } else if (!snapshot.hasData) {
-      return Text("No data");
-    } else {
-      Map<String, dynamic>? user = snapshot.data!.data();
-      return showHome(user, context);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,8 +29,20 @@ class _HomePageState extends State<HomePage> {
       ),
 
       body: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-        future: getUserData(),
-        builder: (context, snapshot) => bodyBuilder(context, snapshot),
+        future: DatabaseService().getUserData(),
+        builder: (context, snapshot) {
+          // loading
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Text("Error: ${snapshot.error}");
+          } else if (!snapshot.hasData) {
+            return Text("No data");
+          } else {
+            Map<String, dynamic>? user = snapshot.data!.data();
+            return showHome(user, context);
+          }
+        },
       ),
     );
   }
@@ -84,7 +73,7 @@ class _HomePageState extends State<HomePage> {
 
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: pointsProgressContainer(context),
+          child: pointsProgressContainer(user, context),
         ),
         const SizedBox(height: 20),
 
@@ -146,7 +135,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Container pointsProgressContainer(BuildContext context) {
+  Container pointsProgressContainer(user, BuildContext context) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -174,7 +163,7 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
               child: LinearProgressIndicator(
-                value: 150 / 180,
+                value: user!["points"] / 180,
                 minHeight: 10,
                 borderRadius: BorderRadius.circular(5),
                 backgroundColor: Theme.of(context).colorScheme.surface,
@@ -188,7 +177,7 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "150/180 Points",
+                  "${user!["points"]}/180 Points",
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.surface,
                     fontWeight: FontWeight.w600,

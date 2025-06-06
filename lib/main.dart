@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:green_bin/pages/auth/auth.dart';
+import 'package:green_bin/pages/auth/change_password.dart';
+import 'package:green_bin/pages/auth/update_username.dart';
 import 'package:green_bin/pages/profile/recycling_history.dart';
 import 'package:green_bin/pages/profile/settings.dart';
 import 'package:green_bin/pages/scan_item/scan_item_main.dart';
@@ -36,6 +38,8 @@ class MyApp extends StatelessWidget {
         '/scan-item': (context) => ScanItemMainPage(),
         '/recycling-history': (context) => RecyclingHistoryPage(),
         '/settings': (context) => SettingsPage(),
+        '/update-username': (context) => UpdateUsernamePage(),
+        '/change-password': (context) => ChangePasswordPage(),
       },
     );
   }

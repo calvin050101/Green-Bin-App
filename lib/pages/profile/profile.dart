@@ -1,5 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import '../../services/auth_service.dart';
+import '../../services/database_service.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -9,65 +11,84 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  Widget showPage(user) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+
+        children: [
+          Text(
+            'Profile',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 32,
+              fontFamily: 'Poppins',
+            ),
+          ),
+
+          const SizedBox(height: 40),
+
+          profileInfo(user),
+
+          const SizedBox(height: 30),
+
+          userStatsContainer(context),
+
+          const SizedBox(height: 30),
+
+          pageDirectButton(
+            route: '/recycling-history',
+            buttonText: "Recycling History",
+            context: context,
+          ),
+
+          const SizedBox(height: 10),
+
+          pageDirectButton(
+            route: '/settings',
+            buttonText: "Settings",
+            context: context,
+          ),
+
+          const SizedBox(height: 20),
+
+          logOutButton(),
+
+          const SizedBox(height: 10),
+
+          Center(
+            child: Text(
+              "App version: v1.0.0",
+              style: TextStyle(fontSize: 14, fontFamily: "OpenSans"),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.transparent),
 
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-
-          children: [
-            Text(
-              'Profile',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 32,
-                fontFamily: 'Poppins',
-              ),
-            ),
-
-            const SizedBox(height: 40),
-
-            profileInfo(),
-
-            const SizedBox(height: 30),
-
-            userStatsContainer(context),
-
-            const SizedBox(height: 30),
-
-            pageDirectButton(
-              route: '/recycling-history',
-              buttonText: "Recycling History",
-              context: context,
-            ),
-
-            const SizedBox(height: 10),
-
-            pageDirectButton(
-              route: '/settings',
-              buttonText: "Settings",
-              context: context,
-            ),
-
-            const SizedBox(height: 20),
-
-            logOutButton(),
-
-            const SizedBox(height: 10),
-
-            Center(
-              child: Text(
-                "App version: v1.0.0",
-                style: TextStyle(fontSize: 14, fontFamily: "OpenSans"),
-              ),
-            ),
-          ],
-        ),
+      body: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+        future: DatabaseService().getUserData(),
+        builder: (context, snapshot) {
+          // loading
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Text("Error: ${snapshot.error}");
+          } else if (!snapshot.hasData) {
+            return Text("No data");
+          } else {
+            Map<String, dynamic>? user = snapshot.data!.data();
+            return showPage(user);
+          }
+        },
       ),
     );
   }
@@ -116,8 +137,8 @@ class _ProfilePageState extends State<ProfilePage> {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: () {
-          FirebaseAuth.instance.signOut();
+        onPressed: () async {
+          await authService.value.signOut();
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF00B0FF),
@@ -217,7 +238,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Row profileInfo() {
+  Row profileInfo(user) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -239,7 +260,7 @@ class _ProfilePageState extends State<ProfilePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "[Username]",
+              user!["username"],
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 22,
@@ -250,7 +271,7 @@ class _ProfilePageState extends State<ProfilePage> {
             SizedBox(height: 6),
 
             Text(
-              "150 Points",
+              "${user!["points"]} Points",
               style: TextStyle(fontSize: 18, fontFamily: 'OpenSans'),
             ),
 

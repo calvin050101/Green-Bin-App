@@ -1,9 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:green_bin/pages/auth/create_account.dart';
+import 'package:green_bin/services/auth_service.dart';
 import 'package:green_bin/widgets/cust_form_field.dart';
-
-import '../../helper/helper_functions.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,26 +14,34 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  String errorMessage = '';
 
   void loginUser() async {
+    late BuildContext dialogContext;
+
     // show loading circle
     showDialog(
       context: context,
-      builder: (context) => const Center(child: CircularProgressIndicator()),
-      barrierDismissible: false,
+      builder: (BuildContext ctx) {
+        dialogContext = ctx;
+        return const Center(child: CircularProgressIndicator());
+      },
+      barrierDismissible: true,
     );
 
     // try sign in
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await authService.value.login(
         email: _emailController.text,
         password: _passwordController.text,
       );
 
-      if (context.mounted) Navigator.pop(context);
+      if (dialogContext.mounted) Navigator.pop(dialogContext);
     } on FirebaseAuthException catch (e) {
-      if (context.mounted) Navigator.pop(context);
-      displayMessageToUser(e.code, context);
+      if (dialogContext.mounted) Navigator.pop(dialogContext);
+      setState(() {
+        errorMessage = e.message ?? '';
+      });
     }
   }
 
@@ -84,6 +91,17 @@ class _LoginPageState extends State<LoginPage> {
               keyboardType: TextInputType.visiblePassword,
               hintText: 'Password',
               isPassword: true,
+            ),
+
+            const SizedBox(height: 20.0),
+
+            Text(
+              errorMessage,
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 12.0,
+                fontFamily: 'Montserrat',
+              )
             ),
 
             const SizedBox(height: 30.0),

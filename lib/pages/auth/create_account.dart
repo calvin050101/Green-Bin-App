@@ -1,8 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:green_bin/services/auth_service.dart';
+import 'package:green_bin/services/database_service.dart';
 
-import '../../helper/helper_functions.dart';
 import '../../widgets/cust_form_field.dart';
 
 class CreateAccountPage extends StatefulWidget {
@@ -18,6 +18,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  String errorMessage = '';
 
   void registerUser() async {
     // show loading circle
@@ -33,40 +34,33 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       if (dialogContext.mounted) {
         Navigator.pop(dialogContext);
       }
-      displayMessageToUser("Passwords don't match", context);
+      setState(() {
+        errorMessage = "Passwords don't match";
+      });
       return;
     }
 
     // try creating the user
     try {
       // create user
-      UserCredential? userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-            email: _emailController.text,
-            password: _passwordController.text,
-          );
+      UserCredential? userCredential = await authService.value.createAccount(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
 
-      createUserDocument(userCredential);
+      await DatabaseService().createUser(
+        userCredential: userCredential,
+        username: _usernameController.text,
+        email: _emailController.text,
+      );
 
-      if (dialogContext.mounted) {
-        Navigator.pop(dialogContext);
-      }
-    } on FirebaseAuthException catch (e) {
+      if (dialogContext.mounted) Navigator.pop(dialogContext);
       Navigator.pop(context);
-
-      displayMessageToUser(e.code, context);
-    }
-  }
-
-  Future<void> createUserDocument(UserCredential? userCredential) async {
-    if (userCredential != null && userCredential.user != null) {
-      await FirebaseFirestore.instance
-          .collection("users")
-          .doc(userCredential.user!.email)
-          .set({
-            "username": _usernameController.text,
-            "email": _emailController.text,
-          });
+    } on FirebaseAuthException catch (e) {
+      if (dialogContext.mounted) Navigator.pop(dialogContext);
+      setState(() {
+        errorMessage = e.message ?? '';
+      });
     }
   }
 
@@ -157,6 +151,17 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
               keyboardType: TextInputType.visiblePassword,
               hintText: 'Confirm Password',
               isPassword: true,
+            ),
+
+            const SizedBox(height: 20.0),
+
+            Text(
+              errorMessage,
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 12.0,
+                fontFamily: 'Montserrat',
+              ),
             ),
 
             const SizedBox(height: 30.0),

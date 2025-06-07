@@ -1,17 +1,32 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../models/user_model.dart';
 import '../../services/auth_service.dart';
-import '../../services/database_service.dart';
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+class ProfilePage extends StatelessWidget {
+  final AsyncValue<UserModel?> userAsyncValue;
+
+  const ProfilePage({super.key, required this.userAsyncValue});
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
-}
+  Widget build(BuildContext context) {
+    return userAsyncValue.when(
+      data: (user) {
+        if (user == null) {
+          return const Center(child: Text('User not logged in.'));
+        }
 
-class _ProfilePageState extends State<ProfilePage> {
-  Widget showPage(user) {
+        return Scaffold(
+          appBar: AppBar(backgroundColor: Colors.transparent),
+          body: showPage(user, context),
+        );
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(child: Text('Error: $error')),
+    );
+  }
+
+  Widget showPage(UserModel user, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -65,30 +80,6 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.transparent),
-
-      body: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-        future: DatabaseService().getUserData(),
-        builder: (context, snapshot) {
-          // loading
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Text("Error: ${snapshot.error}");
-          } else if (!snapshot.hasData) {
-            return Text("No data");
-          } else {
-            Map<String, dynamic>? user = snapshot.data!.data();
-            return showPage(user);
-          }
-        },
       ),
     );
   }
@@ -238,7 +229,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Row profileInfo(user) {
+  Row profileInfo(UserModel user) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -260,7 +251,7 @@ class _ProfilePageState extends State<ProfilePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              user!["username"],
+              user.username ?? '',
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 22,
@@ -271,7 +262,7 @@ class _ProfilePageState extends State<ProfilePage> {
             SizedBox(height: 6),
 
             Text(
-              "${user!["points"]} Points",
+              "${user.points} Points",
               style: TextStyle(fontSize: 18, fontFamily: 'OpenSans'),
             ),
 
@@ -283,7 +274,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 fontWeight: FontWeight.w600,
                 fontSize: 18,
                 fontFamily: 'OpenSans',
-                color: Theme.of(context).colorScheme.primary,
+                color: Color(0xFF4CAF50),
               ),
             ),
           ],

@@ -21,12 +21,16 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   String errorMessage = '';
 
   void registerUser() async {
-    // show loading circle
-    final BuildContext dialogContext = context;
+    late BuildContext dialogContext;
 
+    // show loading circle
     showDialog(
-      context: dialogContext,
-      builder: (context) => const Center(child: CircularProgressIndicator()),
+      context: context,
+      builder: (BuildContext ctx) {
+        dialogContext = ctx;
+        return const Center(child: CircularProgressIndicator());
+      },
+      barrierDismissible: true,
     );
 
     // make sure passwords match
@@ -55,7 +59,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       );
 
       if (dialogContext.mounted) Navigator.pop(dialogContext);
-      Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
       if (dialogContext.mounted) Navigator.pop(dialogContext);
       setState(() {

@@ -1,26 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../models/user_model.dart';
+import '../providers/user_provider.dart';
 import '../widgets/cust_bottom_navbar.dart';
 import 'home_page.dart';
 import 'guide/guide_main.dart';
 import 'location/location.dart';
 import 'profile/profile.dart';
 
-class MainWrapperScreen extends StatefulWidget {
+class MainWrapperScreen extends ConsumerStatefulWidget {
   const MainWrapperScreen({super.key});
 
   @override
-  State<MainWrapperScreen> createState() => _MainWrapperScreenState();
+  ConsumerState<MainWrapperScreen> createState() => _MainWrapperScreenState();
 }
 
-class _MainWrapperScreenState extends State<MainWrapperScreen> {
+class _MainWrapperScreenState extends ConsumerState<MainWrapperScreen> {
   int _currentPageIndex = 0;
 
-  final List<Widget> _pages = [
-    const HomePage(),
-    const GuideMainPage(),
-    const LocationsPage(),
-    const ProfilePage(),
-  ];
+  Widget _getPage(AsyncValue<UserModel?> userAsyncValue) {
+    final List<Widget> pages = [
+      HomePage(userAsyncValue: userAsyncValue),
+      const GuideMainPage(),
+      const LocationsPage(),
+      ProfilePage(userAsyncValue: userAsyncValue),
+    ];
+
+    return pages[_currentPageIndex];
+  }
 
   void _handleNavigationItemSelected(int navIndex) {
     setState(() {
@@ -33,9 +40,21 @@ class _MainWrapperScreenState extends State<MainWrapperScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final userAsyncValue = ref.watch(currentUserProvider);
+
     return Scaffold(
-      body: _pages[_currentPageIndex],
+      body: _getPage(userAsyncValue),
 
       floatingActionButton: FloatingActionButton(
         onPressed: _handleRecycleButtonPressed,

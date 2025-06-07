@@ -1,53 +1,46 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:green_bin/services/database_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+import '../models/user_model.dart';
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
+class HomePage extends StatelessWidget {
+  final AsyncValue<UserModel?> userAsyncValue;
 
-class _HomePageState extends State<HomePage> {
+  const HomePage({super.key, required this.userAsyncValue});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Center(
-          child: Text(
-            "GreenBin",
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.primary,
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w600,
-              fontSize: 32,
-            ),
-          ),
-        ),
-        backgroundColor: Colors.transparent,
-      ),
+    return userAsyncValue.when(
+      data: (user) {
+        if (user == null) {
+          return const Center(child: Text('User not logged in.'));
+        }
 
-      body: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-        future: DatabaseService().getUserData(),
-        builder: (context, snapshot) {
-          // loading
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Text("Error: ${snapshot.error}");
-          } else if (!snapshot.hasData) {
-            return Text("No data");
-          } else {
-            Map<String, dynamic>? user = snapshot.data!.data();
-            return showHome(user, context);
-          }
-        },
-      ),
+        return Scaffold(
+          appBar: AppBar(
+            title: Center(
+              child: Text(
+                "GreenBin",
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.primary,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 32,
+                ),
+              ),
+            ),
+            backgroundColor: Colors.transparent,
+          ),
+          body: showHome(user, context),
+        );
+
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(child: Text('Error: $error')),
     );
   }
 
-  Column showHome(user, BuildContext context) {
+  Column showHome(UserModel user, BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,7 +54,7 @@ class _HomePageState extends State<HomePage> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Text(
-            "Welcome, ${user!["username"]}",
+            "Welcome, ${user.username}",
             style: TextStyle(
               fontFamily: 'Poppins',
               fontWeight: FontWeight.w500,
@@ -135,7 +128,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Container pointsProgressContainer(user, BuildContext context) {
+  Container pointsProgressContainer(UserModel user, BuildContext context) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -163,7 +156,7 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
               child: LinearProgressIndicator(
-                value: user!["points"] / 180,
+                value: user.points / 180,
                 minHeight: 10,
                 borderRadius: BorderRadius.circular(5),
                 backgroundColor: Theme.of(context).colorScheme.surface,
@@ -177,7 +170,7 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "${user!["points"]}/180 Points",
+                  "${user.points}/180 Points",
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.surface,
                     fontWeight: FontWeight.w600,

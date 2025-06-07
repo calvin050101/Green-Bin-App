@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:green_bin/helper/helper_functions.dart';
+import 'package:green_bin/models/user_level_model.dart';
 
 import '../models/user_model.dart';
 
@@ -33,7 +37,6 @@ class HomePage extends StatelessWidget {
           ),
           body: showHome(user, context),
         );
-
       },
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stack) => Center(child: Text('Error: $error')),
@@ -129,6 +132,12 @@ class HomePage extends StatelessWidget {
   }
 
   Container pointsProgressContainer(UserModel user, BuildContext context) {
+    final UserLevel userLevel = getUserLevel(user.points);
+    final double progress = min(
+      (user.points - userLevel.minPoints) / userLevel.maxPoints,
+      1,
+    );
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -156,7 +165,7 @@ class HomePage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
               child: LinearProgressIndicator(
-                value: user.points / 180,
+                value: progress,
                 minHeight: 10,
                 borderRadius: BorderRadius.circular(5),
                 backgroundColor: Theme.of(context).colorScheme.surface,
@@ -170,7 +179,9 @@ class HomePage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "${user.points}/180 Points",
+                  user.points >= 4000
+                      ? "4000+ points"
+                      : "${user.points}/${userLevel.maxPoints} points",
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.surface,
                     fontWeight: FontWeight.w600,
@@ -180,7 +191,7 @@ class HomePage extends StatelessWidget {
                 ),
 
                 Text(
-                  "Recycler Level 3",
+                  userLevel.levelName,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                     fontWeight: FontWeight.w500,

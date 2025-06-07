@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../helper/helper_functions.dart';
+import '../../models/user_level_model.dart';
 import '../../models/user_model.dart';
 import '../../services/auth_service.dart';
 
@@ -230,6 +232,8 @@ class ProfilePage extends StatelessWidget {
   }
 
   Row profileInfo(UserModel user) {
+    final UserLevel userLevel = getUserLevel(user.points);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -269,7 +273,7 @@ class ProfilePage extends StatelessWidget {
             SizedBox(height: 6),
 
             Text(
-              "Recycler Level 3",
+              userLevel.levelName,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 18,

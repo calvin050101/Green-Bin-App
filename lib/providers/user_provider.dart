@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../models/record_model.dart';
 import '../models/user_model.dart';
+import '../services/user_profile_service.dart';
 
 final firebaseAuthProvider = Provider((ref) => FirebaseAuth.instance);
 final firebaseFirestoreProvider = Provider((ref) => FirebaseFirestore.instance);
@@ -17,12 +19,32 @@ final userStreamProvider = StreamProvider<UserModel?>((ref) {
 
     final docSnapshot = await firestore.collection('users').doc(user.uid).get();
 
-    if (docSnapshot.exists) {
-      return UserModel.fromFirestore(docSnapshot.data()!, user.uid);
-    } else {
+    if (!docSnapshot.exists) {
       print('User document not found for UID: ${user.uid}');
       return UserModel(uid: user.uid, email: user.email, points: 0);
     }
+
+    UserModel userModel = UserModel.fromFirestore(
+      docSnapshot.data()!,
+      user.uid,
+    );
+
+    // Fetch the 'records' subcollection
+    final recordsSnapshot =
+        await firestore
+            .collection('users')
+            .doc(user.uid)
+            .collection('records')
+            .orderBy('timestamp', descending: true)
+            .get();
+
+    List<RecordModel> records =
+        recordsSnapshot.docs
+            .map((doc) => RecordModel.fromFirestore(doc.data(), doc.id))
+            .toList();
+    userModel = userModel.copyWith(records: records);
+
+    return userModel;
   });
 });
 
@@ -37,69 +59,50 @@ final currentUserProvider = FutureProvider<UserModel?>((ref) async {
 
   final docSnapshot = await firestore.collection('users').doc(user.uid).get();
 
-  if (docSnapshot.exists) {
-    return UserModel.fromFirestore(docSnapshot.data()!, user.uid);
-  } else {
+  if (!docSnapshot.exists) {
     print('User document not found for UID: ${user.uid}');
-    return UserModel(uid: user.uid, email: user.email, points: 0);
+    return UserModel(uid: user.uid, email: user.email, points: 0, records: []);
   }
+
+  UserModel userModel = UserModel.fromFirestore(docSnapshot.data()!, user.uid);
+
+  // --- Fetch the 'records' subcollection ---
+  final recordsSnapshot =
+      await firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('records')
+          .orderBy('timestamp', descending: true)
+          .get();
+
+  List<RecordModel> records =
+      recordsSnapshot.docs
+          .map((doc) => RecordModel.fromFirestore(doc.data(), doc.id))
+          .toList();
+  userModel = userModel.copyWith(
+    records: records,
+  ); // Update UserModel with records
+
+  return userModel;
 });
+
+final userRecordsStreamProvider =
+    StreamProvider.family<List<RecordModel>, String>((ref, userId) {
+      final firestore = ref.watch(firebaseFirestoreProvider);
+      return firestore
+          .collection('users')
+          .doc(userId)
+          .collection('records')
+          .orderBy('timestamp', descending: true) // Order as desired
+          .snapshots() // Get real-time updates
+          .map(
+            (snapshot) =>
+                snapshot.docs
+                    .map((doc) => RecordModel.fromFirestore(doc.data(), doc.id))
+                    .toList(),
+          );
+    });
 
 final userProfileServiceProvider = Provider((ref) {
   return UserProfileService(ref);
 });
-
-class UserProfileService {
-  final Ref _ref;
-  UserProfileService(this._ref);
-
-  FirebaseAuth get _auth => _ref.read(firebaseAuthProvider);
-  FirebaseFirestore get _firestore => _ref.read(firebaseFirestoreProvider);
-
-  // --- Main Update Function ---
-  Future<void> updateUserData({
-    String? newUsername,
-    String? newEmail,
-    int? points
-  }) async {
-    final currentUser = _auth.currentUser;
-    if (currentUser == null) {
-      throw Exception("No user is currently signed in to update.");
-    }
-
-    // --- 1. Update Firebase Authentication Profile ---
-    if (newUsername != null) {
-      await currentUser.updateProfile(
-        displayName: newUsername,
-      );
-      await currentUser.reload();
-    }
-
-    // --- 2. Update Firestore User Document ---
-    Map<String, dynamic> firestoreUpdates = {};
-    if (newUsername != null) {
-      firestoreUpdates['username'] = newUsername;
-    }
-
-    if (firestoreUpdates.isNotEmpty) {
-      await _firestore.collection("users").doc(currentUser.uid).update(firestoreUpdates);
-    }
-
-    // --- 3. Update Subcollections (if needed) ---
-    // if (postId != null && postDataToUpdate != null) {
-    //   await _firestore
-    //       .collection('users')
-    //       .doc(currentUser.uid)
-    //       .collection('posts')
-    //       .doc(postId)
-    //       .update(postDataToUpdate);
-    // }
-
-    // --- 4. Refresh Riverpod Provider ---
-    // This is the CRUCIAL step to update the UI
-    // Invalidate the provider that fetches the user data.
-    // This forces Riverpod to re-fetch the data from Firestore,
-    // and all widgets watching this provider will rebuild with the new data.
-    _ref.invalidate(currentUserProvider);
-  }
-}

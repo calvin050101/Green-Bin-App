@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:green_bin/pages/auth/create_account.dart';
 import 'package:green_bin/services/auth_service.dart';
 import 'package:green_bin/widgets/cust_form_field.dart';
+import 'package:green_bin/widgets/custom_button.dart';
+import 'package:green_bin/widgets/error_message_text.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -95,83 +97,54 @@ class _LoginPageState extends State<LoginPage> {
 
             const SizedBox(height: 20.0),
 
-            Text(
-              errorMessage,
-              style: TextStyle(
-                color: Colors.red,
-                fontSize: 12.0,
-                fontFamily: 'Montserrat',
-              )
-            ),
+            ErrorMessageText(errorMessage: errorMessage),
 
             const SizedBox(height: 30.0),
 
-            continueButton(),
+            CustomButton(buttonText: "Continue", onPressed: loginUser),
 
             const SizedBox(height: 40.0),
 
-            // "Don't have an Account? Create One" text
-            Row(
-              children: [
-                Text(
-                  "Don't have an Account? ",
-                  style: TextStyle(
-                    color: Colors.brown[700],
-                    fontSize: 16.0,
-                    fontFamily: 'Montserrat',
-                  ),
-                ),
-
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const CreateAccountPage(),
-                      ),
-                    );
-                  },
-                  child: Text(
-                    "Create One",
-                    style: TextStyle(
-                      color: Colors.brown[700],
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Montserrat',
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            createAccountText(context),
           ],
         ),
       ),
     );
   }
 
-  SizedBox continueButton() {
-    return SizedBox(
-      width: double.infinity,
-      height: 50.0,
-      child: ElevatedButton(
-        onPressed: loginUser,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF00B0FF),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(25.0),
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 15.0),
-        ),
-        child: const Text(
-          'Continue',
+  Row createAccountText(BuildContext context) {
+    return Row(
+      children: [
+        Text(
+          "Don't have an Account? ",
           style: TextStyle(
-            color: Colors.white,
-            fontSize: 18.0,
-            fontWeight: FontWeight.w700,
+            color: Colors.brown[700],
+            fontSize: 16.0,
             fontFamily: 'Montserrat',
           ),
         ),
-      ),
+
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const CreateAccountPage(),
+              ),
+            );
+          },
+          child: Text(
+            "Create One",
+            style: TextStyle(
+              color: Colors.brown[700],
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Montserrat',
+            ),
+          ),
+        ),
+      ],
     );
   }
+
 }

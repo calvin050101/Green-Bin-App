@@ -2,8 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:green_bin/services/auth_service.dart';
 import 'package:green_bin/services/database_service.dart';
+import 'package:green_bin/widgets/custom_button.dart';
 
 import '../../widgets/cust_form_field.dart';
+import '../../widgets/error_message_text.dart';
 
 class CreateAccountPage extends StatefulWidget {
   const CreateAccountPage({super.key});
@@ -158,45 +160,12 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
             const SizedBox(height: 20.0),
 
-            Text(
-              errorMessage,
-              style: TextStyle(
-                color: Colors.red,
-                fontSize: 12.0,
-                fontFamily: 'Montserrat',
-              ),
-            ),
+            ErrorMessageText(errorMessage: errorMessage),
 
             const SizedBox(height: 30.0),
 
-            continueButton(),
+            CustomButton(buttonText: "Continue", onPressed: registerUser),
           ],
-        ),
-      ),
-    );
-  }
-
-  SizedBox continueButton() {
-    return SizedBox(
-      width: double.infinity,
-      height: 50.0,
-      child: ElevatedButton(
-        onPressed: registerUser,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF00B0FF),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(25.0),
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 15.0),
-        ),
-        child: const Text(
-          'Continue',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18.0,
-            fontWeight: FontWeight.w700,
-            fontFamily: 'Montserrat',
-          ),
         ),
       ),
     );

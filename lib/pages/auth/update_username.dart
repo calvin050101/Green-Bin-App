@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:green_bin/widgets/error_message_text.dart';
 
 import '../../providers/user_provider.dart';
 import '../../services/database_service.dart';
@@ -94,14 +95,7 @@ class _UpdateUsernamePageState extends ConsumerState<UpdateUsernamePage> {
 
                     const SizedBox(height: 20.0),
 
-                    Text(
-                      _errorMessage ?? '',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 12.0,
-                        fontFamily: 'Montserrat',
-                      ),
-                    ),
+                    ErrorMessageText(errorMessage: _errorMessage),
 
                     SizedBox(height: 40),
 

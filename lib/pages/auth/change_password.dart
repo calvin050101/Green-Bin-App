@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:green_bin/widgets/custom_button.dart';
+import 'package:green_bin/widgets/error_message_text.dart';
 
 import '../../services/auth_service.dart';
 import '../../widgets/cust_form_field.dart';
@@ -89,45 +91,15 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
 
             SizedBox(height: 10),
 
-            Text(
-              errorMessage,
-              style: TextStyle(
-                color: Colors.red,
-                fontSize: 12.0,
-                fontFamily: 'Montserrat',
-              ),
-            ),
+            ErrorMessageText(errorMessage: errorMessage),
 
             SizedBox(height: 40),
 
-            changePasswordButton(),
+            CustomButton(
+              buttonText: "Change Password",
+              onPressed: changePassword,
+            ),
           ],
-        ),
-      ),
-    );
-  }
-
-  SizedBox changePasswordButton() {
-    return SizedBox(
-      width: double.infinity,
-      height: 54.0,
-      child: ElevatedButton(
-        onPressed: changePassword,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF00B0FF),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 15.0),
-        ),
-        child: const Text(
-          'Change Password',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18.0,
-            fontWeight: FontWeight.w700,
-            fontFamily: 'Montserrat',
-          ),
         ),
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:green_bin/widgets/custom_button.dart';
 import '../../helper/helper_functions.dart';
 import '../../models/user_level_model.dart';
 import '../../models/user_model.dart';
@@ -56,6 +57,14 @@ class ProfilePage extends StatelessWidget {
           const SizedBox(height: 30),
 
           pageDirectButton(
+            route: '/user-levels',
+            buttonText: "User Levels",
+            context: context,
+          ),
+
+          const SizedBox(height: 10),
+
+          pageDirectButton(
             route: '/recycling-history',
             buttonText: "Recycling History",
             context: context,
@@ -71,7 +80,12 @@ class ProfilePage extends StatelessWidget {
 
           const SizedBox(height: 20),
 
-          logOutButton(),
+          CustomButton(
+            buttonText: "Log Out",
+            onPressed: () async {
+              await authService.value.signOut();
+            },
+          ),
 
           const SizedBox(height: 10),
 
@@ -126,32 +140,6 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  SizedBox logOutButton() {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () async {
-          await authService.value.signOut();
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF00B0FF),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-        ),
-        child: const Text(
-          'Log Out',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18.0,
-            fontWeight: FontWeight.w700,
-            fontFamily: 'Montserrat',
-          ),
-        ),
-      ),
-    );
-  }
-
   Container userStatsContainer(BuildContext context) {
     return Container(
       width: double.infinity,
@@ -182,15 +170,6 @@ class ProfilePage extends StatelessWidget {
               rowIcon: Icon(Icons.cloud, size: 40, color: Colors.grey),
               rowTitle: "CO₂ Saved",
               rowValue: "8.5 kg",
-              context: context,
-            ),
-
-            SizedBox(height: 15),
-
-            userStatsRow(
-              rowIcon: Icon(Icons.line_axis, size: 40, color: Colors.amber),
-              rowTitle: "Streak",
-              rowValue: "12 days",
               context: context,
             ),
           ],

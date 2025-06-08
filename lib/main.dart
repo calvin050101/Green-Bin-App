@@ -6,6 +6,7 @@ import 'package:green_bin/pages/auth/change_password.dart';
 import 'package:green_bin/pages/auth/update_username.dart';
 import 'package:green_bin/pages/profile/recycling_history.dart';
 import 'package:green_bin/pages/profile/settings.dart';
+import 'package:green_bin/pages/profile/user_levels.dart';
 import 'package:green_bin/pages/scan_item/scan_item_main.dart';
 
 import 'firebase_options.dart';
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => AuthPage(),
         '/scan-item': (context) => ScanItemMainPage(),
+        '/user-levels': (context) => UserLevelsPage(),
         '/recycling-history': (context) => RecyclingHistoryPage(),
         '/settings': (context) => SettingsPage(),
         '/update-username': (context) => UpdateUsernamePage(),

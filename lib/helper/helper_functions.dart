@@ -31,7 +31,7 @@ UserLevel getUserLevel(int points) {
     );
   } else {
     return UserLevel(
-      levelName: "Zero Waste Champion 🏆",
+      levelName: "Recycling Champion 🏆",
       minPoints: 4000,
       maxPoints: 4000,
     );

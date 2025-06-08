@@ -4,6 +4,7 @@ import 'package:green_bin/widgets/custom_button.dart';
 import 'package:green_bin/widgets/error_message_text.dart';
 
 import '../../services/auth_service.dart';
+import '../../widgets/back_button.dart';
 import '../../widgets/cust_form_field.dart';
 
 class ChangePasswordPage extends StatefulWidget {
@@ -27,25 +28,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leadingWidth: 70,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 16.0, top: 8.0, bottom: 8.0),
-          child: Container(
-            width: 60,
-            height: 60,
-            decoration: BoxDecoration(
-              color: const Color(0xFF00B0FF),
-              shape: BoxShape.circle,
-            ),
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              color: Colors.white,
-              iconSize: 24.0,
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ),
-        ),
+        leading: CustBackButton(),
       ),
 
       body: Padding(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../widgets/back_button.dart';
+import '../../widgets/custom_button.dart';
 
 class ScanItemMainPage extends StatelessWidget {
   const ScanItemMainPage({super.key});
@@ -18,6 +19,7 @@ class ScanItemMainPage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'Scan Item',
@@ -27,10 +29,50 @@ class ScanItemMainPage extends StatelessWidget {
                 fontFamily: 'Poppins',
               ),
             ),
+
+            SizedBox(height: 40),
+
+            Center(child: uploadImageContainer(context)),
+
+            const SizedBox(height: 50),
+
+            CustomButton(
+              buttonText: "Process Image",
+              onPressed: () {
+                Navigator.pushNamed(context, '/confirm-waste-type');
+              },
+            ),
           ],
         ),
       ),
+    );
+  }
 
+  Container uploadImageContainer(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.8,
+      height: MediaQuery.of(context).size.width * 0.6,
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey[300]!, width: 2),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.image, size: 80, color: Colors.grey[600]),
+          const SizedBox(height: 10),
+          Text(
+            'Upload Image',
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.grey[700],
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Montserrat',
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

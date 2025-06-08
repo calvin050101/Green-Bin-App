@@ -22,8 +22,8 @@ class CustomButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(12.0),
           ),
         ),
-        child: const Text(
-          'Log Out',
+        child: Text(
+          buttonText,
           style: TextStyle(
             color: Colors.white,
             fontSize: 18.0,

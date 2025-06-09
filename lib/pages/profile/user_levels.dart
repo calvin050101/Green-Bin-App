@@ -15,31 +15,33 @@ class UserLevelsPage extends StatelessWidget {
         leading: CustBackButton(),
       ),
 
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 40),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
 
-          children: [
-            Text(
-              'User Levels',
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 32,
-                fontFamily: 'Poppins',
+            children: [
+              Text(
+                'User Levels',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 32,
+                  fontFamily: 'Poppins',
+                ),
               ),
-            ),
 
-            SizedBox(height: 40),
+              SizedBox(height: 40),
 
-            userLevelContainer("0-99 Points", "Seedling 🌱"),
-            userLevelContainer("100-249 Points", "Sprout 🍃"),
-            userLevelContainer("250-499 Points", "Leaflet 🍂"),
-            userLevelContainer("500-999 Points", "Green Guardian 🌿"),
-            userLevelContainer("1000-1999 Points", "Eco Warrior ♻️"),
-            userLevelContainer("2000-3999 Points", "Planet Protector 🌍"),
-            userLevelContainer("4000+ Points", "Recycling Champion 🏆"),
-          ],
+              userLevelContainer("0-99 Points", "Seedling 🌱"),
+              userLevelContainer("100-249 Points", "Sprout 🍃"),
+              userLevelContainer("250-499 Points", "Leaflet 🍂"),
+              userLevelContainer("500-999 Points", "Green Guardian 🌿"),
+              userLevelContainer("1000-1999 Points", "Eco Warrior ♻️"),
+              userLevelContainer("2000-3999 Points", "Planet Protector 🌍"),
+              userLevelContainer("4000+ Points", "Recycling Champion 🏆"),
+            ],
+          ),
         ),
       ),
     );

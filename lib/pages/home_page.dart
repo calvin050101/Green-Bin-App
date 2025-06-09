@@ -35,7 +35,7 @@ class HomePage extends StatelessWidget {
             ),
             backgroundColor: Colors.transparent,
           ),
-          body: showHome(user, context),
+          body: SingleChildScrollView(child: showHome(user, context)),
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -43,7 +43,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Column showHome(UserModel user, BuildContext context) {
+  Widget showHome(UserModel user, BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,12 +72,22 @@ class HomePage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: pointsProgressContainer(user, context),
         ),
+
         const SizedBox(height: 20),
 
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: funFactContainer(context),
         ),
+
+        const SizedBox(height: 20),
+
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: funFactContainer(context),
+        ),
+
+        const SizedBox(height: 40),
       ],
     );
   }

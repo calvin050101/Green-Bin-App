@@ -53,60 +53,62 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(backgroundColor: Colors.transparent),
 
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Image(
-                image: AssetImage('lib/assets/images/recycle-bin.png'),
-                width: 200.0,
-                height: 200.0,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Image(
+                  image: AssetImage('lib/assets/images/recycle-bin.png'),
+                  width: 200.0,
+                  height: 200.0,
+                ),
               ),
-            ),
 
-            SizedBox(height: 40),
+              SizedBox(height: 40),
 
-            Text(
-              'Login',
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 32,
-                fontFamily: 'Poppins',
+              Text(
+                'Login',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 32,
+                  fontFamily: 'Poppins',
+                ),
               ),
-            ),
 
-            SizedBox(height: 20),
+              SizedBox(height: 20),
 
-            CustFormField(
-              controller: _emailController,
-              keyboardType: TextInputType.emailAddress,
-              hintText: 'Email Address',
-              isPassword: false,
-            ),
+              CustFormField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                hintText: 'Email Address',
+                isPassword: false,
+              ),
 
-            const SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
 
-            CustFormField(
-              controller: _passwordController,
-              keyboardType: TextInputType.visiblePassword,
-              hintText: 'Password',
-              isPassword: true,
-            ),
+              CustFormField(
+                controller: _passwordController,
+                keyboardType: TextInputType.visiblePassword,
+                hintText: 'Password',
+                isPassword: true,
+              ),
 
-            const SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
 
-            ErrorMessageText(errorMessage: errorMessage),
+              ErrorMessageText(errorMessage: errorMessage),
 
-            const SizedBox(height: 30.0),
+              const SizedBox(height: 30.0),
 
-            CustomButton(buttonText: "Continue", onPressed: loginUser),
+              CustomButton(buttonText: "Continue", onPressed: loginUser),
 
-            const SizedBox(height: 40.0),
+              const SizedBox(height: 40.0),
 
-            createAccountText(context),
-          ],
+              createAccountText(context),
+            ],
+          ),
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:green_bin/pages/scan_item/complete_scan_page.dart';
 import 'package:green_bin/widgets/custom_button.dart';
 
 import '../../widgets/back_button.dart';
@@ -11,7 +12,7 @@ class ConfirmWasteTypePage extends StatefulWidget {
 }
 
 class _ConfirmWasteTypePageState extends State<ConfirmWasteTypePage> {
-  String? _selectedWasteType;
+  String _selectedWasteType = "Paper";
 
   @override
   Widget build(BuildContext context) {
@@ -58,25 +59,17 @@ class _ConfirmWasteTypePageState extends State<ConfirmWasteTypePage> {
 
             const SizedBox(height: 15),
 
-            _buildWasteTypeOption(context, 'Paper', Icons.description, 'Paper'),
-            _buildWasteTypeOption(context, 'Glass', Icons.wine_bar, 'Glass'),
+            _buildWasteTypeOption(context, Icons.liquor, 'Plastic'),
+            _buildWasteTypeOption(context, Icons.description, 'Paper'),
+            _buildWasteTypeOption(context, Icons.wine_bar, 'Glass'),
+            _buildWasteTypeOption(context, Icons.kitchen, 'Metal'),
+            _buildWasteTypeOption(context, Icons.eco, 'Organic'),
+            _buildWasteTypeOption(context, Icons.computer, 'E-Waste'),
+            _buildWasteTypeOption(context, Icons.checkroom, 'Textiles'),
             _buildWasteTypeOption(
               context,
-              'Organic Waste',
-              Icons.eco,
-              'Organic Waste',
-            ),
-            _buildWasteTypeOption(
-              context,
-              'Used Clothes',
-              Icons.checkroom,
-              'Used Clothes',
-            ),
-            _buildWasteTypeOption(
-              context,
-              'Electronics',
-              Icons.devices,
-              'Electronics',
+              Icons.delete_forever,
+              'Non-recyclables',
             ),
 
             const SizedBox(height: 30),
@@ -84,7 +77,16 @@ class _ConfirmWasteTypePageState extends State<ConfirmWasteTypePage> {
             CustomButton(
               buttonText: "Confirm",
               onPressed: () {
-                Navigator.pushNamed(context, '/completed-scan');
+                Navigator.pushReplacement(
+                  // Use pushReplacement to avoid going back to this page
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) => CompleteScanPage(
+                          confirmedWasteType: _selectedWasteType,
+                        ),
+                  ),
+                );
               },
             ),
           ],
@@ -111,7 +113,6 @@ class _ConfirmWasteTypePageState extends State<ConfirmWasteTypePage> {
 
   Widget _buildWasteTypeOption(
     BuildContext context,
-    String title,
     IconData icon,
     String value,
   ) {
@@ -143,7 +144,7 @@ class _ConfirmWasteTypePageState extends State<ConfirmWasteTypePage> {
               Icon(icon, color: Color(0xFF4CAF50), size: 30),
               const SizedBox(width: 20),
               Text(
-                title,
+                value,
                 style: TextStyle(
                   fontSize: 18,
                   fontFamily: "Montserrat",

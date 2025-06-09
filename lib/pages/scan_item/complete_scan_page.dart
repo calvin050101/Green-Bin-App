@@ -1,11 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:green_bin/helper/helper_functions.dart';
+import 'package:green_bin/models/waste_type_model.dart';
 import 'package:green_bin/widgets/custom_button.dart';
+import 'package:green_bin/widgets/error_message_text.dart';
 
-class CompleteScanPage extends StatelessWidget {
-  const CompleteScanPage({super.key});
+import '../../providers/user_provider.dart';
+
+class CompleteScanPage extends ConsumerStatefulWidget {
+  final String confirmedWasteType;
+
+  const CompleteScanPage({super.key, required this.confirmedWasteType});
+
+  @override
+  ConsumerState<CompleteScanPage> createState() => _CompleteScanPageState();
+}
+
+class _CompleteScanPageState extends ConsumerState<CompleteScanPage> {
+  bool _recordAdded = false;
+  String? _errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _addRecordToUserHistory();
+  }
+
+  Future<void> _addRecordToUserHistory() async {
+    try {
+      final userProfileService = ref.read(userProfileServiceProvider);
+      await userProfileService.addWasteRecord(
+        wasteType: widget.confirmedWasteType,
+      );
+      setState(() {
+        _recordAdded = true;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = "Failed to add record: ${e.toString()}";
+      });
+      print("Error adding record: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final WasteTypeModel wasteTypeModel = getWasteType(
+      widget.confirmedWasteType,
+    );
+
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.transparent),
 
@@ -15,25 +58,40 @@ class CompleteScanPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Icon(
+                _recordAdded ? Icons.check_circle_outline : Icons.pending_outlined,
+                color: _recordAdded ? Colors.green : Colors.orange,
+                size: 100,
+              ),
+              const SizedBox(height: 20),
+
               _wasteImageContainer(context),
 
               const SizedBox(height: 30),
 
-              Text(
-                'Thank you for recycling!',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.lightGreen[900],
+              if (_errorMessage != null)
+                ErrorMessageText(errorMessage: _errorMessage)
+              else if (!_recordAdded)
+                const CircularProgressIndicator()
+              else
+                Text(
+                  'Thank you for recycling!',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.lightGreen[900],
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
-              ),
 
-              const SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-              _buildInfoRow('Waste Type:', 'Cardboard'),
-              _buildInfoRow('Points:', '7'),
-              _buildInfoRow('Carbon Footprint Saved:', '0.2 kg CO₂'),
+                _buildInfoRow('Waste Type:', widget.confirmedWasteType),
+                _buildInfoRow('Points:', '${wasteTypeModel.points}'),
+                _buildInfoRow(
+                  'Carbon Footprint Saved:',
+                  '${wasteTypeModel.carbonFootprint.toStringAsPrecision(2)} kg CO₂',
+                ),
 
               const SizedBox(height: 40),
 

@@ -31,71 +31,73 @@ class ProfilePage extends StatelessWidget {
 
   Widget showPage(UserModel user, BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-
-        children: [
-          Text(
-            'Profile',
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 32,
-              fontFamily: 'Poppins',
+      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 40),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+        
+          children: [
+            Text(
+              'Profile',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 32,
+                fontFamily: 'Poppins',
+              ),
             ),
-          ),
-
-          const SizedBox(height: 40),
-
-          profileInfo(user),
-
-          const SizedBox(height: 30),
-
-          userStatsContainer(context),
-
-          const SizedBox(height: 30),
-
-          pageDirectButton(
-            route: '/user-levels',
-            buttonText: "User Levels",
-            context: context,
-          ),
-
-          const SizedBox(height: 10),
-
-          pageDirectButton(
-            route: '/recycling-history',
-            buttonText: "Recycling History",
-            context: context,
-          ),
-
-          const SizedBox(height: 10),
-
-          pageDirectButton(
-            route: '/settings',
-            buttonText: "Settings",
-            context: context,
-          ),
-
-          const SizedBox(height: 20),
-
-          CustomButton(
-            buttonText: "Log Out",
-            onPressed: () async {
-              await authService.value.signOut();
-            },
-          ),
-
-          const SizedBox(height: 10),
-
-          Center(
-            child: Text(
-              "App version: v1.0.0",
-              style: TextStyle(fontSize: 14, fontFamily: "OpenSans"),
+        
+            const SizedBox(height: 40),
+        
+            profileInfo(user),
+        
+            const SizedBox(height: 30),
+        
+            userStatsContainer(context),
+        
+            const SizedBox(height: 30),
+        
+            pageDirectButton(
+              route: '/user-levels',
+              buttonText: "User Levels",
+              context: context,
             ),
-          ),
-        ],
+        
+            const SizedBox(height: 10),
+        
+            pageDirectButton(
+              route: '/recycling-history',
+              buttonText: "Recycling History",
+              context: context,
+            ),
+        
+            const SizedBox(height: 10),
+        
+            pageDirectButton(
+              route: '/settings',
+              buttonText: "Settings",
+              context: context,
+            ),
+        
+            const SizedBox(height: 20),
+        
+            CustomButton(
+              buttonText: "Log Out",
+              onPressed: () async {
+                await authService.value.signOut();
+              },
+            ),
+        
+            const SizedBox(height: 10),
+        
+            Center(
+              child: Text(
+                "App version: v1.0.0",
+                style: TextStyle(fontSize: 14, fontFamily: "OpenSans"),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

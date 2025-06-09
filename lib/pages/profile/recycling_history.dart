@@ -74,13 +74,18 @@ class RecyclingHistoryPage extends ConsumerWidget {
       color: Colors.white,
       borderOnForeground: true,
       child: ListTile(
-        leading: const Icon(Icons.newspaper, color: Colors.green),
+        leading: const Icon(Icons.description, color: Colors.green, size: 30),
         title: Text(
           record.wasteType,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          style: const TextStyle(
+            fontFamily: 'OpenSans',
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         subtitle: Text(
           DateFormat('yyyy-MM-dd hh:mm a').format(record.timestamp.toLocal()),
+          style: const TextStyle(fontFamily: 'OpenSans', fontSize: 12),
         ),
       ),
     );

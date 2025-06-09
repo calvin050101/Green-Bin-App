@@ -81,74 +81,76 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       ),
 
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Image(
-                image: AssetImage('lib/assets/images/recycle-bin.png'),
-                width: 200.0,
-                height: 200.0,
+        padding: const EdgeInsets.only(left: 20, right: 20, bottom: 40),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Image(
+                  image: AssetImage('lib/assets/images/recycle-bin.png'),
+                  width: 200.0,
+                  height: 200.0,
+                ),
               ),
-            ),
 
-            SizedBox(height: 40),
+              SizedBox(height: 40),
 
-            Text(
-              'Create Account',
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 32,
-                fontFamily: 'Poppins',
+              Text(
+                'Create Account',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 32,
+                  fontFamily: 'Poppins',
+                ),
               ),
-            ),
 
-            SizedBox(height: 20),
+              SizedBox(height: 20),
 
-            CustFormField(
-              controller: _usernameController,
-              keyboardType: TextInputType.name,
-              hintText: 'Username',
-              isPassword: false,
-            ),
+              CustFormField(
+                controller: _usernameController,
+                keyboardType: TextInputType.name,
+                hintText: 'Username',
+                isPassword: false,
+              ),
 
-            const SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
 
-            CustFormField(
-              controller: _emailController,
-              keyboardType: TextInputType.emailAddress,
-              hintText: 'Email Address',
-              isPassword: false,
-            ),
+              CustFormField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                hintText: 'Email Address',
+                isPassword: false,
+              ),
 
-            const SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
 
-            CustFormField(
-              controller: _passwordController,
-              keyboardType: TextInputType.visiblePassword,
-              hintText: 'Password',
-              isPassword: true,
-            ),
+              CustFormField(
+                controller: _passwordController,
+                keyboardType: TextInputType.visiblePassword,
+                hintText: 'Password',
+                isPassword: true,
+              ),
 
-            const SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
 
-            CustFormField(
-              controller: _confirmPasswordController,
-              keyboardType: TextInputType.visiblePassword,
-              hintText: 'Confirm Password',
-              isPassword: true,
-            ),
+              CustFormField(
+                controller: _confirmPasswordController,
+                keyboardType: TextInputType.visiblePassword,
+                hintText: 'Confirm Password',
+                isPassword: true,
+              ),
 
-            const SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
 
-            ErrorMessageText(errorMessage: errorMessage),
+              ErrorMessageText(errorMessage: errorMessage),
 
-            const SizedBox(height: 30.0),
+              const SizedBox(height: 30.0),
 
-            CustomButton(buttonText: "Continue", onPressed: registerUser),
-          ],
+              CustomButton(buttonText: "Continue", onPressed: registerUser),
+            ],
+          ),
         ),
       ),
     );

@@ -2,11 +2,13 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:green_bin/helper/helper_functions.dart';
 import 'package:green_bin/models/user_level_model.dart';
+import 'package:green_bin/widgets/waste_type_summary_card.dart';
 
+import '../helper/helper_functions.dart';
 import '../models/recycling_summary.dart';
 import '../models/user_model.dart';
+import '../models/waste_type_summary.dart';
 
 class HomePage extends ConsumerWidget {
   final AsyncValue<UserModel?> userAsyncValue;
@@ -45,6 +47,8 @@ class HomePage extends ConsumerWidget {
   }
 
   Widget showHome(UserModel user, BuildContext context, WidgetRef ref) {
+    final List<WasteTypeSummary> wasteTypeCounts = getWasteTypeCounts(user.records);
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,8 +89,38 @@ class HomePage extends ConsumerWidget {
 
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: funFactContainer(context),
+          child: const Text(
+            "Recycling Stats",
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w600,
+              fontSize: 20,
+            ),
+          ),
         ),
+
+        const SizedBox(height: 20),
+
+        if (wasteTypeCounts.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 140,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: wasteTypeCounts.length,
+                    itemBuilder: (context, index) {
+                      return WasteTypeSummaryCard(summary: wasteTypeCounts[index]);
+                    },
+                  ),
+                ),
+                const SizedBox(height: 30),
+              ],
+            ),
+          ),
 
         const SizedBox(height: 40),
       ],

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:green_bin/helper/helper_functions.dart';
 import 'package:green_bin/models/waste_type_model.dart';
 import 'package:green_bin/widgets/custom_button.dart';
 import 'package:green_bin/widgets/error_message_text.dart';

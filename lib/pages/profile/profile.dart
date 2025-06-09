@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:green_bin/widgets/custom_button.dart';
-import '../../helper/helper_functions.dart';
 import '../../models/recycling_summary.dart';
 import '../../models/user_level_model.dart';
 import '../../models/user_model.dart';

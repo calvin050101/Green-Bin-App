@@ -21,7 +21,7 @@ final userStreamProvider = StreamProvider<UserModel?>((ref) {
 
     if (!docSnapshot.exists) {
       print('User document not found for UID: ${user.uid}');
-      return UserModel(uid: user.uid, email: user.email, points: 0);
+      return UserModel(uid: user.uid, email: user.email);
     }
 
     UserModel userModel = UserModel.fromFirestore(
@@ -61,7 +61,7 @@ final currentUserProvider = FutureProvider<UserModel?>((ref) async {
 
   if (!docSnapshot.exists) {
     print('User document not found for UID: ${user.uid}');
-    return UserModel(uid: user.uid, email: user.email, points: 0, records: []);
+    return UserModel(uid: user.uid, email: user.email, records: []);
   }
 
   UserModel userModel = UserModel.fromFirestore(docSnapshot.data()!, user.uid);

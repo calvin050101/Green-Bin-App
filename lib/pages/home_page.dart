@@ -5,15 +5,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:green_bin/helper/helper_functions.dart';
 import 'package:green_bin/models/user_level_model.dart';
 
+import '../models/recycling_summary.dart';
 import '../models/user_model.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends ConsumerWidget {
   final AsyncValue<UserModel?> userAsyncValue;
 
   const HomePage({super.key, required this.userAsyncValue});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return userAsyncValue.when(
       data: (user) {
         if (user == null) {
@@ -35,7 +36,7 @@ class HomePage extends StatelessWidget {
             ),
             backgroundColor: Colors.transparent,
           ),
-          body: SingleChildScrollView(child: showHome(user, context)),
+          body: SingleChildScrollView(child: showHome(user, context, ref)),
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -43,7 +44,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget showHome(UserModel user, BuildContext context) {
+  Widget showHome(UserModel user, BuildContext context, WidgetRef ref) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,9 +144,14 @@ class HomePage extends StatelessWidget {
   }
 
   Container pointsProgressContainer(UserModel user, BuildContext context) {
-    final UserLevel userLevel = getUserLevel(user.points);
+    final RecyclingSummary summary =
+        user.records != null
+            ? calculateRecyclingSummary(user.records)
+            : RecyclingSummary(totalPoints: 0, totalCarbonFootprintSaved: 0);
+
+    final UserLevel userLevel = getUserLevel(summary.totalPoints);
     final double progress = min(
-      (user.points - userLevel.minPoints) / userLevel.maxPoints,
+      (summary.totalPoints - userLevel.minPoints) / userLevel.maxPoints,
       1,
     );
 
@@ -164,7 +170,7 @@ class HomePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "You have saved 8.5 kg CO₂ by recycling.",
+              "You have saved ${summary.totalCarbonFootprintSaved} kg CO₂ by recycling.",
               style: TextStyle(
                 color: Theme.of(context).colorScheme.surface,
                 fontWeight: FontWeight.w600,
@@ -190,9 +196,9 @@ class HomePage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  user.points >= 4000
+                  summary.totalPoints >= 4000
                       ? "4000+ points"
-                      : "${user.points}/${userLevel.maxPoints} points",
+                      : "${summary.totalPoints}/${userLevel.maxPoints} points",
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.surface,
                     fontWeight: FontWeight.w600,

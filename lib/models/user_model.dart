@@ -4,14 +4,12 @@ class UserModel {
   final String uid;
   final String? email;
   final String? username;
-  final int points;
   final List<RecordModel>? records;
 
   UserModel({
     required this.uid,
     this.email,
     this.username,
-    required this.points,
     this.records
   });
 
@@ -20,7 +18,6 @@ class UserModel {
       uid: uid,
       email: data['email'],
       username: data['username'],
-      points: data['points'],
     );
   }
 
@@ -28,7 +25,6 @@ class UserModel {
     return {
       'email': email,
       'username': username,
-      'points': points,
       'records': records,
     };
   }
@@ -37,14 +33,12 @@ class UserModel {
     String? uid,
     String? email,
     String? username,
-    int? points,
     List<RecordModel>? records,
   }) {
     return UserModel(
       uid: uid ?? this.uid,
       email: email ?? this.email,
       username: username ?? this.username,
-      points: points ?? this.points,
       records: records ?? this.records,
     );
   }

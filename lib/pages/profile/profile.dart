@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:green_bin/widgets/custom_button.dart';
 import '../../helper/helper_functions.dart';
+import '../../models/recycling_summary.dart';
 import '../../models/user_level_model.dart';
 import '../../models/user_model.dart';
 import '../../services/auth_service.dart';
@@ -30,13 +31,18 @@ class ProfilePage extends StatelessWidget {
   }
 
   Widget showPage(UserModel user, BuildContext context) {
+    final RecyclingSummary summary =
+        user.records != null
+            ? calculateRecyclingSummary(user.records)
+            : RecyclingSummary(totalPoints: 0, totalCarbonFootprintSaved: 0);
+
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20, bottom: 40),
       child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-        
+
           children: [
             Text(
               'Profile',
@@ -46,50 +52,50 @@ class ProfilePage extends StatelessWidget {
                 fontFamily: 'Poppins',
               ),
             ),
-        
+
             const SizedBox(height: 40),
-        
-            profileInfo(user),
-        
+
+            profileInfo(user, summary),
+
             const SizedBox(height: 30),
-        
-            userStatsContainer(context),
-        
+
+            userStatsContainer(user, summary, context),
+
             const SizedBox(height: 30),
-        
+
             pageDirectButton(
               route: '/user-levels',
               buttonText: "User Levels",
               context: context,
             ),
-        
+
             const SizedBox(height: 10),
-        
+
             pageDirectButton(
               route: '/recycling-history',
               buttonText: "Recycling History",
               context: context,
             ),
-        
+
             const SizedBox(height: 10),
-        
+
             pageDirectButton(
               route: '/settings',
               buttonText: "Settings",
               context: context,
             ),
-        
+
             const SizedBox(height: 20),
-        
+
             CustomButton(
               buttonText: "Log Out",
               onPressed: () async {
                 await authService.value.signOut();
               },
             ),
-        
+
             const SizedBox(height: 10),
-        
+
             Center(
               child: Text(
                 "App version: v1.0.0",
@@ -142,7 +148,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Container userStatsContainer(BuildContext context) {
+  Container userStatsContainer(UserModel user, RecyclingSummary summary, BuildContext context) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -162,7 +168,7 @@ class ProfilePage extends StatelessWidget {
                 color: Theme.of(context).colorScheme.primary,
               ),
               rowTitle: "Items Sorted",
-              rowValue: "15",
+              rowValue: '${user.records?.length}',
               context: context,
             ),
 
@@ -171,7 +177,7 @@ class ProfilePage extends StatelessWidget {
             userStatsRow(
               rowIcon: Icon(Icons.cloud, size: 40, color: Colors.grey),
               rowTitle: "CO₂ Saved",
-              rowValue: "8.5 kg",
+              rowValue: "${summary.totalCarbonFootprintSaved} kg",
               context: context,
             ),
           ],
@@ -212,8 +218,8 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Row profileInfo(UserModel user) {
-    final UserLevel userLevel = getUserLevel(user.points);
+  Row profileInfo(UserModel user, RecyclingSummary summary) {
+    final UserLevel userLevel = getUserLevel(summary.totalPoints);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -247,7 +253,7 @@ class ProfilePage extends StatelessWidget {
             SizedBox(height: 6),
 
             Text(
-              "${user.points} Points",
+              "${summary.totalPoints} Points",
               style: TextStyle(fontSize: 18, fontFamily: 'OpenSans'),
             ),
 

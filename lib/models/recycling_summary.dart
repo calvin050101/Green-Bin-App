@@ -1,8 +1,6 @@
 import 'package:green_bin/models/record_model.dart';
 import 'package:green_bin/models/waste_type_model.dart';
 
-import '../helper/helper_functions.dart';
-
 class RecyclingSummary {
   final int totalPoints;
   final double totalCarbonFootprintSaved;

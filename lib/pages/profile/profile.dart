@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:green_bin/widgets/cust_container.dart';
 import 'package:green_bin/widgets/custom_button.dart';
 import '../../models/recycling_summary.dart';
 import '../../models/user_level_model.dart';
@@ -107,116 +108,6 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  InkWell pageDirectButton({
-    required String route,
-    required String buttonText,
-    required BuildContext context,
-  }) {
-    return InkWell(
-      onTap: () {
-        Navigator.pushNamed(context, route);
-      },
-
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Color(0xFFD6D6D6), width: 2),
-        ),
-
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                buttonText,
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 20,
-                  fontFamily: 'OpenSans',
-                ),
-              ),
-
-              Icon(Icons.arrow_forward_ios_rounded),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Container userStatsContainer(UserModel user, RecyclingSummary summary, BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Color(0xFFD6D6D6), width: 2),
-      ),
-
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            userStatsRow(
-              rowIcon: Icon(
-                Icons.recycling,
-                size: 40,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              rowTitle: "Items Sorted",
-              rowValue: '${user.records?.length}',
-              context: context,
-            ),
-
-            SizedBox(height: 15),
-
-            userStatsRow(
-              rowIcon: Icon(Icons.cloud, size: 40, color: Colors.grey),
-              rowTitle: "CO₂ Saved",
-              rowValue: "${summary.totalCarbonFootprintSaved} kg",
-              context: context,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Row userStatsRow({
-    required Icon rowIcon,
-    required String rowTitle,
-    required String rowValue,
-    required BuildContext context,
-  }) {
-    return Row(
-      children: [
-        rowIcon,
-        SizedBox(width: 20),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              rowTitle,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-                fontFamily: 'OpenSans',
-              ),
-            ),
-            SizedBox(height: 4),
-            Text(
-              rowValue,
-              style: TextStyle(fontSize: 16, fontFamily: 'OpenSans'),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
   Row profileInfo(UserModel user, RecyclingSummary summary) {
     final UserLevel userLevel = getUserLevel(summary.totalPoints);
 
@@ -270,6 +161,100 @@ class ProfilePage extends StatelessWidget {
           ],
         ),
       ],
+    );
+  }
+
+  CustContainer userStatsContainer(
+    UserModel user,
+    RecyclingSummary summary,
+    BuildContext context,
+  ) {
+    return CustContainer(
+      child: Column(
+        children: [
+          userStatsRow(
+            rowIcon: Icon(
+              Icons.recycling,
+              size: 40,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            rowTitle: "Items Sorted",
+            rowValue: '${user.records?.length}',
+            context: context,
+          ),
+
+          SizedBox(height: 15),
+
+          userStatsRow(
+            rowIcon: Icon(Icons.cloud, size: 40, color: Colors.grey),
+            rowTitle: "CO₂ Saved",
+            rowValue: "${summary.totalCarbonFootprintSaved} kg",
+            context: context,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Row userStatsRow({
+    required Icon rowIcon,
+    required String rowTitle,
+    required String rowValue,
+    required BuildContext context,
+  }) {
+    return Row(
+      children: [
+        rowIcon,
+        SizedBox(width: 20),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              rowTitle,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                fontFamily: 'OpenSans',
+              ),
+            ),
+            SizedBox(height: 4),
+            Text(
+              rowValue,
+              style: TextStyle(fontSize: 16, fontFamily: 'OpenSans'),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  InkWell pageDirectButton({
+    required String route,
+    required String buttonText,
+    required BuildContext context,
+  }) {
+    return InkWell(
+      onTap: () {
+        Navigator.pushNamed(context, route);
+      },
+
+      child: CustContainer(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              buttonText,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 20,
+                fontFamily: 'OpenSans',
+              ),
+            ),
+
+            Icon(Icons.arrow_forward_ios_rounded),
+          ],
+        ),
+      ),
     );
   }
 }

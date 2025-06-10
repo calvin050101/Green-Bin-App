@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:green_bin/models/user_level_model.dart';
+import 'package:green_bin/widgets/cust_container.dart';
 import 'package:green_bin/widgets/waste_type_summary_card.dart';
 
 import '../helper/helper_functions.dart';
@@ -40,6 +41,7 @@ class HomePage extends ConsumerWidget {
           ),
           body: SingleChildScrollView(child: showHome(user, context, ref)),
         );
+
       },
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stack) => Center(child: Text('Error: $error')),
@@ -47,7 +49,9 @@ class HomePage extends ConsumerWidget {
   }
 
   Widget showHome(UserModel user, BuildContext context, WidgetRef ref) {
-    final List<WasteTypeSummary> wasteTypeCounts = getWasteTypeCounts(user.records);
+    final List<WasteTypeSummary> wasteTypeCounts = getWasteTypeCounts(
+      user.records,
+    );
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -112,9 +116,10 @@ class HomePage extends ConsumerWidget {
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: wasteTypeCounts.length,
-                    itemBuilder: (context, index) {
-                      return WasteTypeSummaryCard(summary: wasteTypeCounts[index]);
-                    },
+                    itemBuilder:
+                        (context, index) => WasteTypeSummaryCard(
+                          summary: wasteTypeCounts[index],
+                        ),
                   ),
                 ),
                 const SizedBox(height: 30),
@@ -124,137 +129,6 @@ class HomePage extends ConsumerWidget {
 
         const SizedBox(height: 40),
       ],
-    );
-  }
-
-  Container funFactContainer(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Color(0xFFD6D6D6), width: 2),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Did you know?",
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.surface,
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-                fontFamily: 'OpenSans',
-              ),
-            ),
-            SizedBox(height: 10),
-            Row(
-              children: [
-                Icon(
-                  Icons.check_circle,
-                  color: Theme.of(context).colorScheme.primary,
-                  size: 50,
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    'Recycling 1 ton of paper is equivalent to saving 17 trees, '
-                    'and saves up to 3 cubic yards.',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.surface,
-                      fontFamily: 'OpenSans',
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Container pointsProgressContainer(UserModel user, BuildContext context) {
-    final RecyclingSummary summary =
-        user.records != null
-            ? calculateRecyclingSummary(user.records)
-            : RecyclingSummary(totalPoints: 0, totalCarbonFootprintSaved: 0);
-
-    final UserLevel userLevel = getUserLevel(summary.totalPoints);
-    final double progress = min(
-      (summary.totalPoints - userLevel.minPoints) / userLevel.maxPoints,
-      1,
-    );
-
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Color(0xFFD6D6D6), width: 2),
-      ),
-
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "You have saved ${summary.totalCarbonFootprintSaved} kg CO₂ by recycling.",
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.surface,
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-                fontFamily: 'OpenSans',
-              ),
-            ),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-              child: LinearProgressIndicator(
-                value: progress,
-                minHeight: 10,
-                borderRadius: BorderRadius.circular(5),
-                backgroundColor: Theme.of(context).colorScheme.surface,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Theme.of(context).colorScheme.primary,
-                ),
-              ),
-            ),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  summary.totalPoints >= 4000
-                      ? "4000+ points"
-                      : "${summary.totalPoints}/${userLevel.maxPoints} points",
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.surface,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                    fontFamily: 'OpenSans',
-                  ),
-                ),
-
-                Text(
-                  userLevel.levelName,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                    fontFamily: 'OpenSans',
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -301,6 +175,118 @@ class HomePage extends ConsumerWidget {
                 ],
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  CustContainer pointsProgressContainer(UserModel user, BuildContext context) {
+    final RecyclingSummary summary =
+        user.records != null
+            ? calculateRecyclingSummary(user.records)
+            : RecyclingSummary(totalPoints: 0, totalCarbonFootprintSaved: 0);
+
+    final UserLevel userLevel = getUserLevel(summary.totalPoints);
+    final double progress = min(
+      (summary.totalPoints - userLevel.minPoints) / userLevel.maxPoints,
+      1,
+    );
+
+    return CustContainer(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "You have saved ${summary.totalCarbonFootprintSaved} kg CO₂ by recycling.",
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.surface,
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+              fontFamily: 'OpenSans',
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+            child: LinearProgressIndicator(
+              value: progress,
+              minHeight: 10,
+              borderRadius: BorderRadius.circular(5),
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          ),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                summary.totalPoints >= 4000
+                    ? "4000+ points"
+                    : "${summary.totalPoints}/${userLevel.maxPoints} points",
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.surface,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                  fontFamily: 'OpenSans',
+                ),
+              ),
+
+              Text(
+                userLevel.levelName,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  fontFamily: 'OpenSans',
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  CustContainer funFactContainer(BuildContext context) {
+    return CustContainer(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Did you know?",
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.surface,
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+              fontFamily: 'OpenSans',
+            ),
+          ),
+          SizedBox(height: 10),
+          Row(
+            children: [
+              Icon(
+                Icons.check_circle,
+                color: Theme.of(context).colorScheme.primary,
+                size: 50,
+              ),
+              SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  'Recycling 1 ton of paper is equivalent to saving 17 trees, '
+                      'and saves up to 3 cubic yards.',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.surface,
+                    fontFamily: 'OpenSans',
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

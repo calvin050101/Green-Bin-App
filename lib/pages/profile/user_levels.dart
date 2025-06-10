@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../widgets/back_button.dart';
+import '../../widgets/cust_container.dart';
 
 class UserLevelsPage extends StatelessWidget {
   const UserLevelsPage({super.key});
@@ -50,34 +51,24 @@ class UserLevelsPage extends StatelessWidget {
   Padding userLevelContainer(String points, String label) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(4),
-          border: Border.all(color: Color(0xFFD6D6D6), width: 2),
-        ),
+      child: CustContainer(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              points,
+              style: TextStyle(fontSize: 16, fontFamily: 'OpenSans'),
+            ),
 
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                points,
-                style: TextStyle(fontSize: 16, fontFamily: 'OpenSans'),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 16,
+                fontFamily: 'OpenSans',
+                fontWeight: FontWeight.bold,
               ),
-
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontFamily: 'OpenSans',
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

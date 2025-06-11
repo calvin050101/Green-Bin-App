@@ -14,7 +14,10 @@ class CustContainer extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Color(0xFFD6D6D6), width: 2),
       ),
-      child: child,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: child,
+      ),
     );
   }
 }

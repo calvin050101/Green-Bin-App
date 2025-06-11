@@ -43,23 +43,25 @@ class RecyclingHistoryPage extends ConsumerWidget {
                     itemBuilder: (context, index) => recordCard(records[index]),
                   );
 
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Text(
-                  'Recycling History', // Moved to body
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 32,
-                    fontFamily: 'Poppins',
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Text(
+                    'Recycling History', // Moved to body
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 32,
+                      fontFamily: 'Poppins',
+                    ),
                   ),
                 ),
-              ),
 
-              Expanded(child: mainContent),
-            ],
+                Expanded(child: mainContent),
+              ],
+            ),
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),

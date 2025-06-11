@@ -8,46 +8,6 @@ import '../services/user_profile_service.dart';
 final firebaseAuthProvider = Provider((ref) => FirebaseAuth.instance);
 final firebaseFirestoreProvider = Provider((ref) => FirebaseFirestore.instance);
 
-final userStreamProvider = StreamProvider<UserModel?>((ref) {
-  final auth = ref.watch(firebaseAuthProvider);
-  final firestore = ref.watch(firebaseFirestoreProvider);
-
-  return auth.authStateChanges().asyncMap((user) async {
-    if (user == null) {
-      return null;
-    }
-
-    final docSnapshot = await firestore.collection('users').doc(user.uid).get();
-
-    if (!docSnapshot.exists) {
-      print('User document not found for UID: ${user.uid}');
-      return UserModel(uid: user.uid, email: user.email);
-    }
-
-    UserModel userModel = UserModel.fromFirestore(
-      docSnapshot.data()!,
-      user.uid,
-    );
-
-    // Fetch the 'records' subcollection
-    final recordsSnapshot =
-        await firestore
-            .collection('users')
-            .doc(user.uid)
-            .collection('records')
-            .orderBy('timestamp', descending: true)
-            .get();
-
-    List<RecordModel> records =
-        recordsSnapshot.docs
-            .map((doc) => RecordModel.fromFirestore(doc.data(), doc.id))
-            .toList();
-    userModel = userModel.copyWith(records: records);
-
-    return userModel;
-  });
-});
-
 final currentUserProvider = FutureProvider<UserModel?>((ref) async {
   final auth = ref.watch(firebaseAuthProvider);
   final firestore = ref.watch(firebaseFirestoreProvider);

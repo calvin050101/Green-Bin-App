@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:green_bin/helper/helper_functions.dart';
 
 import '../../models/record_model.dart';
 import '../../providers/user_provider.dart';
@@ -35,14 +36,6 @@ class RecyclingHistoryPage extends ConsumerWidget {
 
       body: recordsAsyncValue.when(
         data: (records) {
-          Widget mainContent =
-              records.isEmpty
-                  ? Center(child: Text('No recycling records found yet.'))
-                  : ListView.builder(
-                    itemCount: records.length,
-                    itemBuilder: (context, index) => recordCard(records[index]),
-                  );
-
           return SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,7 +52,15 @@ class RecyclingHistoryPage extends ConsumerWidget {
                   ),
                 ),
 
-                Expanded(child: mainContent),
+                records.isEmpty
+                    ? Center(child: Text('No recycling records found yet.'))
+                    : ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: records.length,
+                      itemBuilder:
+                          (context, index) => recordCard(records[index]),
+                    ),
               ],
             ),
           );
@@ -76,7 +77,11 @@ class RecyclingHistoryPage extends ConsumerWidget {
       color: Colors.white,
       borderOnForeground: true,
       child: ListTile(
-        leading: const Icon(Icons.description, color: Colors.green, size: 30),
+        leading: Icon(
+          getWasteTypeIcon(record.wasteType),
+          color: Colors.green,
+          size: 30,
+        ),
         title: Text(
           record.wasteType,
           style: const TextStyle(

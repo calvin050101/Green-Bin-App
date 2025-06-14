@@ -43,7 +43,7 @@ class RecyclingHistoryPage extends ConsumerWidget {
                 Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Text(
-                    'Recycling History', // Moved to body
+                    'Recycling History',
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 32,

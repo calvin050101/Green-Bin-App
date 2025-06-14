@@ -40,6 +40,12 @@ dependencies:
   flutter_riverpod: ^2.6.1
   flutter_markdown: ^0.7.7+1
 
+  geolocator: ^12.0.0 # For getting current location
+  flutter_google_maps_webservices: ^1.1.1 # For Google Places API calls
+  google_maps_flutter: ^2.12.2 # Optional: For displaying an interactive map
+  url_launcher: ^6.3.0 # Optional: For opening maps in an external app
+  latlong2: ^0.9.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

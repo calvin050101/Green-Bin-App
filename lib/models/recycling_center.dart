@@ -1,7 +1,5 @@
 import 'package:flutter_google_maps_webservices/places.dart';
 
-const String googlePlacesApiKey = 'AIzaSyAoGQ_zpJHqQIYPhgLdgGjTC0IOXlb7c2w';
-
 class RecyclingCenter {
   final String id;
   final String name;

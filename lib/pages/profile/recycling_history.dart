@@ -10,6 +10,7 @@ import '../../widgets/back_button.dart';
 import 'package:intl/intl.dart';
 
 class RecyclingHistoryPage extends ConsumerWidget {
+  static String routeName = "/recycling-history";
   const RecyclingHistoryPage({super.key});
 
   @override

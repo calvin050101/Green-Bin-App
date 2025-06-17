@@ -1,14 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:green_bin/pages/auth/auth.dart';
-import 'package:green_bin/pages/auth/change_password.dart';
-import 'package:green_bin/pages/auth/update_username.dart';
-import 'package:green_bin/pages/profile/recycling_history.dart';
-import 'package:green_bin/pages/profile/settings.dart';
-import 'package:green_bin/pages/profile/user_levels.dart';
-import 'package:green_bin/pages/scan_item/confirm_waste_type_page.dart';
-import 'package:green_bin/pages/scan_item/scan_item_main.dart';
+import 'routes.dart';
 
 import 'firebase_options.dart';
 
@@ -36,19 +29,7 @@ class MyApp extends StatelessWidget {
       title: 'GreenBin',
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
-      routes: {
-        '/': (context) => AuthPage(),
-
-        '/scan-item': (context) => ScanItemMainPage(),
-        '/confirm-waste-type': (context) => ConfirmWasteTypePage(),
-
-        '/user-levels': (context) => UserLevelsPage(),
-        '/recycling-history': (context) => RecyclingHistoryPage(),
-
-        '/settings': (context) => SettingsPage(),
-        '/update-username': (context) => UpdateUsernamePage(),
-        '/change-password': (context) => ChangePasswordPage(),
-      },
+      routes: appRoutes,
     );
   }
 }

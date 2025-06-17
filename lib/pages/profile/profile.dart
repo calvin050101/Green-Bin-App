@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:green_bin/pages/profile/recycling_history.dart';
+import 'package:green_bin/pages/profile/settings.dart';
+import 'package:green_bin/pages/profile/user_levels.dart';
 import 'package:green_bin/widgets/cust_container.dart';
 import 'package:green_bin/widgets/custom_button.dart';
 import '../../models/recycling_summary.dart';
@@ -64,7 +67,7 @@ class ProfilePage extends StatelessWidget {
             const SizedBox(height: 30),
 
             pageDirectButton(
-              route: '/user-levels',
+              route: UserLevelsPage.routeName,
               buttonText: "User Levels",
               context: context,
             ),
@@ -72,7 +75,7 @@ class ProfilePage extends StatelessWidget {
             const SizedBox(height: 10),
 
             pageDirectButton(
-              route: '/recycling-history',
+              route: RecyclingHistoryPage.routeName,
               buttonText: "Recycling History",
               context: context,
             ),
@@ -80,7 +83,7 @@ class ProfilePage extends StatelessWidget {
             const SizedBox(height: 10),
 
             pageDirectButton(
-              route: '/settings',
+              route: SettingsPage.routeName,
               buttonText: "Settings",
               context: context,
             ),

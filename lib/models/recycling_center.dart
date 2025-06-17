@@ -1,4 +1,5 @@
 import 'package:flutter_google_maps_webservices/places.dart';
+import '../api_keys.dart';
 
 class RecyclingCenter {
   final String id;
@@ -25,6 +26,12 @@ class RecyclingCenter {
 
   // Factory constructor to convert PlacesSearchResult to RecyclingCenter
   factory RecyclingCenter.fromPlaceSearch(PlacesSearchResult result) {
+    if (result.geometry == null) {
+      throw ArgumentError(
+        'PlacesSearchResult is missing geometry or location data.',
+      );
+    }
+
     return RecyclingCenter(
       id: result.placeId,
       name: result.name,

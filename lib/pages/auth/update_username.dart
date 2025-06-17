@@ -10,6 +10,7 @@ import '../../widgets/back_button.dart';
 import '../../widgets/cust_form_field.dart';
 
 class UpdateUsernamePage extends ConsumerStatefulWidget {
+  static String routeName = "/update-username";
   const UpdateUsernamePage({super.key});
 
   @override

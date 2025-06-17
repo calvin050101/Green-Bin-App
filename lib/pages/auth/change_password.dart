@@ -8,6 +8,7 @@ import '../../widgets/back_button.dart';
 import '../../widgets/cust_form_field.dart';
 
 class ChangePasswordPage extends StatefulWidget {
+  static String routeName = "/change-password";
   const ChangePasswordPage({super.key});
 
   @override

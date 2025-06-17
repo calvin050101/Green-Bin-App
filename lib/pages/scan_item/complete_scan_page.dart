@@ -7,9 +7,9 @@ import 'package:green_bin/widgets/error_message_text.dart';
 import '../../providers/user_provider.dart';
 
 class CompleteScanPage extends ConsumerStatefulWidget {
-  final String confirmedWasteType;
+  static String routeName = "/complete-scan";
 
-  const CompleteScanPage({super.key, required this.confirmedWasteType});
+  const CompleteScanPage({super.key});
 
   @override
   ConsumerState<CompleteScanPage> createState() => _CompleteScanPageState();
@@ -18,6 +18,7 @@ class CompleteScanPage extends ConsumerStatefulWidget {
 class _CompleteScanPageState extends ConsumerState<CompleteScanPage> {
   bool _recordAdded = false;
   String? _errorMessage;
+  String? _confirmedWasteType;
 
   @override
   void initState() {
@@ -29,7 +30,7 @@ class _CompleteScanPageState extends ConsumerState<CompleteScanPage> {
     try {
       final userProfileService = ref.read(userProfileServiceProvider);
       await userProfileService.addWasteRecord(
-        wasteType: widget.confirmedWasteType,
+        wasteType: _confirmedWasteType!,
       );
       setState(() {
         _recordAdded = true;
@@ -44,8 +45,10 @@ class _CompleteScanPageState extends ConsumerState<CompleteScanPage> {
 
   @override
   Widget build(BuildContext context) {
+    _confirmedWasteType = ModalRoute.of(context)!.settings.arguments as String;
+
     final WasteTypeModel wasteTypeModel = getWasteType(
-      widget.confirmedWasteType,
+      _confirmedWasteType!
     );
 
     return Scaffold(
@@ -85,7 +88,7 @@ class _CompleteScanPageState extends ConsumerState<CompleteScanPage> {
 
                 const SizedBox(height: 20),
 
-                _buildInfoRow('Waste Type:', widget.confirmedWasteType),
+                _buildInfoRow('Waste Type:', _confirmedWasteType!),
                 _buildInfoRow('Points:', '${wasteTypeModel.points}'),
                 _buildInfoRow(
                   'Carbon Footprint Saved:',

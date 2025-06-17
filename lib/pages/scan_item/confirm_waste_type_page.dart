@@ -5,6 +5,8 @@ import 'package:green_bin/widgets/custom_button.dart';
 import '../../widgets/back_button.dart';
 
 class ConfirmWasteTypePage extends StatefulWidget {
+  static String routeName = "/confirm-waste-type";
+
   const ConfirmWasteTypePage({super.key});
 
   @override
@@ -77,18 +79,14 @@ class _ConfirmWasteTypePageState extends State<ConfirmWasteTypePage> {
             CustomButton(
               buttonText: "Confirm",
               onPressed: () {
-                Navigator.pushReplacement(
-                  // Use pushReplacement to avoid going back to this page
+                Navigator.pushReplacementNamed(
                   context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) => CompleteScanPage(
-                          confirmedWasteType: _selectedWasteType,
-                        ),
-                  ),
+                  CompleteScanPage.routeName,
+                  arguments: _selectedWasteType,
                 );
               },
             ),
+
           ],
         ),
       ),

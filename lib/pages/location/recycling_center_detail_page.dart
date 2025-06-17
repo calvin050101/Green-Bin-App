@@ -3,15 +3,17 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../models/recycling_center.dart';
 
 class RecyclingCenterDetailPage extends StatelessWidget {
-  final RecyclingCenter center;
+  static String routeName = "/recycling-center-detail";
 
-  const RecyclingCenterDetailPage({super.key, required this.center});
+  const RecyclingCenterDetailPage({super.key});
 
   Future<void> _launchGoogleMapsDirections(
-    double lat,
-    double lng,
+    RecyclingCenter center,
     String name,
   ) async {
+    final lat = center.latitude;
+    final lng = center.longitude;
+
     final Uri url = Uri.parse(
       'google.navigation:q=$lat,$lng&mode=d&q_place_id=${center.id}',
     );
@@ -29,15 +31,11 @@ class RecyclingCenterDetailPage extends StatelessWidget {
     }
   }
 
-  Widget _buildDetailRow(
-    BuildContext context,
-    String title,
-    String? value, {
-    VoidCallback? onTap,
-  }) {
+  Widget _buildDetailRow(BuildContext context, String title, String? value) {
     if (value == null || value.isEmpty || value == 'N/A') {
-      return const SizedBox.shrink(); // Don't display if value is null or empty
+      return const SizedBox.shrink();
     }
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Column(
@@ -48,22 +46,20 @@ class RecyclingCenterDetailPage extends StatelessWidget {
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: Colors.grey[700],
+              fontFamily: 'OpenSans',
             ),
           ),
+
           const SizedBox(height: 4),
-          GestureDetector(
-            onTap: onTap,
-            child: Text(
-              value,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: onTap != null ? Colors.blue : Colors.black87,
-                decoration:
-                    onTap != null
-                        ? TextDecoration.underline
-                        : TextDecoration.none,
-              ),
+
+          Text(
+            value,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: Colors.black87,
+              fontFamily: 'OpenSans',
             ),
           ),
+
           const Divider(height: 16, thickness: 0.5),
         ],
       ),
@@ -72,6 +68,9 @@ class RecyclingCenterDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    RecyclingCenter center =
+        ModalRoute.of(context)!.settings.arguments as RecyclingCenter;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Locations Page - Info'),
@@ -102,10 +101,11 @@ class RecyclingCenterDetailPage extends StatelessWidget {
                 color: Colors.grey[200],
                 child: const Icon(
                   Icons.recycling,
-                  size: 80,
                   color: Colors.grey,
+                  size: 80,
                 ),
               ),
+
             const SizedBox(height: 16),
 
             Padding(
@@ -133,11 +133,7 @@ class RecyclingCenterDetailPage extends StatelessWidget {
                     width: double.infinity,
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        _launchGoogleMapsDirections(
-                          center.latitude,
-                          center.longitude,
-                          center.name,
-                        );
+                        _launchGoogleMapsDirections(center, center.name);
                       },
                       icon: const Icon(Icons.map, color: Colors.white),
                       label: const Text(
@@ -164,12 +160,7 @@ class RecyclingCenterDetailPage extends StatelessWidget {
                         ? center.openingHours.join(', ')
                         : null,
                   ),
-                  _buildDetailRow(
-                    context,
-                    'Contact No.',
-                    center.phoneNumber,
-                    onTap: () {},
-                  ),
+                  _buildDetailRow(context, 'Contact No.', center.phoneNumber),
 
                   const SizedBox(height: 20),
                 ],

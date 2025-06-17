@@ -241,24 +241,13 @@ class _LocationsPageState extends ConsumerState<LocationsPage> {
         trailing: IconButton(
           icon: const Icon(Icons.info_outline, color: Colors.blue),
           onPressed: () {
-            Navigator.push(
+            Navigator.pushNamed(
               context,
-              MaterialPageRoute(
-                builder: (context) => RecyclingCenterDetailPage(center: center),
-              ),
+              RecyclingCenterDetailPage.routeName,
+              arguments: center
             );
           },
         ),
-
-        onTap: () {
-          // Animate map to selected center when list item is tapped
-          mapController?.animateCamera(
-            CameraUpdate.newLatLngZoom(
-              LatLng(center.latitude, center.longitude),
-              15.0, // Zoom in closer
-            ),
-          );
-        },
       ),
     );
   }

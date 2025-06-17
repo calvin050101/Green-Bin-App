@@ -18,13 +18,7 @@ class AuthPage extends ConsumerWidget {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (snapshot.hasData) {
-            return MainWrapperScreen();
-          }
-          // user is not logged in
-          else {
-            return const LoginPage();
-          }
+          return snapshot.hasData ? MainWrapperScreen() : const LoginPage();
         },
       ),
     );

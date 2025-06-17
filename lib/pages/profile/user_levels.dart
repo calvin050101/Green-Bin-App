@@ -4,6 +4,7 @@ import '../../widgets/back_button.dart';
 import '../../widgets/cust_container.dart';
 
 class UserLevelsPage extends StatelessWidget {
+  static String routeName = "/user-levels";
   const UserLevelsPage({super.key});
 
   @override

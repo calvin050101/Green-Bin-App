@@ -8,17 +8,17 @@ import 'package:green_bin/models/article_topic_model.dart';
 import 'article_content.dart';
 
 class ArticleDetailPage extends ConsumerWidget {
-  final String articleName;
-  final String articleId;
+  static String routeName = "/article-detail";
 
-  const ArticleDetailPage({
-    super.key,
-    required this.articleName,
-    required this.articleId,
-  });
+  const ArticleDetailPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final articleName = args['articleName'];
+    final articleId = args['articleId'];
+
     final articleDetailAsyncValue = ref.watch(articleDetailProvider(articleId));
 
     return Scaffold(
@@ -88,11 +88,10 @@ class ArticleDetailPage extends ConsumerWidget {
   Widget articleLinkContainer(ArticleTopic? topic, BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
+        Navigator.pushNamed(
           context,
-          MaterialPageRoute(
-            builder: (context) => ArticleContentPage(articleTopic: topic!),
-          ),
+          ArticleContentPage.routeName,
+          arguments: topic,
         );
       },
       child: CustContainer(

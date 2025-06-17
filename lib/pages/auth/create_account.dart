@@ -9,6 +9,7 @@ import '../../widgets/cust_form_field.dart';
 import '../../widgets/error_message_text.dart';
 
 class CreateAccountPage extends StatefulWidget {
+  static String routeName = "/create-account";
   const CreateAccountPage({super.key});
 
   @override

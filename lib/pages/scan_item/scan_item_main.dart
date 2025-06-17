@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:green_bin/pages/scan_item/confirm_waste_type_page.dart';
 
 import '../../widgets/back_button.dart';
 import '../../widgets/custom_button.dart';
 
 class ScanItemMainPage extends StatelessWidget {
+  static String routeName = "/scan-item";
   const ScanItemMainPage({super.key});
 
   @override
@@ -39,7 +41,7 @@ class ScanItemMainPage extends StatelessWidget {
             CustomButton(
               buttonText: "Process Image",
               onPressed: () {
-                Navigator.pushNamed(context, '/confirm-waste-type');
+                Navigator.pushNamed(context, ConfirmWasteTypePage.routeName);
               },
             ),
           ],

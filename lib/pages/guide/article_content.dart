@@ -5,11 +5,15 @@ import 'package:green_bin/models/article_topic_model.dart';
 import '../../widgets/back_button.dart';
 
 class ArticleContentPage extends StatelessWidget {
-  final ArticleTopic articleTopic;
-  const ArticleContentPage({super.key, required this.articleTopic});
+  static String routeName = "/article-content";
+
+  const ArticleContentPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final ArticleTopic articleTopic =
+        ModalRoute.of(context)!.settings.arguments as ArticleTopic;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -40,22 +44,19 @@ class ArticleContentPage extends StatelessWidget {
               // You can customize styling here, e.g.:
               styleSheet: MarkdownStyleSheet(
                 h1: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'OpenSans'
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'OpenSans',
                 ),
-                p: TextStyle(
-                  fontFamily: 'OpenSans'
-                ),
+                p: TextStyle(fontFamily: 'OpenSans'),
                 strong: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontFamily: 'OpenSans'
-                )
+                  fontFamily: 'OpenSans',
+                ),
               ),
             ),
-
           ],
         ),
-      )
+      ),
     );
   }
 }

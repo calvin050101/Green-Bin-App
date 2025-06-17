@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:green_bin/pages/scan_item/scan_item_main.dart';
 import '../models/user_model.dart';
 import '../providers/user_provider.dart';
 import '../widgets/cust_bottom_navbar.dart';
 import 'home_page.dart';
 import 'guide/guide_main.dart';
-import 'location/location.dart';
+import 'location/location_page.dart';
 import 'profile/profile.dart';
 
 class MainWrapperScreen extends ConsumerStatefulWidget {
@@ -36,7 +37,7 @@ class _MainWrapperScreenState extends ConsumerState<MainWrapperScreen> {
   }
 
   void _handleRecycleButtonPressed() {
-    Navigator.pushNamed(context, '/scan-item');
+    Navigator.pushNamed(context, ScanItemMainPage.routeName);
   }
 
   @override

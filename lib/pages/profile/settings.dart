@@ -1,11 +1,11 @@
-// import 'package:firebase_auth/firebase_auth.dart';
-// import '../../services/auth_service.dart';
-
 import 'package:flutter/material.dart';
+import 'package:green_bin/pages/auth/update_username.dart';
 
 import '../../widgets/back_button.dart';
+import '../auth/change_password.dart';
 
 class SettingsPage extends StatelessWidget {
+  static String routeName = "/settings";
   const SettingsPage({super.key});
 
   @override
@@ -48,7 +48,7 @@ class SettingsPage extends StatelessWidget {
             SizedBox(height: 15),
 
             profileUpdateLink(
-              route: '/update-username',
+              route: UpdateUsernamePage.routeName,
               name: "Update Username",
               context: context,
             ),
@@ -56,7 +56,7 @@ class SettingsPage extends StatelessWidget {
             Divider(color: Color(0xFFD6D6D6), thickness: 1),
 
             profileUpdateLink(
-              route: '/change-password',
+              route: ChangePasswordPage.routeName,
               name: "Change Password",
               context: context,
             ),

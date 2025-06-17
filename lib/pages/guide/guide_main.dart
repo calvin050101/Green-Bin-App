@@ -88,15 +88,10 @@ class GuideMainPage extends ConsumerWidget {
           style: TextStyle(fontFamily: 'OpenSans', fontSize: 12),
         ),
         onTap: () {
-          Navigator.push(
+          Navigator.pushNamed(
             context,
-            MaterialPageRoute(
-              builder:
-                  (context) => ArticleDetailPage(
-                    articleName: article.title,
-                    articleId: article.id,
-                  ),
-            ),
+            ArticleDetailPage.routeName,
+            arguments: {'articleName': article.title, 'articleId': article.id},
           );
         },
       ),

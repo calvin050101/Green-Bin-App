@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:green_bin/widgets/page_direct_container.dart';
 import '../../providers/article_provider.dart';
 import '../../widgets/back_button.dart';
-import '../../widgets/cust_container.dart';
 import 'package:green_bin/models/article_topic_model.dart';
 
 import 'article_content.dart';
@@ -65,14 +65,14 @@ class ArticleDetailPage extends ConsumerWidget {
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: topics.length,
-                        itemBuilder: (context, index) {
-                          final topic = topics[index];
-
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 15),
-                            child: articleLinkContainer(topic, context),
-                          );
-                        },
+                        itemBuilder:
+                            (context, index) => Padding(
+                              padding: const EdgeInsets.only(bottom: 15),
+                              child: articleLinkContainer(
+                                topics[index],
+                                context,
+                              ),
+                            ),
                       ),
                 ],
               ),
@@ -86,7 +86,8 @@ class ArticleDetailPage extends ConsumerWidget {
   }
 
   Widget articleLinkContainer(ArticleTopic? topic, BuildContext context) {
-    return GestureDetector(
+    return PageDirectContainer(
+      text: topic?.title ?? '-',
       onTap: () {
         Navigator.pushNamed(
           context,
@@ -94,25 +95,6 @@ class ArticleDetailPage extends ConsumerWidget {
           arguments: topic,
         );
       },
-      child: CustContainer(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Text(
-                topic?.title ?? '-',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                  fontFamily: 'OpenSans',
-                ),
-              ),
-            ),
-
-            Icon(Icons.arrow_forward_ios_rounded),
-          ],
-        ),
-      ),
     );
   }
 }

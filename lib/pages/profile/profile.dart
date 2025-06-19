@@ -5,6 +5,7 @@ import 'package:green_bin/pages/profile/settings.dart';
 import 'package:green_bin/pages/profile/user_levels.dart';
 import 'package:green_bin/widgets/cust_container.dart';
 import 'package:green_bin/widgets/custom_button.dart';
+import 'package:green_bin/widgets/page_direct_container.dart';
 import '../../models/recycling_summary.dart';
 import '../../models/user_level_model.dart';
 import '../../models/user_model.dart';
@@ -35,9 +36,9 @@ class ProfilePage extends StatelessWidget {
 
   Widget showPage(UserModel user, BuildContext context) {
     final RecyclingSummary summary =
-        user.records != null
-            ? calculateRecyclingSummary(user.records)
-            : RecyclingSummary(totalPoints: 0, totalCarbonFootprintSaved: 0);
+    user.records != null
+        ? calculateRecyclingSummary(user.records)
+        : RecyclingSummary(totalPoints: 0, totalCarbonFootprintSaved: 0);
 
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20, bottom: 40),
@@ -66,27 +67,21 @@ class ProfilePage extends StatelessWidget {
 
             const SizedBox(height: 30),
 
-            pageDirectButton(
-              route: UserLevelsPage.routeName,
-              buttonText: "User Levels",
-              context: context,
-            ),
+            PageDirectContainer(text: "User Levels", onTap: () {
+              Navigator.pushNamed(context, UserLevelsPage.routeName);
+            }),
 
             const SizedBox(height: 10),
 
-            pageDirectButton(
-              route: RecyclingHistoryPage.routeName,
-              buttonText: "Recycling History",
-              context: context,
-            ),
+            PageDirectContainer(text: "Recycling History", onTap: () {
+              Navigator.pushNamed(context, RecyclingHistoryPage.routeName);
+            }),
 
             const SizedBox(height: 10),
 
-            pageDirectButton(
-              route: SettingsPage.routeName,
-              buttonText: "Settings",
-              context: context,
-            ),
+            PageDirectContainer(text: "Settings", onTap: () {
+              Navigator.pushNamed(context, SettingsPage.routeName);
+            }),
 
             const SizedBox(height: 20),
 
@@ -167,11 +162,9 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  CustContainer userStatsContainer(
-    UserModel user,
-    RecyclingSummary summary,
-    BuildContext context,
-  ) {
+  CustContainer userStatsContainer(UserModel user,
+      RecyclingSummary summary,
+      BuildContext context) {
     return CustContainer(
       child: Column(
         children: [
@@ -179,7 +172,10 @@ class ProfilePage extends StatelessWidget {
             rowIcon: Icon(
               Icons.recycling,
               size: 40,
-              color: Theme.of(context).colorScheme.primary,
+              color: Theme
+                  .of(context)
+                  .colorScheme
+                  .primary,
             ),
             rowTitle: "Items Sorted",
             rowValue: '${user.records?.length}',
@@ -228,36 +224,6 @@ class ProfilePage extends StatelessWidget {
           ],
         ),
       ],
-    );
-  }
-
-  InkWell pageDirectButton({
-    required String route,
-    required String buttonText,
-    required BuildContext context,
-  }) {
-    return InkWell(
-      onTap: () {
-        Navigator.pushNamed(context, route);
-      },
-
-      child: CustContainer(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              buttonText,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 20,
-                fontFamily: 'OpenSans',
-              ),
-            ),
-
-            Icon(Icons.arrow_forward_ios_rounded),
-          ],
-        ),
-      ),
     );
   }
 }

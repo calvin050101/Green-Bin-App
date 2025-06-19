@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:green_bin/widgets/custom_button.dart';
 import 'package:green_bin/widgets/error_message_text.dart';
 
 import '../../providers/user_provider.dart';
@@ -11,6 +12,7 @@ import '../../widgets/cust_form_field.dart';
 
 class UpdateUsernamePage extends ConsumerStatefulWidget {
   static String routeName = "/update-username";
+
   const UpdateUsernamePage({super.key});
 
   @override
@@ -54,39 +56,46 @@ class _UpdateUsernamePageState extends ConsumerState<UpdateUsernamePage> {
       body:
           _isLoading
               ? const Center(child: CircularProgressIndicator())
-              : Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Update Username',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 32,
-                        fontFamily: 'Poppins',
-                      ),
-                    ),
+              : _mainBody(),
+    );
+  }
 
-                    SizedBox(height: 40),
+  Widget _mainBody() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Update Username',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 32,
+              fontFamily: 'Poppins',
+            ),
+          ),
 
-                    CustFormField(
-                      controller: _usernameController,
-                      keyboardType: TextInputType.text,
-                      hintText: 'New Username',
-                      isPassword: false,
-                    ),
+          SizedBox(height: 40),
 
-                    const SizedBox(height: 20.0),
+          CustFormField(
+            controller: _usernameController,
+            keyboardType: TextInputType.text,
+            hintText: 'New Username',
+            isPassword: false,
+          ),
 
-                    ErrorMessageText(errorMessage: _errorMessage),
+          const SizedBox(height: 20.0),
 
-                    SizedBox(height: 40),
+          ErrorMessageText(errorMessage: _errorMessage),
 
-                    updateUsernameButton(context),
-                  ],
-                ),
-              ),
+          SizedBox(height: 40),
+
+          CustomButton(
+            buttonText: "Update Username",
+            onPressed: updateUsername,
+          ),
+        ],
+      ),
     );
   }
 
@@ -138,29 +147,4 @@ class _UpdateUsernamePageState extends ConsumerState<UpdateUsernamePage> {
     }
   }
 
-  SizedBox updateUsernameButton(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: updateUsername,
-
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF00B0FF),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-        ),
-
-        child: const Text(
-          'Update Username',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18.0,
-            fontWeight: FontWeight.w700,
-            fontFamily: 'Montserrat',
-          ),
-        ),
-      ),
-    );
-  }
 }

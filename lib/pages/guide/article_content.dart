@@ -54,6 +54,7 @@ class ArticleContentPage extends StatelessWidget {
                 ),
               ),
             ),
+
           ],
         ),
       ),

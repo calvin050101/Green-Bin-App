@@ -1,35 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:green_bin/providers/recycling_center_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../models/recycling_center.dart';
 
-class RecyclingCenterDetailPage extends StatelessWidget {
+class RecyclingCenterDetailPage extends ConsumerWidget {
   static String routeName = "/recycling-center-detail";
 
   const RecyclingCenterDetailPage({super.key});
-
-  Future<void> _launchGoogleMapsDirections(
-    RecyclingCenter center,
-    String name,
-  ) async {
-    final lat = center.latitude;
-    final lng = center.longitude;
-
-    final Uri url = Uri.parse(
-      'google.navigation:q=$lat,$lng&mode=d&q_place_id=${center.id}',
-    );
-    // Fallback for web or if Google Maps app is not installed
-    final Uri webUrl = Uri.parse(
-      'https://www.google.com/maps/dir/?api=1&destination=$lat,$lng&destination_place_id=${center.id}',
-    );
-
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    } else if (await canLaunchUrl(webUrl)) {
-      await launchUrl(webUrl);
-    } else {
-      throw 'Could not launch maps for ${center.name} at ($lat, $lng)';
-    }
-  }
 
   Widget _buildDetailRow(BuildContext context, String title, String? value) {
     if (value == null || value.isEmpty || value == 'N/A') {
@@ -67,9 +45,10 @@ class RecyclingCenterDetailPage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     RecyclingCenter center =
         ModalRoute.of(context)!.settings.arguments as RecyclingCenter;
+    final centerDetails = ref.watch(recyclingCenterDetailsProvider(center.id));
 
     return Scaffold(
       appBar: AppBar(
@@ -79,96 +58,146 @@ class RecyclingCenterDetailPage extends StatelessWidget {
         foregroundColor: Colors.black,
       ),
       body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Center Image/Photo
-            if (center.photoUrl != null)
-              Container(
-                height: 200,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(center.photoUrl!),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              )
-            else
-              Container(
-                height: 200,
-                width: double.infinity,
-                color: Colors.grey[200],
-                child: const Icon(
-                  Icons.recycling,
-                  color: Colors.grey,
-                  size: 80,
-                ),
-              ),
-
-            const SizedBox(height: 16),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    center.name,
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
+        child: centerDetails.when(
+          data: (centerDetail) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Center Image/Photo
+                if (center.photoUrl != null)
+                  Container(
+                    height: 200,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(center.photoUrl!),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  )
+                else
+                  Container(
+                    height: 200,
+                    width: double.infinity,
+                    color: Colors.grey[200],
+                    child: const Icon(
+                      Icons.recycling,
+                      color: Colors.grey,
+                      size: 80,
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '${(center.distance != null ? (center.distance! / 1000).toStringAsFixed(1) : 'N/A')} km',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.titleMedium?.copyWith(color: Colors.grey[700]),
-                  ),
-                  const SizedBox(height: 16),
 
-                  // Google Maps Button
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        _launchGoogleMapsDirections(center, center.name);
-                      },
-                      icon: const Icon(Icons.map, color: Colors.white),
-                      label: const Text(
-                        'Google Maps',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
+                const SizedBox(height: 16),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        center.name,
+                        style: Theme.of(context).textTheme.headlineMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue, // Google Maps blue
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                      const SizedBox(height: 8),
+                      Text(
+                        '${(center.distance != null ? (center.distance! / 1000).toStringAsFixed(1) : 'N/A')} km',
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(color: Colors.grey[700]),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Google Maps Button
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            _launchGoogleMapsDirections(center, center.name);
+                          },
+                          icon: const Icon(Icons.map, color: Colors.white),
+                          label: const Text(
+                            'Google Maps',
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue, // Google Maps blue
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
+                      const SizedBox(height: 24),
 
-                  // Details Section
-                  _buildDetailRow(context, 'Address', center.address),
-                  _buildDetailRow(
-                    context,
-                    'Operating Hours',
-                    center.openingHours.isNotEmpty
-                        ? center.openingHours.join(', ')
-                        : null,
-                  ),
-                  _buildDetailRow(context, 'Contact No.', center.phoneNumber),
+                      // Details Section
+                      _buildDetailRow(context, 'Address', center.address),
 
-                  const SizedBox(height: 20),
-                ],
+                      if (centerDetail?.openingHours!.weekdayText != null)
+                        _buildDetailRow(
+                          context,
+                          'Operating Hours',
+                          centerDetail?.openingHours!.weekdayText.join(', '),
+                        ),
+
+                      _buildDetailRow(
+                        context,
+                        'Contact No.',
+                        centerDetail?.formattedPhoneNumber,
+                      ),
+
+                      _buildDetailRow(
+                        context,
+                        'Website',
+                        centerDetail?.website,
+                      ),
+
+                      const SizedBox(height: 20),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error:
+              (error, stack) => Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    'Error loading details: ${error.toString()}\n'
+                    'Please check your API key and internet connection.',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(color: Colors.red, fontSize: 16),
+                  ),
+                ),
               ),
-            ),
-          ],
         ),
       ),
     );
+  }
+}
+
+Future<void> _launchGoogleMapsDirections(
+  RecyclingCenter center,
+  String name,
+) async {
+  final lat = center.latitude;
+  final lng = center.longitude;
+
+  final Uri url = Uri.parse(
+    'google.navigation:q=$lat,$lng&mode=d&q_place_id=${center.id}',
+  );
+  // Fallback for web or if Google Maps app is not installed
+  final Uri webUrl = Uri.parse(
+    'https://www.google.com/maps/dir/?api=1&destination=$lat,$lng&destination_place_id=${center.id}',
+  );
+
+  if (await canLaunchUrl(url)) {
+    await launchUrl(url);
+  } else if (await canLaunchUrl(webUrl)) {
+    await launchUrl(webUrl);
+  } else {
+    throw 'Could not launch maps for ${center.name} at ($lat, $lng)';
   }
 }

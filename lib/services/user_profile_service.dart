@@ -72,7 +72,5 @@ class UserProfileService {
         .set(newRecord.toFirestore());
 
     _ref.invalidate(currentUserProvider);
-
-    print("Waste record added successfully!");
   }
 }

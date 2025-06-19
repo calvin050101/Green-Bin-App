@@ -42,8 +42,7 @@ final recyclingCentersProvider =
         return centers;
       } catch (e) {
         // Handle location or API errors
-        print('Error fetching recycling centers: $e');
-        rethrow; // Re-throw to be caught by the FutureProvider's error state
+        rethrow;
       }
     });
 

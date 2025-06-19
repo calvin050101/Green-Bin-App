@@ -20,7 +20,6 @@ final currentUserProvider = FutureProvider<UserModel?>((ref) async {
   final docSnapshot = await firestore.collection('users').doc(user.uid).get();
 
   if (!docSnapshot.exists) {
-    print('User document not found for UID: ${user.uid}');
     return UserModel(uid: user.uid, email: user.email, records: []);
   }
 
@@ -39,9 +38,7 @@ final currentUserProvider = FutureProvider<UserModel?>((ref) async {
       recordsSnapshot.docs
           .map((doc) => RecordModel.fromFirestore(doc.data(), doc.id))
           .toList();
-  userModel = userModel.copyWith(
-    records: records,
-  ); // Update UserModel with records
+  userModel = userModel.copyWith(records: records);
 
   return userModel;
 });

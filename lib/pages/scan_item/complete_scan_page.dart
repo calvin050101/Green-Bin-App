@@ -39,7 +39,6 @@ class _CompleteScanPageState extends ConsumerState<CompleteScanPage> {
       setState(() {
         _errorMessage = "Failed to add record: ${e.toString()}";
       });
-      print("Error adding record: $e");
     }
   }
 

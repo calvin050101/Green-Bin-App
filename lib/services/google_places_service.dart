@@ -55,13 +55,11 @@ class GooglePlacesService {
       } else if (response.status == 'ZERO_RESULTS') {
         return [];
       } else {
-        print('Places API error: ${response.errorMessage}');
         throw Exception(
           'Failed to load recycling centers from Google Places API: ${response.errorMessage}',
         );
       }
     } catch (e) {
-      print('Error in GooglePlacesService (searchRecyclingCenters): $e');
       rethrow;
     }
   }
@@ -80,15 +78,11 @@ class GooglePlacesService {
       } else if (response.status == 'ZERO_RESULTS') {
         return null; // No details found for this ID
       } else {
-        print(
-          'Places Details API error for $placeId: ${response.errorMessage}',
-        );
         throw Exception(
           'Failed to load place details: ${response.errorMessage}',
         );
       }
     } catch (e) {
-      print('Error in GooglePlacesService (getPlaceDetails): $e');
       rethrow;
     }
   }

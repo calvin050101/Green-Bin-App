@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../helper/list_view_functions.dart';
 import '../../providers/article_provider.dart';
 import 'article_detail.dart';
 import 'package:green_bin/models/article_model.dart';
@@ -34,6 +35,13 @@ class GuideMainPage extends ConsumerWidget {
 
                   const SizedBox(height: 20),
 
+                  listItems(
+                    articles,
+                      (context, index) =>
+                          articleCard(articles[index], context),
+                    'No articles published yet.',
+                  ),
+
                   articles.isEmpty
                       ? const Center(
                         child: Padding(
@@ -45,10 +53,9 @@ class GuideMainPage extends ConsumerWidget {
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: articles.length,
-                        itemBuilder: (context, index) {
-                          final article = articles[index];
-                          return articleCard(article, context);
-                        },
+                        itemBuilder:
+                            (context, index) =>
+                                articleCard(articles[index], context),
                       ),
                 ],
               ),

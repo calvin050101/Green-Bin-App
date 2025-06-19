@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:green_bin/helper/list_view_functions.dart';
 import 'package:green_bin/widgets/page_direct_container.dart';
 import '../../providers/article_provider.dart';
 import '../../widgets/back_button.dart';
@@ -54,26 +55,12 @@ class ArticleDetailPage extends ConsumerWidget {
 
                   const SizedBox(height: 20),
 
-                  topics!.isEmpty
-                      ? const Center(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 50.0),
-                          child: Text('No articles published yet.'),
-                        ),
-                      )
-                      : ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: topics.length,
-                        itemBuilder:
-                            (context, index) => Padding(
-                              padding: const EdgeInsets.only(bottom: 15),
-                              child: articleLinkContainer(
-                                topics[index],
-                                context,
-                              ),
-                            ),
-                      ),
+                  listItems(
+                    topics!,
+                    (context, index) =>
+                        articleLinkContainer(topics[index], context),
+                    'No articles published yet.',
+                  ),
                 ],
               ),
             ),
@@ -86,15 +73,18 @@ class ArticleDetailPage extends ConsumerWidget {
   }
 
   Widget articleLinkContainer(ArticleTopic? topic, BuildContext context) {
-    return PageDirectContainer(
-      text: topic?.title ?? '-',
-      onTap: () {
-        Navigator.pushNamed(
-          context,
-          ArticleContentPage.routeName,
-          arguments: topic,
-        );
-      },
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 15),
+      child: PageDirectContainer(
+        text: topic?.title ?? '-',
+        onTap: () {
+          Navigator.pushNamed(
+            context,
+            ArticleContentPage.routeName,
+            arguments: topic,
+          );
+        },
+      ),
     );
   }
 }

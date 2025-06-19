@@ -6,7 +6,7 @@ import 'package:green_bin/models/user_level_model.dart';
 import 'package:green_bin/widgets/cust_container.dart';
 import 'package:green_bin/widgets/waste_type_summary_card.dart';
 
-import '../helper/helper_functions.dart';
+import '../helper/waste_type_functions.dart';
 import '../models/recycling_summary.dart';
 import '../models/user_model.dart';
 import '../models/waste_type_summary.dart';

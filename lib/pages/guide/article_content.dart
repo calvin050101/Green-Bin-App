@@ -40,8 +40,7 @@ class ArticleContentPage extends StatelessWidget {
 
             MarkdownBody(
               data: articleTopic.content,
-              selectable: true, // Allow text selection
-              // You can customize styling here, e.g.:
+              selectable: true,
               styleSheet: MarkdownStyleSheet(
                 h1: TextStyle(
                   fontWeight: FontWeight.bold,

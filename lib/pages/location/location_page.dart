@@ -4,7 +4,10 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:green_bin/models/recycling_center.dart';
 import 'package:green_bin/pages/location/recycling_center_detail_page.dart';
+import 'package:green_bin/widgets/loading_error.dart';
 
+import '../../helper/list_view_functions.dart';
+import '../../helper/location_functions.dart';
 import '../../providers/recycling_center_provider.dart';
 
 class LocationsPage extends ConsumerStatefulWidget {
@@ -60,15 +63,6 @@ class _LocationsPageState extends ConsumerState<LocationsPage> {
     mapController = controller;
   }
 
-  String _formatDistance(double? meters) {
-    if (meters == null) return 'N/A';
-    if (meters < 1000) {
-      return '${meters.toStringAsFixed(0)} m';
-    } else {
-      return '${(meters / 1000).toStringAsFixed(1)} km';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final recyclingCentersAsyncValue = ref.watch(recyclingCentersProvider);
@@ -90,7 +84,7 @@ class _LocationsPageState extends ConsumerState<LocationsPage> {
                 position: LatLng(center.latitude, center.longitude),
                 infoWindow: InfoWindow(
                   title: center.name,
-                  snippet: _formatDistance(center.distance),
+                  snippet: formatDistance(center.distance),
                 ),
                 onTap: () {
                   // Optionally animate map to center if tapped
@@ -147,20 +141,11 @@ class _LocationsPageState extends ConsumerState<LocationsPage> {
 
               // List of Recycling Centers
               Expanded(
-                child:
-                    centers.isEmpty
-                        ? const Center(
-                          child: Text(
-                            'No recycling centers found nearby. Try adjusting your search radius or location.',
-                            textAlign: TextAlign.center,
-                          ),
-                        )
-                        : ListView.builder(
-                          itemCount: centers.length,
-                          itemBuilder:
-                              (context, index) =>
-                                  recyclingCenterCard(centers[index]),
-                        ),
+                child: listItems(
+                  centers,
+                  (context, index) => recyclingCenterCard(centers[index]),
+                  'No recycling centers found nearby. Try adjusting your search radius or location.',
+                ),
               ),
             ],
           );
@@ -169,16 +154,10 @@ class _LocationsPageState extends ConsumerState<LocationsPage> {
         loading: () => const Center(child: CircularProgressIndicator()),
 
         error:
-            (error, stack) => Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
+            (error, stack) => LoadingError(
+              error:
                   'Error loading recycling centers: ${error.toString()}\n'
                   'Please check your internet connection and Google Places API key/permissions.',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.red, fontSize: 16),
-                ),
-              ),
             ),
       ),
     );
@@ -233,7 +212,7 @@ class _LocationsPageState extends ConsumerState<LocationsPage> {
           children: [
             Text(center.address, style: TextStyle(fontFamily: 'OpenSans')),
             Text(
-              'Distance: ${_formatDistance(center.distance)}',
+              'Distance: ${formatDistance(center.distance)}',
               style: TextStyle(fontFamily: 'OpenSans'),
             ),
           ],
@@ -244,7 +223,7 @@ class _LocationsPageState extends ConsumerState<LocationsPage> {
             Navigator.pushNamed(
               context,
               RecyclingCenterDetailPage.routeName,
-              arguments: center
+              arguments: center,
             );
           },
         ),

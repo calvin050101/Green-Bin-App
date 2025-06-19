@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:green_bin/helper/helper_functions.dart';
+import 'package:green_bin/helper/list_view_functions.dart';
+import 'package:green_bin/helper/waste_type_functions.dart';
 
 import '../../models/record_model.dart';
 import '../../providers/user_provider.dart';
@@ -11,6 +12,7 @@ import 'package:intl/intl.dart';
 
 class RecyclingHistoryPage extends ConsumerWidget {
   static String routeName = "/recycling-history";
+
   const RecyclingHistoryPage({super.key});
 
   @override
@@ -53,15 +55,11 @@ class RecyclingHistoryPage extends ConsumerWidget {
                   ),
                 ),
 
-                records.isEmpty
-                    ? Center(child: Text('No recycling records found yet.'))
-                    : ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: records.length,
-                      itemBuilder:
-                          (context, index) => recordCard(records[index]),
-                    ),
+                listItems(
+                  records,
+                  (context, index) => recordCard(records[index]),
+                  'No recycling records found yet.',
+                ),
               ],
             ),
           );

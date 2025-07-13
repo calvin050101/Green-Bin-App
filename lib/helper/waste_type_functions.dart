@@ -40,7 +40,7 @@ List<WasteTypeSummary> getWasteTypeCounts(List<RecordModel>? records) {
     return WasteTypeSummary(
       wasteType: entry.key,
       count: entry.value,
-      icon: getWasteTypeIcon(entry.key), // Get image path
+      icon: getWasteTypeIcon(entry.key),
     );
   }).toList();
 }

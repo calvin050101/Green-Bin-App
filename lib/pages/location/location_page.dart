@@ -19,7 +19,6 @@ class LocationsPage extends ConsumerStatefulWidget {
 
 class _LocationsPageState extends ConsumerState<LocationsPage> {
   GoogleMapController? mapController;
-  LatLng? _currentLocation; // To store user's current location
 
   @override
   void initState() {
@@ -50,17 +49,6 @@ class _LocationsPageState extends ConsumerState<LocationsPage> {
         'Location permissions are permanently denied, we cannot request permissions.',
       );
     }
-
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-    setState(() {
-      _currentLocation = LatLng(position.latitude, position.longitude);
-    });
-  }
-
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
   }
 
   @override
@@ -72,82 +60,32 @@ class _LocationsPageState extends ConsumerState<LocationsPage> {
 
       body: recyclingCentersAsyncValue.when(
         data: (centers) {
-          Set<Marker> markers = {};
-          LatLng initialCameraPosition =
-              _currentLocation ?? const LatLng(5.3468, 100.2798);
-
-          // Add markers for each recycling center
-          for (var center in centers) {
-            markers.add(
-              Marker(
-                markerId: MarkerId(center.id),
-                position: LatLng(center.latitude, center.longitude),
-                infoWindow: InfoWindow(
-                  title: center.name,
-                  snippet: formatDistance(center.distance),
-                ),
-                onTap: () {
-                  // Optionally animate map to center if tapped
-                  mapController?.animateCamera(
-                    CameraUpdate.newLatLng(
-                      LatLng(center.latitude, center.longitude),
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 8.0,
+                  ),
+                  child: Text(
+                    'Recycling Locations',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 28,
+                      fontFamily: 'Poppins',
                     ),
-                  );
-                },
-              ),
-            );
-          }
-
-          // If current location is available, also add a marker for it
-          if (_currentLocation != null) {
-            markers.add(
-              Marker(
-                markerId: const MarkerId('currentLocation'),
-                position: _currentLocation!,
-                infoWindow: const InfoWindow(title: 'Your Location'),
-                icon: BitmapDescriptor.defaultMarkerWithHue(
-                  BitmapDescriptor.hueBlue,
-                ), // Blue marker for current location
-              ),
-            );
-
-            // If no centers found, center map on current location
-            if (centers.isEmpty) {
-              initialCameraPosition = _currentLocation!;
-            }
-          }
-
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 8.0,
-                ),
-                child: Text(
-                  'Recycling Locations',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 28,
-                    fontFamily: 'Poppins',
                   ),
                 ),
-              ),
 
-              _mapContainer(initialCameraPosition, markers),
-
-              const SizedBox(height: 16.0),
-
-              // List of Recycling Centers
-              Expanded(
-                child: listItems(
+                listItems(
                   centers,
-                  (context, index) => recyclingCenterCard(centers[index]),
+                      (context, index) => recyclingCenterCard(centers[index]),
                   'No recycling centers found nearby. Try adjusting your search radius or location.',
-                ),
-              ),
-            ],
+                )
+              ],
+            ),
           );
         },
 
@@ -159,37 +97,6 @@ class _LocationsPageState extends ConsumerState<LocationsPage> {
                   'Error loading recycling centers: ${error.toString()}\n'
                   'Please check your internet connection and Google Places API key/permissions.',
             ),
-      ),
-    );
-  }
-
-  Container _mapContainer(LatLng initialCameraPosition, Set<Marker> markers) {
-    return Container(
-      height: 250, // Fixed height for the map
-      margin: const EdgeInsets.symmetric(horizontal: 16.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-        border: Border.all(color: Colors.grey.shade300, width: 1),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10.0),
-        child: GoogleMap(
-          onMapCreated: _onMapCreated,
-          initialCameraPosition: CameraPosition(
-            target: initialCameraPosition,
-            zoom: 12.0, // Adjust zoom level as needed
-          ),
-          markers: markers,
-          myLocationEnabled: true,
-          // Show user's location dot
-          myLocationButtonEnabled: true,
-          // Show button to center on user
-          zoomControlsEnabled: true,
-          scrollGesturesEnabled: true,
-          rotateGesturesEnabled: true,
-          tiltGesturesEnabled: true,
-          zoomGesturesEnabled: true,
-        ),
       ),
     );
   }

@@ -35,13 +35,6 @@ class GuideMainPage extends ConsumerWidget {
 
                   const SizedBox(height: 20),
 
-                  listItems(
-                    articles,
-                      (context, index) =>
-                          articleCard(articles[index], context),
-                    'No articles published yet.',
-                  ),
-
                   articles.isEmpty
                       ? const Center(
                         child: Padding(
@@ -49,13 +42,11 @@ class GuideMainPage extends ConsumerWidget {
                           child: Text('No articles published yet.'),
                         ),
                       )
-                      : ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: articles.length,
-                        itemBuilder:
-                            (context, index) =>
-                                articleCard(articles[index], context),
+                      : listItems(
+                        articles,
+                        (context, index) =>
+                            articleCard(articles[index], context),
+                        'No articles published yet.',
                       ),
                 ],
               ),

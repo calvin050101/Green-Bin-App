@@ -79,14 +79,17 @@ class _ConfirmWasteTypePageState extends State<ConfirmWasteTypePage> {
             CustomButton(
               buttonText: "Confirm",
               onPressed: () {
-                Navigator.pushReplacementNamed(
+                Navigator.pushReplacement(
                   context,
-                  CompleteScanPage.routeName,
-                  arguments: _selectedWasteType,
+                  MaterialPageRoute(
+                    builder:
+                        (context) => CompleteScanPage(
+                          confirmedWasteType: _selectedWasteType,
+                        ),
+                  ),
                 );
               },
             ),
-
           ],
         ),
       ),

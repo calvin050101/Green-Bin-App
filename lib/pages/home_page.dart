@@ -2,9 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:green_bin/models/user_level_model.dart';
-import 'package:green_bin/widgets/cust_container.dart';
-import 'package:green_bin/widgets/waste_type_summary_card.dart';
+import '../models/user_level_model.dart';
+import '../widgets/cust_container.dart';
+import '../widgets/waste_type_summary_card.dart';
+import '../widgets/fun_fact_card.dart';
 
 import '../helper/waste_type_functions.dart';
 import '../models/recycling_summary.dart';
@@ -41,7 +42,6 @@ class HomePage extends ConsumerWidget {
           ),
           body: SingleChildScrollView(child: showHome(user, context, ref)),
         );
-
       },
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stack) => Center(child: Text('Error: $error')),
@@ -52,6 +52,10 @@ class HomePage extends ConsumerWidget {
     final List<WasteTypeSummary> wasteTypeCounts = getWasteTypeCounts(
       user.records,
     );
+    final RecyclingSummary summary =
+        user.records != null
+            ? calculateRecyclingSummary(user.records)
+            : RecyclingSummary(totalPoints: 0, totalCarbonFootprintSaved: 0);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -79,14 +83,27 @@ class HomePage extends ConsumerWidget {
 
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: pointsProgressContainer(user, context),
+          child: pointsProgressContainer(summary, context),
         ),
 
         const SizedBox(height: 20),
 
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: funFactContainer(context),
+          child: Text(
+            "That is like...",
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w500,
+              fontSize: 20,
+            ),
+          ),
+        ),
+        SizedBox(height: 10),
+
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: funFactContainer(summary, context),
         ),
 
         const SizedBox(height: 20),
@@ -181,12 +198,10 @@ class HomePage extends ConsumerWidget {
     );
   }
 
-  CustContainer pointsProgressContainer(UserModel user, BuildContext context) {
-    final RecyclingSummary summary =
-        user.records != null
-            ? calculateRecyclingSummary(user.records)
-            : RecyclingSummary(totalPoints: 0, totalCarbonFootprintSaved: 0);
-
+  CustContainer pointsProgressContainer(
+    RecyclingSummary summary,
+    BuildContext context,
+  ) {
     final UserLevel userLevel = getUserLevel(summary.totalPoints);
     final double progress = min(
       (summary.totalPoints - userLevel.minPoints) / userLevel.maxPoints,
@@ -252,44 +267,53 @@ class HomePage extends ConsumerWidget {
     );
   }
 
-  CustContainer funFactContainer(BuildContext context) {
-    return CustContainer(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Did you know?",
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.surface,
-              fontWeight: FontWeight.w600,
-              fontSize: 16,
-              fontFamily: 'OpenSans',
-            ),
+  Column funFactContainer(
+    RecyclingSummary summary,
+    BuildContext context,
+  ) {
+    final carbonFootprint = summary.totalCarbonFootprintSaved;
+
+    // List of fun facts with an icon
+    final funFacts = [
+      {
+        'icon': Icons.local_drink,
+        'text': 'Avoiding ${(carbonFootprint * 80).toInt()} plastic bottles.',
+      },
+      {
+        'icon': Icons.directions_car,
+        'text': '${(carbonFootprint * 4).toInt()} km of driving.',
+      },
+      {
+        'icon': Icons.forest,
+        'text':
+            'Saving ${(carbonFootprint / 20).toStringAsFixed(2)} trees per year.',
+      },
+      {
+        'icon': Icons.lightbulb,
+        'text':
+            'Powering a lightbulb for ${(carbonFootprint * 10).toInt()} hours.',
+      }
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          height: 100,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+              itemCount: funFacts.length,
+              itemBuilder: (context, index) {
+                final fact = funFacts[index];
+                return FunFactCard(
+                  icon: fact['icon'] as IconData,
+                  text: fact['text'] as String,
+                );
+              }
           ),
-          SizedBox(height: 10),
-          Row(
-            children: [
-              Icon(
-                Icons.check_circle,
-                color: Theme.of(context).colorScheme.primary,
-                size: 50,
-              ),
-              SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  'Recycling 1 ton of paper is equivalent to saving 17 trees, '
-                      'and saves up to 3 cubic yards.',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.surface,
-                    fontFamily: 'OpenSans',
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 30),
+      ],
     );
   }
 }

@@ -14,10 +14,9 @@ GreenBin integrates AI waste classification, location-based recycling info, and 
 ## 🚀 Features
 
 - 🔍 **AI Waste Classifier** – Instantly identify waste category using your phone’s camera
-- 🗑️ **Smart Bin Suggestions** – Guidance on whether to compost, recycle, or discard
 - 📍 **Nearby Facilities** – Locate recycling centers and drop-off points
 - 📊 **Waste Insights** – Track personal waste habits over time
-- 🛠️ **Educational Tips** – In-app articles and gamified quizzes on waste separation
+- 🛠️ **Educational Tips** – In-app articles on waste separation
 
 ---
 

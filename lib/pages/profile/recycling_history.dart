@@ -55,9 +55,9 @@ class RecyclingHistoryPage extends ConsumerWidget {
                   ),
                 ),
 
-                listItems(
+                listVerticalItems(
                   records,
-                  (context, index) => recordCard(records[index]),
+                  (context, record) => recordCard(record),
                   'No recycling records found yet.',
                 ),
               ],

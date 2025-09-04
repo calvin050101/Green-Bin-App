@@ -42,10 +42,10 @@ class GuideMainPage extends ConsumerWidget {
                           child: Text('No articles published yet.'),
                         ),
                       )
-                      : listItems(
+                      : listVerticalItems(
                         articles,
-                        (context, index) =>
-                            articleCard(articles[index], context),
+                        (context, article) =>
+                            articleCard(article, context),
                         'No articles published yet.',
                       ),
                 ],

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:green_bin/helper/list_view_functions.dart';
 import '../models/user_level_model.dart';
 import '../widgets/cust_container.dart';
 import '../widgets/waste_type_summary_card.dart';
@@ -130,13 +131,11 @@ class HomePage extends ConsumerWidget {
               children: [
                 SizedBox(
                   height: 140,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: wasteTypeCounts.length,
-                    itemBuilder:
-                        (context, index) => WasteTypeSummaryCard(
-                          summary: wasteTypeCounts[index],
-                        ),
+                  child: listHorizontalItems(
+                    wasteTypeCounts,
+                    (context, wasteTypeCount) =>
+                        WasteTypeSummaryCard(summary: wasteTypeCount),
+                    "No waste records found.",
                   ),
                 ),
                 const SizedBox(height: 30),
@@ -267,10 +266,7 @@ class HomePage extends ConsumerWidget {
     );
   }
 
-  Column funFactContainer(
-    RecyclingSummary summary,
-    BuildContext context,
-  ) {
+  Column funFactContainer(RecyclingSummary summary, BuildContext context) {
     final carbonFootprint = summary.totalCarbonFootprintSaved;
 
     // List of fun facts with an icon
@@ -292,7 +288,7 @@ class HomePage extends ConsumerWidget {
         'icon': Icons.lightbulb,
         'text':
             'Powering a lightbulb for ${(carbonFootprint * 10).toInt()} hours.',
-      }
+      },
     ];
 
     return Column(
@@ -300,16 +296,13 @@ class HomePage extends ConsumerWidget {
       children: [
         SizedBox(
           height: 100,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-              itemCount: funFacts.length,
-              itemBuilder: (context, index) {
-                final fact = funFacts[index];
-                return FunFactCard(
-                  icon: fact['icon'] as IconData,
-                  text: fact['text'] as String,
-                );
-              }
+          child: listHorizontalItems(
+            funFacts,
+            (context, fact) => FunFactCard(
+              icon: fact['icon'] as IconData,
+              text: fact['text'] as String,
+            ),
+            "No fun facts found.",
           ),
         ),
         const SizedBox(height: 30),

@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 
-Widget listItems<T>(
+Widget listVerticalItems<T>(
   List<T> items,
-  Widget? Function(BuildContext, int) itemBuilder,
+  Widget Function(BuildContext, T) itemBuilder,
   String emptyText,
 ) {
   if (items.isEmpty) {
-    Center(
+    return Center(
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 50.0),
         child: Text(emptyText),
@@ -18,6 +18,27 @@ Widget listItems<T>(
     shrinkWrap: true,
     physics: const NeverScrollableScrollPhysics(),
     itemCount: items.length,
-    itemBuilder: itemBuilder,
+    itemBuilder: (context, index) => itemBuilder(context, items[index]),
+  );
+}
+
+Widget listHorizontalItems<T>(
+  List<T> items,
+  Widget Function(BuildContext, T) itemBuilder,
+  String emptyText,
+) {
+  if (items.isEmpty) {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 50.0),
+        child: Text(emptyText),
+      ),
+    );
+  }
+
+  return ListView.builder(
+    scrollDirection: Axis.horizontal,
+    itemCount: items.length,
+    itemBuilder: (context, index) => itemBuilder(context, items[index]),
   );
 }

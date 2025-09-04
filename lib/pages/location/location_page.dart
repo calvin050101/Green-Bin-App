@@ -79,11 +79,11 @@ class _LocationsPageState extends ConsumerState<LocationsPage> {
                   ),
                 ),
 
-                listItems(
+                listVerticalItems(
                   centers,
-                      (context, index) => recyclingCenterCard(centers[index]),
+                  (context, center) => recyclingCenterCard(center),
                   'No recycling centers found nearby. Try adjusting your search radius or location.',
-                )
+                ),
               ],
             ),
           );

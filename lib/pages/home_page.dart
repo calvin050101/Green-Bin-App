@@ -9,7 +9,6 @@ import '../widgets/waste_type_summary_card.dart';
 import '../widgets/fun_fact_card.dart';
 
 import '../helper/waste_type_functions.dart';
-import '../models/recycling_summary.dart';
 import '../models/user_model.dart';
 import '../models/waste_type_summary.dart';
 
@@ -53,10 +52,6 @@ class HomePage extends ConsumerWidget {
     final List<WasteTypeSummary> wasteTypeCounts = getWasteTypeCounts(
       user.records,
     );
-    final RecyclingSummary summary =
-        user.records != null
-            ? calculateRecyclingSummary(user.records)
-            : RecyclingSummary(totalPoints: 0, totalCarbonFootprintSaved: 0);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -84,7 +79,7 @@ class HomePage extends ConsumerWidget {
 
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: pointsProgressContainer(summary, context),
+          child: pointsProgressContainer(user, context),
         ),
 
         const SizedBox(height: 20),
@@ -92,36 +87,41 @@ class HomePage extends ConsumerWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Text(
-            "That is like...",
+            user.totalCarbonSaved == 0
+                ? "Start recycling to get stats"
+                : "That is like...",
             style: TextStyle(
-              fontFamily: 'Poppins',
+              fontFamily: user.totalCarbonSaved == 0 ? 'OpenSans' : 'Poppins',
               fontWeight: FontWeight.w500,
               fontSize: 20,
             ),
           ),
         ),
-        SizedBox(height: 10),
 
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: funFactContainer(summary, context),
-        ),
+        if (user.totalCarbonSaved! > 0) ...[
+          const SizedBox(height: 10),
 
-        const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: funFactContainer(user, context),
+          ),
 
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: const Text(
-            "Recycling Stats",
-            style: TextStyle(
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w600,
-              fontSize: 20,
+          const SizedBox(height: 20),
+
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: const Text(
+              "Recycling Stats",
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w600,
+                fontSize: 20,
+              ),
             ),
           ),
-        ),
 
-        const SizedBox(height: 20),
+          const SizedBox(height: 20),
+        ],
 
         if (wasteTypeCounts.isNotEmpty)
           Padding(
@@ -198,12 +198,13 @@ class HomePage extends ConsumerWidget {
   }
 
   CustContainer pointsProgressContainer(
-    RecyclingSummary summary,
+    UserModel user,
     BuildContext context,
   ) {
-    final UserLevel userLevel = getUserLevel(summary.totalPoints);
+    final userPoints = user.totalPoints! | 0;
+    final UserLevel userLevel = getUserLevel(userPoints);
     final double progress = min(
-      (summary.totalPoints - userLevel.minPoints) / userLevel.maxPoints,
+      (userPoints - userLevel.minPoints) / userLevel.maxPoints,
       1,
     );
 
@@ -213,7 +214,7 @@ class HomePage extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "You have saved ${summary.totalCarbonFootprintSaved} kg CO₂ by recycling.",
+            "You have saved ${user.totalCarbonSaved} kg CO₂ by recycling.",
             style: TextStyle(
               color: Theme.of(context).colorScheme.surface,
               fontWeight: FontWeight.w600,
@@ -239,9 +240,9 @@ class HomePage extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                summary.totalPoints >= 4000
+                userPoints >= 4000
                     ? "4000+ points"
-                    : "${summary.totalPoints}/${userLevel.maxPoints} points",
+                    : "$userPoints/${userLevel.maxPoints} points",
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.surface,
                   fontWeight: FontWeight.w600,
@@ -266,8 +267,8 @@ class HomePage extends ConsumerWidget {
     );
   }
 
-  Column funFactContainer(RecyclingSummary summary, BuildContext context) {
-    final carbonFootprint = summary.totalCarbonFootprintSaved;
+  Column funFactContainer(UserModel user, BuildContext context) {
+    final carbonFootprint = user.totalCarbonSaved!;
 
     // List of fun facts with an icon
     final funFacts = [

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/record_model.dart';
+import '../models/waste_type_model.dart';
 import '../providers/user_provider.dart';
 
 class UserProfileService {
@@ -45,31 +46,38 @@ class UserProfileService {
     _ref.invalidate(currentUserProvider);
   }
 
-  // New method to add a waste record
-  Future<void> addWasteRecord({required String wasteType}) async {
+  /// --- Add Waste Record and update totals ---
+  Future<void> addWasteRecord({required WasteTypeModel wasteType}) async {
     final currentUser = _auth.currentUser;
     if (currentUser == null) {
       throw Exception("No user is currently signed in to add a record.");
     }
 
+    final userDocRef = _firestore.collection('users').doc(currentUser.uid);
+    final recordsRef = userDocRef.collection('records').doc();
+
     final newRecord = RecordModel(
-      id:
-          _firestore
-              .collection('users')
-              .doc(currentUser.uid)
-              .collection('records')
-              .doc()
-              .id,
+      id: recordsRef.id,
       timestamp: DateTime.now(),
-      wasteType: wasteType,
+      wasteType: wasteType.label,
     );
 
-    await _firestore
-        .collection('users')
-        .doc(currentUser.uid)
-        .collection('records')
-        .doc(newRecord.id)
-        .set(newRecord.toFirestore());
+    await _firestore.runTransaction((transaction) async {
+      final userDoc = await transaction.get(userDocRef);
+
+      final currentPoints = userDoc.data()?['totalPoints'] ?? 0;
+      final currentCarbon =
+          (userDoc.data()?['totalCarbonSaved'] ?? 0.0).toDouble();
+
+      // Add new record
+      transaction.set(recordsRef, newRecord.toFirestore());
+
+      // Update totals
+      transaction.update(userDocRef, {
+        'totalPoints': currentPoints + wasteType.points,
+        'totalCarbonSaved': currentCarbon + wasteType.carbonFootprint,
+      });
+    });
 
     _ref.invalidate(currentUserProvider);
   }

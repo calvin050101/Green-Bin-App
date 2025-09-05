@@ -20,7 +20,13 @@ final currentUserProvider = FutureProvider<UserModel?>((ref) async {
   final docSnapshot = await firestore.collection('users').doc(user.uid).get();
 
   if (!docSnapshot.exists) {
-    return UserModel(uid: user.uid, email: user.email, records: []);
+    return UserModel(
+        uid: user.uid,
+        email: user.email,
+        totalPoints: 0,
+        totalCarbonSaved: 0,
+        records: []
+    );
   }
 
   UserModel userModel = UserModel.fromFirestore(docSnapshot.data()!, user.uid);

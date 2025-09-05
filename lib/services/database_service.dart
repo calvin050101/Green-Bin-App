@@ -20,7 +20,12 @@ class DatabaseService {
       await FirebaseFirestore.instance
           .collection("users")
           .doc(userCredential.user!.uid)
-          .set({"username": username, "email": email, "points": 0});
+          .set({
+            "username": username,
+            "email": email,
+            "totalPoints": 0,
+            "totalCarbonSaved": 0,
+          });
     }
   }
 

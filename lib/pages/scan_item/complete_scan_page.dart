@@ -8,7 +8,7 @@ import '../../providers/user_provider.dart';
 
 class CompleteScanPage extends ConsumerStatefulWidget {
   static String routeName = "/complete-scan";
-  final String confirmedWasteType;
+  final WasteTypeModel confirmedWasteType;
 
   const CompleteScanPage({super.key, required this.confirmedWasteType});
 
@@ -19,7 +19,7 @@ class CompleteScanPage extends ConsumerStatefulWidget {
 class _CompleteScanPageState extends ConsumerState<CompleteScanPage> {
   bool _recordAdded = false;
   String? _errorMessage;
-  late String _confirmedWasteType;
+  late WasteTypeModel _confirmedWasteType;
 
   @override
   void initState() {
@@ -31,9 +31,7 @@ class _CompleteScanPageState extends ConsumerState<CompleteScanPage> {
   Future<void> _addRecordToUserHistory() async {
     try {
       final userProfileService = ref.read(userProfileServiceProvider);
-      await userProfileService.addWasteRecord(
-        wasteType: _confirmedWasteType,
-      );
+      await userProfileService.addWasteRecord(wasteType: _confirmedWasteType);
       setState(() {
         _recordAdded = true;
       });
@@ -46,10 +44,6 @@ class _CompleteScanPageState extends ConsumerState<CompleteScanPage> {
 
   @override
   Widget build(BuildContext context) {
-    final WasteTypeModel wasteTypeModel = getWasteType(
-      _confirmedWasteType
-    );
-
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.transparent),
 
@@ -60,7 +54,9 @@ class _CompleteScanPageState extends ConsumerState<CompleteScanPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
-                _recordAdded ? Icons.check_circle_outline : Icons.pending_outlined,
+                _recordAdded
+                    ? Icons.check_circle_outline
+                    : Icons.pending_outlined,
                 color: _recordAdded ? Colors.green : Colors.orange,
                 size: 100,
               ),
@@ -85,14 +81,14 @@ class _CompleteScanPageState extends ConsumerState<CompleteScanPage> {
                   textAlign: TextAlign.center,
                 ),
 
-                const SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-                _buildInfoRow('Waste Type:', _confirmedWasteType),
-                _buildInfoRow('Points:', '${wasteTypeModel.points}'),
-                _buildInfoRow(
-                  'Carbon Footprint Saved:',
-                  '${wasteTypeModel.carbonFootprint.toStringAsPrecision(2)} kg CO₂',
-                ),
+              _buildInfoRow('Waste Type:', _confirmedWasteType.label),
+              _buildInfoRow('Points:', '${_confirmedWasteType.points}'),
+              _buildInfoRow(
+                'Carbon Footprint Saved:',
+                '${_confirmedWasteType.carbonFootprint.toStringAsPrecision(2)} kg CO₂',
+              ),
 
               const SizedBox(height: 40),
 

@@ -6,7 +6,6 @@ import 'package:green_bin/pages/profile/user_levels.dart';
 import 'package:green_bin/widgets/cust_container.dart';
 import 'package:green_bin/widgets/custom_button.dart';
 import 'package:green_bin/widgets/page_direct_container.dart';
-import '../../models/recycling_summary.dart';
 import '../../models/user_level_model.dart';
 import '../../models/user_model.dart';
 import '../../services/auth_service.dart';
@@ -35,11 +34,6 @@ class ProfilePage extends StatelessWidget {
   }
 
   Widget showPage(UserModel user, BuildContext context) {
-    final RecyclingSummary summary =
-    user.records != null
-        ? calculateRecyclingSummary(user.records)
-        : RecyclingSummary(totalPoints: 0, totalCarbonFootprintSaved: 0);
-
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20, bottom: 40),
       child: SingleChildScrollView(
@@ -59,29 +53,38 @@ class ProfilePage extends StatelessWidget {
 
             const SizedBox(height: 40),
 
-            profileInfo(user, summary),
+            profileInfo(user),
 
             const SizedBox(height: 30),
 
-            userStatsContainer(user, summary, context),
+            userStatsContainer(user, context),
 
             const SizedBox(height: 30),
 
-            PageDirectContainer(text: "User Levels", onTap: () {
-              Navigator.pushNamed(context, UserLevelsPage.routeName);
-            }),
+            PageDirectContainer(
+              text: "User Levels",
+              onTap: () {
+                Navigator.pushNamed(context, UserLevelsPage.routeName);
+              },
+            ),
 
             const SizedBox(height: 10),
 
-            PageDirectContainer(text: "Recycling History", onTap: () {
-              Navigator.pushNamed(context, RecyclingHistoryPage.routeName);
-            }),
+            PageDirectContainer(
+              text: "Recycling History",
+              onTap: () {
+                Navigator.pushNamed(context, RecyclingHistoryPage.routeName);
+              },
+            ),
 
             const SizedBox(height: 10),
 
-            PageDirectContainer(text: "Settings", onTap: () {
-              Navigator.pushNamed(context, SettingsPage.routeName);
-            }),
+            PageDirectContainer(
+              text: "Settings",
+              onTap: () {
+                Navigator.pushNamed(context, SettingsPage.routeName);
+              },
+            ),
 
             const SizedBox(height: 20),
 
@@ -106,8 +109,8 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Row profileInfo(UserModel user, RecyclingSummary summary) {
-    final UserLevel userLevel = getUserLevel(summary.totalPoints);
+  Row profileInfo(UserModel user) {
+    final UserLevel userLevel = getUserLevel(user.totalPoints!);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -141,7 +144,7 @@ class ProfilePage extends StatelessWidget {
             SizedBox(height: 6),
 
             Text(
-              "${summary.totalPoints} Points",
+              "${user.totalPoints!} Points",
               style: TextStyle(fontSize: 18, fontFamily: 'OpenSans'),
             ),
 
@@ -162,9 +165,10 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  CustContainer userStatsContainer(UserModel user,
-      RecyclingSummary summary,
-      BuildContext context) {
+  CustContainer userStatsContainer(
+    UserModel user,
+    BuildContext context,
+  ) {
     return CustContainer(
       child: Column(
         children: [
@@ -172,10 +176,7 @@ class ProfilePage extends StatelessWidget {
             rowIcon: Icon(
               Icons.recycling,
               size: 40,
-              color: Theme
-                  .of(context)
-                  .colorScheme
-                  .primary,
+              color: Theme.of(context).colorScheme.primary,
             ),
             rowTitle: "Items Sorted",
             rowValue: '${user.records?.length}',
@@ -187,7 +188,7 @@ class ProfilePage extends StatelessWidget {
           userStatsRow(
             rowIcon: Icon(Icons.cloud, size: 40, color: Colors.grey),
             rowTitle: "CO₂ Saved",
-            rowValue: "${summary.totalCarbonFootprintSaved} kg",
+            rowValue: "${user.totalCarbonSaved} kg",
             context: context,
           ),
         ],

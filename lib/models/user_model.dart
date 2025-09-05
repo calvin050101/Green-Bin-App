@@ -4,12 +4,16 @@ class UserModel {
   final String uid;
   final String? email;
   final String? username;
+  final int? totalPoints;
+  final double? totalCarbonSaved;
   final List<RecordModel>? records;
 
   UserModel({
     required this.uid,
     this.email,
     this.username,
+    this.totalPoints,
+    this.totalCarbonSaved,
     this.records
   });
 
@@ -18,27 +22,25 @@ class UserModel {
       uid: uid,
       email: data['email'],
       username: data['username'],
+      totalPoints: data['totalPoints'],
+      totalCarbonSaved: data['totalCarbonSaved'],
     );
-  }
-
-  Map<String, dynamic> toFirestore() {
-    return {
-      'email': email,
-      'username': username,
-      'records': records,
-    };
   }
 
   UserModel copyWith({
     String? uid,
     String? email,
     String? username,
+    int? totalPoints,
+    double? totalCarbonSaved,
     List<RecordModel>? records,
   }) {
     return UserModel(
       uid: uid ?? this.uid,
       email: email ?? this.email,
       username: username ?? this.username,
+      totalPoints: totalPoints ?? this.totalPoints,
+      totalCarbonSaved: totalCarbonSaved ?? this.totalCarbonSaved,
       records: records ?? this.records,
     );
   }

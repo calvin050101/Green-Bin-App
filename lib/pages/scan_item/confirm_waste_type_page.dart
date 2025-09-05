@@ -1,23 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:green_bin/helper/waste_type_functions.dart';
+import 'package:green_bin/models/waste_type_model.dart';
 import 'package:green_bin/pages/scan_item/complete_scan_page.dart';
+import 'package:green_bin/providers/waste_type_provider.dart';
 import 'package:green_bin/widgets/custom_button.dart';
 
 import '../../widgets/back_button.dart';
+import '../../widgets/waste_type_option_card.dart';
 
-class ConfirmWasteTypePage extends StatefulWidget {
+class ConfirmWasteTypePage extends ConsumerStatefulWidget {
   static String routeName = "/confirm-waste-type";
 
   const ConfirmWasteTypePage({super.key});
 
   @override
-  State<ConfirmWasteTypePage> createState() => _ConfirmWasteTypePageState();
+  ConsumerState<ConfirmWasteTypePage> createState() =>
+      _ConfirmWasteTypePageState();
 }
 
-class _ConfirmWasteTypePageState extends State<ConfirmWasteTypePage> {
-  String _selectedWasteType = "Paper";
+class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
+  WasteTypeModel? _selectedWasteType;
 
   @override
   Widget build(BuildContext context) {
+    final asyncWasteTypes = ref.watch(wasteTypesStreamProvider);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -25,73 +33,81 @@ class _ConfirmWasteTypePageState extends State<ConfirmWasteTypePage> {
         leadingWidth: 70,
         leading: CustBackButton(),
       ),
-
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Confirm Waste Type',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 32,
-                fontFamily: 'Poppins',
-              ),
-            ),
-
-            SizedBox(height: 40),
-
-            Center(child: wasteImageContainer(context)),
-
-            const SizedBox(height: 20),
-
-            predictedWasteTypeContainer(),
-
-            const SizedBox(height: 30),
-
-            const Text(
-              'Or select the correct waste type below',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black,
-                fontFamily: 'OpenSans',
-              ),
-            ),
-
-            const SizedBox(height: 15),
-
-            _buildWasteTypeOption(context, Icons.liquor, 'Plastic'),
-            _buildWasteTypeOption(context, Icons.description, 'Paper'),
-            _buildWasteTypeOption(context, Icons.wine_bar, 'Glass'),
-            _buildWasteTypeOption(context, Icons.kitchen, 'Metal'),
-            _buildWasteTypeOption(context, Icons.eco, 'Organic'),
-            _buildWasteTypeOption(context, Icons.computer, 'E-Waste'),
-            _buildWasteTypeOption(context, Icons.checkroom, 'Textiles'),
-            _buildWasteTypeOption(
-              context,
-              Icons.delete_forever,
-              'Non-recyclables',
-            ),
-
-            const SizedBox(height: 30),
-
-            CustomButton(
-              buttonText: "Confirm",
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) => CompleteScanPage(
-                          confirmedWasteType: _selectedWasteType,
-                        ),
+      body: asyncWasteTypes.when(
+        data: (wasteTypes) {
+          return SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Confirm Waste Type',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 32,
+                    fontFamily: 'Poppins',
                   ),
-                );
-              },
+                ),
+                const SizedBox(height: 40),
+                Center(child: wasteImageContainer(context)),
+                const SizedBox(height: 20),
+                predictedWasteTypeContainer(),
+                const SizedBox(height: 30),
+                const Text(
+                  'Or select the correct waste type below',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                    fontFamily: 'OpenSans',
+                  ),
+                ),
+                const SizedBox(height: 15),
+
+                if (wasteTypes.isEmpty)
+                  const Center(child: Text("No waste types found")),
+
+                ...wasteTypes.map(
+                  (waste) => WasteTypeOptionCard(
+                    wasteType: waste,
+                    icon: getWasteTypeIcon(waste.label),
+                    isSelected: _selectedWasteType?.id == waste.id,
+                    onTap: () {
+                      setState(() {
+                        _selectedWasteType = waste;
+                      });
+                    },
+                  ),
+                ),
+
+                const SizedBox(height: 30),
+                CustomButton(
+                  buttonText: "Confirm",
+                  onPressed: () {
+                    if (_selectedWasteType == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Please select a waste type"),
+                        ),
+                      );
+                      return;
+                    }
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => CompleteScanPage(
+                              confirmedWasteType: _selectedWasteType!,
+                            ),
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, stack) => Center(child: Text("Error: $err")),
       ),
     );
   }
@@ -112,60 +128,12 @@ class _ConfirmWasteTypePageState extends State<ConfirmWasteTypePage> {
     );
   }
 
-  Widget _buildWasteTypeOption(
-    BuildContext context,
-    IconData icon,
-    String value,
-  ) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
-      color:
-          _selectedWasteType == value ? Colors.lightGreen[100] : Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-        side: BorderSide(
-          color:
-              _selectedWasteType == value
-                  ? Colors.lightGreen
-                  : Colors.grey[300]!,
-          width: _selectedWasteType == value ? 2.0 : 1.0,
-        ),
-      ),
-      child: InkWell(
-        onTap: () {
-          setState(() {
-            _selectedWasteType = value;
-          });
-        },
-        borderRadius: BorderRadius.circular(10),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
-          child: Row(
-            children: [
-              Icon(icon, color: Color(0xFF4CAF50), size: 30),
-              const SizedBox(width: 20),
-              Text(
-                value,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontFamily: "Montserrat",
-                  fontWeight: FontWeight.w500,
-                  color: Colors.lightGreen[900],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   Container predictedWasteTypeContainer() {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Color(0xFF4CAF50),
+        color: const Color(0xFF4CAF50),
         borderRadius: BorderRadius.circular(10),
       ),
       child: const Column(

@@ -21,7 +21,7 @@ class GooglePlacesService {
     required double latitude,
     required double longitude,
     String query = 'recycling center',
-    int radiusMeters = 50000,
+    int radiusMeters = 32000,
   }) async {
     try {
       final PlacesSearchResponse response = await _places.searchByText(

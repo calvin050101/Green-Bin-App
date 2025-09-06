@@ -61,6 +61,5 @@ class AuthService {
     );
     await currentUser!.reauthenticateWithCredential(credential);
     await currentUser!.delete();
-    await firebaseAuth.currentUser!.delete();
   }
 }

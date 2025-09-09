@@ -35,8 +35,7 @@ class SettingsPage extends StatelessWidget {
                 fontFamily: 'Poppins',
               ),
             ),
-
-            SizedBox(height: 20.0),
+            SizedBox(height: 20),
 
             Text(
               'Profile',
@@ -46,7 +45,6 @@ class SettingsPage extends StatelessWidget {
                 fontFamily: 'OpenSans',
               ),
             ),
-
             SizedBox(height: 15),
 
             profileUpdateLink(
@@ -62,7 +60,6 @@ class SettingsPage extends StatelessWidget {
               name: "Change Password",
               context: context,
             ),
-
             const SizedBox(height: 40),
 
             Text(
@@ -73,7 +70,6 @@ class SettingsPage extends StatelessWidget {
                 fontFamily: 'OpenSans',
               ),
             ),
-
             SizedBox(height: 20.0),
 
             Row(
@@ -101,7 +97,6 @@ class SettingsPage extends StatelessWidget {
                 ),
               ],
             ),
-
             const SizedBox(height: 40),
 
             deleteAccountButton(context),

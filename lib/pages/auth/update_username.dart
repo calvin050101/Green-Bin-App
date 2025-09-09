@@ -74,7 +74,6 @@ class _UpdateUsernamePageState extends ConsumerState<UpdateUsernamePage> {
               fontFamily: 'Poppins',
             ),
           ),
-
           SizedBox(height: 40),
 
           CustFormField(
@@ -83,11 +82,9 @@ class _UpdateUsernamePageState extends ConsumerState<UpdateUsernamePage> {
             hintText: 'New Username',
             isPassword: false,
           ),
-
           const SizedBox(height: 20.0),
 
           ErrorMessageText(errorMessage: _errorMessage),
-
           SizedBox(height: 40),
 
           CustomButton(

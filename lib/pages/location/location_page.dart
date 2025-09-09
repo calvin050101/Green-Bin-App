@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:green_bin/models/recycling_center.dart';
-import 'package:green_bin/pages/location/recycling_center_detail_page.dart';
 import 'package:green_bin/widgets/loading_error.dart';
 
 import '../../helper/list_view_functions.dart';
-import '../../helper/location_functions.dart';
 import '../../providers/recycling_center_provider.dart';
+import '../../widgets/card/recycling_center_card.dart';
 
 class LocationsPage extends ConsumerStatefulWidget {
   const LocationsPage({super.key});
@@ -81,7 +79,7 @@ class _LocationsPageState extends ConsumerState<LocationsPage> {
 
                 listVerticalItems(
                   centers,
-                  (context, center) => recyclingCenterCard(center),
+                  (context, center) => RecyclingCenterCard(center: center),
                   'No recycling centers found nearby. Try adjusting your search radius or location.',
                 ),
               ],
@@ -97,43 +95,6 @@ class _LocationsPageState extends ConsumerState<LocationsPage> {
                   'Error loading recycling centers: ${error.toString()}\n'
                   'Please check your internet connection and Google Places API key/permissions.',
             ),
-      ),
-    );
-  }
-
-  Card recyclingCenterCard(RecyclingCenter center) {
-    return Card(
-      color: Colors.white,
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      elevation: 1,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-
-      child: ListTile(
-        leading: const Icon(Icons.recycling, color: Colors.green),
-        title: Text(
-          center.name,
-          style: TextStyle(fontWeight: FontWeight.w600, fontFamily: 'OpenSans'),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(center.address, style: TextStyle(fontFamily: 'OpenSans')),
-            Text(
-              'Distance: ${formatDistance(center.distance)}',
-              style: TextStyle(fontFamily: 'OpenSans'),
-            ),
-          ],
-        ),
-        trailing: IconButton(
-          icon: const Icon(Icons.info_outline, color: Colors.blue),
-          onPressed: () {
-            Navigator.pushNamed(
-              context,
-              RecyclingCenterDetailPage.routeName,
-              arguments: center,
-            );
-          },
-        ),
       ),
     );
   }

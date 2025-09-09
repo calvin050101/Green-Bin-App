@@ -45,7 +45,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 fontFamily: 'Poppins',
               ),
             ),
-
             SizedBox(height: 40),
 
             CustFormField(
@@ -54,7 +53,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               hintText: 'Old Password',
               isPassword: true,
             ),
-
             SizedBox(height: 20),
 
             CustFormField(
@@ -63,7 +61,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               hintText: 'New Password',
               isPassword: true,
             ),
-
             SizedBox(height: 20),
 
             CustFormField(
@@ -72,11 +69,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               hintText: 'Confirm New Password',
               isPassword: true,
             ),
-
             SizedBox(height: 10),
 
             ErrorMessageText(errorMessage: errorMessage),
-
             SizedBox(height: 40),
 
             CustomButton(

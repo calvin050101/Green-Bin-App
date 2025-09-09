@@ -32,22 +32,13 @@ class GuideMainPage extends ConsumerWidget {
                       fontFamily: 'Poppins',
                     ),
                   ),
-
                   const SizedBox(height: 20),
 
-                  articles.isEmpty
-                      ? const Center(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 50.0),
-                          child: Text('No articles published yet.'),
-                        ),
-                      )
-                      : listVerticalItems(
-                        articles,
-                        (context, article) =>
-                            articleCard(article, context),
-                        'No articles published yet.',
-                      ),
+                  listVerticalItems(
+                    articles,
+                    (context, article) => articleCard(article, context),
+                    'No articles published yet.',
+                  ),
                 ],
               ),
             ),

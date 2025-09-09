@@ -31,11 +31,9 @@ class ScanItemMainPage extends StatelessWidget {
                 fontFamily: 'Poppins',
               ),
             ),
-
             SizedBox(height: 40),
 
             Center(child: uploadImageContainer(context)),
-
             const SizedBox(height: 50),
 
             CustomButton(

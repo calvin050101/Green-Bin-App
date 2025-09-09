@@ -32,7 +32,6 @@ class UserLevelsPage extends StatelessWidget {
                   fontFamily: 'Poppins',
                 ),
               ),
-
               SizedBox(height: 40),
 
               userLevelContainer("0-99 Points", "Seedling 🌱"),

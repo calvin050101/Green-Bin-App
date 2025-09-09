@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:green_bin/helper/list_view_functions.dart';
 import '../models/user_level_model.dart';
 import '../widgets/cust_container.dart';
-import '../widgets/waste_type_summary_card.dart';
-import '../widgets/fun_fact_card.dart';
+import '../widgets/card/waste_type_summary_card.dart';
+import '../widgets/card/fun_fact_card.dart';
 
 import '../helper/waste_type_functions.dart';
 import '../models/user_model.dart';
@@ -60,9 +60,9 @@ class HomePage extends ConsumerWidget {
         const SizedBox(height: 20),
 
         topContainer(context),
-
         const SizedBox(height: 40),
 
+        // Welcome Text
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Text(
@@ -74,16 +74,16 @@ class HomePage extends ConsumerWidget {
             ),
           ),
         ),
-
         const SizedBox(height: 20),
 
+        // Points Progress Container
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: pointsProgressContainer(user, context),
         ),
-
         const SizedBox(height: 20),
 
+        // Carbon Footprint Saved Facts
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Text(
@@ -105,44 +105,41 @@ class HomePage extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: funFactContainer(user, context),
           ),
-
-          const SizedBox(height: 20),
-
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: const Text(
-              "Recycling Stats",
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontWeight: FontWeight.w600,
-                fontSize: 20,
-              ),
-            ),
-          ),
-
           const SizedBox(height: 20),
         ],
 
-        if (wasteTypeCounts.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 140,
-                  child: listHorizontalItems(
-                    wasteTypeCounts,
-                    (context, wasteTypeCount) =>
-                        WasteTypeSummaryCard(summary: wasteTypeCount),
-                    "No waste records found.",
-                  ),
-                ),
-                const SizedBox(height: 30),
-              ],
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: const Text(
+            "Recycling Stats",
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w600,
+              fontSize: 20,
             ),
           ),
+        ),
+        const SizedBox(height: 20),
 
+        // Recycling Waste Counts
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 140,
+                child: listHorizontalItems(
+                  wasteTypeCounts,
+                      (context, wasteTypeCount) =>
+                      WasteTypeSummaryCard(summary: wasteTypeCount),
+                  "No waste records found.",
+                ),
+              ),
+              const SizedBox(height: 30),
+            ],
+          ),
+        ),
         const SizedBox(height: 40),
       ],
     );

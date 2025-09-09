@@ -52,7 +52,6 @@ class ArticleDetailPage extends ConsumerWidget {
                       fontFamily: 'Poppins',
                     ),
                   ),
-
                   const SizedBox(height: 20),
 
                   listVerticalItems(

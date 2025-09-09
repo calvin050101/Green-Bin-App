@@ -50,15 +50,12 @@ class ProfilePage extends StatelessWidget {
                 fontFamily: 'Poppins',
               ),
             ),
-
             const SizedBox(height: 40),
 
             profileInfo(user),
-
             const SizedBox(height: 30),
 
             userStatsContainer(user, context),
-
             const SizedBox(height: 30),
 
             PageDirectContainer(
@@ -67,7 +64,6 @@ class ProfilePage extends StatelessWidget {
                 Navigator.pushNamed(context, UserLevelsPage.routeName);
               },
             ),
-
             const SizedBox(height: 10),
 
             PageDirectContainer(
@@ -76,7 +72,6 @@ class ProfilePage extends StatelessWidget {
                 Navigator.pushNamed(context, RecyclingHistoryPage.routeName);
               },
             ),
-
             const SizedBox(height: 10),
 
             PageDirectContainer(
@@ -85,7 +80,6 @@ class ProfilePage extends StatelessWidget {
                 Navigator.pushNamed(context, SettingsPage.routeName);
               },
             ),
-
             const SizedBox(height: 20),
 
             CustomButton(
@@ -94,7 +88,6 @@ class ProfilePage extends StatelessWidget {
                 await authService.value.signOut();
               },
             ),
-
             const SizedBox(height: 10),
 
             Center(
@@ -140,14 +133,12 @@ class ProfilePage extends StatelessWidget {
                 fontFamily: 'OpenSans',
               ),
             ),
-
             SizedBox(height: 6),
 
             Text(
               "${user.totalPoints!} Points",
               style: TextStyle(fontSize: 18, fontFamily: 'OpenSans'),
             ),
-
             SizedBox(height: 6),
 
             Text(
@@ -182,7 +173,6 @@ class ProfilePage extends StatelessWidget {
             rowValue: '${user.records?.length}',
             context: context,
           ),
-
           SizedBox(height: 15),
 
           userStatsRow(
@@ -218,6 +208,7 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 4),
+
             Text(
               rowValue,
               style: TextStyle(fontSize: 16, fontFamily: 'OpenSans'),

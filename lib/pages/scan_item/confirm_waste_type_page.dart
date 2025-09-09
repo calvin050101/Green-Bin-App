@@ -7,7 +7,7 @@ import 'package:green_bin/providers/waste_type_provider.dart';
 import 'package:green_bin/widgets/custom_button.dart';
 
 import '../../widgets/back_button.dart';
-import '../../widgets/waste_type_option_card.dart';
+import '../../widgets/card/waste_type_option_card.dart';
 
 class ConfirmWasteTypePage extends ConsumerStatefulWidget {
   static String routeName = "/confirm-waste-type";
@@ -21,6 +21,8 @@ class ConfirmWasteTypePage extends ConsumerStatefulWidget {
 
 class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
   WasteTypeModel? _selectedWasteType;
+  String predictedWasteType = "Paper";
+  double predictedConfidence = 0.9;
 
   @override
   Widget build(BuildContext context) {
@@ -49,10 +51,16 @@ class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
                   ),
                 ),
                 const SizedBox(height: 40),
+
                 Center(child: wasteImageContainer(context)),
                 const SizedBox(height: 20),
-                predictedWasteTypeContainer(),
+
+                predictedWasteTypeContainer(
+                  predictedWasteType,
+                  predictedConfidence,
+                ),
                 const SizedBox(height: 30),
+
                 const Text(
                   'Or select the correct waste type below',
                   style: TextStyle(
@@ -78,8 +86,8 @@ class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
                     },
                   ),
                 ),
-
                 const SizedBox(height: 30),
+
                 CustomButton(
                   buttonText: "Confirm",
                   onPressed: () {
@@ -128,7 +136,10 @@ class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
     );
   }
 
-  Container predictedWasteTypeContainer() {
+  Container predictedWasteTypeContainer(
+    String predictedWasteType,
+    double predictedConfidence,
+  ) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(12),
@@ -148,6 +159,7 @@ class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
             ),
           ),
           SizedBox(width: 10),
+
           Text(
             'Paper - 90%',
             style: TextStyle(

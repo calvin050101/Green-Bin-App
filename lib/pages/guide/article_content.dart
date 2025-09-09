@@ -35,7 +35,6 @@ class ArticleContentPage extends StatelessWidget {
                 fontFamily: 'Poppins',
               ),
             ),
-
             SizedBox(height: 40),
 
             MarkdownBody(

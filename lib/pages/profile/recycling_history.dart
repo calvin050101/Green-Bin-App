@@ -2,13 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:green_bin/helper/list_view_functions.dart';
-import 'package:green_bin/helper/waste_type_functions.dart';
 
-import '../../models/record_model.dart';
 import '../../providers/user_provider.dart';
 import '../../widgets/back_button.dart';
-
-import 'package:intl/intl.dart';
+import '../../widgets/card/recycling_record_card.dart';
 
 class RecyclingHistoryPage extends ConsumerWidget {
   static String routeName = "/recycling-history";
@@ -57,7 +54,7 @@ class RecyclingHistoryPage extends ConsumerWidget {
 
                 listVerticalItems(
                   records,
-                  (context, record) => recordCard(record),
+                  (context, record) => RecyclingRecordCard(record: record),
                   'No recycling records found yet.',
                 ),
               ],
@@ -66,33 +63,6 @@ class RecyclingHistoryPage extends ConsumerWidget {
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(child: Text('Error: $error')),
-      ),
-    );
-  }
-
-  Card recordCard(RecordModel record) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      color: Colors.white,
-      borderOnForeground: true,
-      child: ListTile(
-        leading: Icon(
-          getWasteTypeIcon(record.wasteType),
-          color: Colors.green,
-          size: 30,
-        ),
-        title: Text(
-          record.wasteType,
-          style: const TextStyle(
-            fontFamily: 'OpenSans',
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        subtitle: Text(
-          DateFormat('yyyy-MM-dd hh:mm a').format(record.timestamp.toLocal()),
-          style: const TextStyle(fontFamily: 'OpenSans', fontSize: 12),
-        ),
       ),
     );
   }

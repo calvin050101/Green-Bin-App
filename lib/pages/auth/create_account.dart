@@ -24,6 +24,15 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       TextEditingController();
   String errorMessage = '';
 
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
   void registerUser() async {
     late BuildContext dialogContext;
 
@@ -109,6 +118,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
               SizedBox(height: 20),
 
+              // Username Field
               CustFormField(
                 controller: _usernameController,
                 keyboardType: TextInputType.name,
@@ -118,6 +128,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
               const SizedBox(height: 20.0),
 
+              // Email Field
               CustFormField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
@@ -127,6 +138,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
               const SizedBox(height: 20.0),
 
+              // Password Field
               CustFormField(
                 controller: _passwordController,
                 keyboardType: TextInputType.visiblePassword,
@@ -136,6 +148,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
               const SizedBox(height: 20.0),
 
+              // Confirm password field
               CustFormField(
                 controller: _confirmPasswordController,
                 keyboardType: TextInputType.visiblePassword,
@@ -145,10 +158,11 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
               const SizedBox(height: 20.0),
 
-              ErrorMessageText(errorMessage: errorMessage),
-
+              if (errorMessage != "")
+                ErrorMessageText(errorMessage: errorMessage),
               const SizedBox(height: 30.0),
 
+              // Continue Button
               CustomButton(buttonText: "Continue", onPressed: registerUser),
             ],
           ),

@@ -18,6 +18,13 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   String errorMessage = '';
 
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   void loginUser() async {
     late BuildContext dialogContext;
 
@@ -66,7 +73,6 @@ class _LoginPageState extends State<LoginPage> {
                   height: 200.0,
                 ),
               ),
-
               SizedBox(height: 40),
 
               Text(
@@ -77,34 +83,58 @@ class _LoginPageState extends State<LoginPage> {
                   fontFamily: 'Poppins',
                 ),
               ),
-
               SizedBox(height: 20),
 
+              // Email Field
               CustFormField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 hintText: 'Email Address',
                 isPassword: false,
               ),
-
               const SizedBox(height: 20.0),
 
+              // Password field
               CustFormField(
                 controller: _passwordController,
                 keyboardType: TextInputType.visiblePassword,
                 hintText: 'Password',
                 isPassword: true,
               ),
-
               const SizedBox(height: 20.0),
 
-              ErrorMessageText(errorMessage: errorMessage),
+              if (errorMessage != "")
+                ErrorMessageText(errorMessage: errorMessage),
+              const SizedBox(height: 5.0),
 
-              const SizedBox(height: 30.0),
+              // Forgot Password Text
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/forgot-password',
+                      );
+                    },
+                    child: Text(
+                      "Forgot Password?",
+                      style: TextStyle(
+                        color: Colors.brown[700],
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Montserrat',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20.0),
 
+              // Continue Button
               CustomButton(buttonText: "Continue", onPressed: loginUser),
-
-              const SizedBox(height: 40.0),
+              const SizedBox(height: 20.0),
 
               createAccountText(context),
             ],
@@ -143,5 +173,4 @@ class _LoginPageState extends State<LoginPage> {
       ],
     );
   }
-
 }

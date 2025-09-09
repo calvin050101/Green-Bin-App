@@ -178,7 +178,7 @@ class ProfilePage extends StatelessWidget {
           userStatsRow(
             rowIcon: Icon(Icons.cloud, size: 40, color: Colors.grey),
             rowTitle: "CO₂ Saved",
-            rowValue: "${user.totalCarbonSaved} kg",
+            rowValue: "${user.totalCarbonSaved?.toStringAsFixed(2)} kg",
             context: context,
           ),
         ],

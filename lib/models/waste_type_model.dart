@@ -3,14 +3,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class WasteTypeModel {
   final String id;
   final String label;
-  final int points;
-  final double carbonFootprint;
+  final int pointsPerKg;
+  final double carbonPerKg;
 
   WasteTypeModel({
     required this.id,
     required this.label,
-    required this.points,
-    required this.carbonFootprint,
+    required this.pointsPerKg,
+    required this.carbonPerKg,
   });
 
   factory WasteTypeModel.fromFirestore(DocumentSnapshot doc) {
@@ -18,8 +18,8 @@ class WasteTypeModel {
     return WasteTypeModel(
       id: doc.id,
       label: data['label'],
-      points: data['points'],
-      carbonFootprint: data['carbonFootprint'].toDouble()
+      pointsPerKg: data['pointsPerKg'],
+      carbonPerKg: data['carbonPerKg'].toDouble()
     );
   }
 }

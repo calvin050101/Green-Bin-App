@@ -1,11 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:green_bin/widgets/custom_button.dart';
-import 'package:green_bin/widgets/error_message_text.dart';
 
+import '../../widgets/custom_button.dart';
 import '../../services/auth_service.dart';
 import '../../widgets/back_button.dart';
-import '../../widgets/cust_form_field.dart';
+
+import '../../widgets/form/error_message_text.dart';
+import '../../widgets/form/password_form_field.dart';
 
 class ChangePasswordPage extends StatefulWidget {
   static String routeName = "/change-password";
@@ -47,27 +48,21 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             ),
             SizedBox(height: 40),
 
-            CustFormField(
+            PasswordFormField(
               controller: _oldPasswordController,
-              keyboardType: TextInputType.text,
               hintText: 'Old Password',
-              isPassword: true,
             ),
             SizedBox(height: 20),
 
-            CustFormField(
+            PasswordFormField(
               controller: _newPasswordController,
-              keyboardType: TextInputType.text,
               hintText: 'New Password',
-              isPassword: true,
             ),
             SizedBox(height: 20),
 
-            CustFormField(
+            PasswordFormField(
               controller: _confirmNewPasswordController,
-              keyboardType: TextInputType.text,
               hintText: 'Confirm New Password',
-              isPassword: true,
             ),
             SizedBox(height: 10),
 

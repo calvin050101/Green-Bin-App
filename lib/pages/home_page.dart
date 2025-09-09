@@ -93,14 +93,13 @@ class HomePage extends ConsumerWidget {
             style: TextStyle(
               fontFamily: user.totalCarbonSaved == 0 ? 'OpenSans' : 'Poppins',
               fontWeight: FontWeight.w500,
-              fontSize: 20,
+              fontSize: 16,
             ),
           ),
         ),
+        const SizedBox(height: 20),
 
         if (user.totalCarbonSaved! > 0) ...[
-          const SizedBox(height: 10),
-
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: funFactContainer(user, context),
@@ -108,39 +107,41 @@ class HomePage extends ConsumerWidget {
           const SizedBox(height: 20),
         ],
 
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: const Text(
-            "Recycling Stats",
-            style: TextStyle(
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w600,
-              fontSize: 20,
+        if (user.records!.isNotEmpty) ...[
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: const Text(
+              "Recycling Stats",
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w600,
+                fontSize: 20,
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: 20),
+          const SizedBox(height: 20),
 
-        // Recycling Waste Counts
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 140,
-                child: listHorizontalItems(
-                  wasteTypeCounts,
-                      (context, wasteTypeCount) =>
-                      WasteTypeSummaryCard(summary: wasteTypeCount),
-                  "No waste records found.",
+          // Recycling Waste Counts
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 140,
+                  child: listHorizontalItems(
+                    wasteTypeCounts,
+                    (context, wasteTypeCount) =>
+                        WasteTypeSummaryCard(summary: wasteTypeCount),
+                    "No waste records found.",
+                  ),
                 ),
-              ),
-              const SizedBox(height: 30),
-            ],
+                const SizedBox(height: 30),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 40),
+          const SizedBox(height: 40),
+        ],
       ],
     );
   }
@@ -194,11 +195,9 @@ class HomePage extends ConsumerWidget {
     );
   }
 
-  CustContainer pointsProgressContainer(
-    UserModel user,
-    BuildContext context,
-  ) {
+  CustContainer pointsProgressContainer(UserModel user, BuildContext context) {
     final userPoints = user.totalPoints! | 0;
+    final totalCarbonSaved = user.totalCarbonSaved!;
     final UserLevel userLevel = getUserLevel(userPoints);
     final double progress = min(
       (userPoints - userLevel.minPoints) / userLevel.maxPoints,
@@ -211,7 +210,7 @@ class HomePage extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "You have saved ${user.totalCarbonSaved} kg CO₂ by recycling.",
+            "You have saved ${totalCarbonSaved.toStringAsFixed(2)} kg CO₂ by recycling.",
             style: TextStyle(
               color: Theme.of(context).colorScheme.surface,
               fontWeight: FontWeight.w600,

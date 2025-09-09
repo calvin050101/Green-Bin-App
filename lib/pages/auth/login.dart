@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:green_bin/pages/auth/create_account.dart';
-import 'package:green_bin/services/auth_service.dart';
-import 'package:green_bin/widgets/cust_form_field.dart';
-import 'package:green_bin/widgets/custom_button.dart';
-import 'package:green_bin/widgets/error_message_text.dart';
+
+import 'create_account.dart';
+import '../../services/auth_service.dart';
+import '../../widgets/form/cust_form_field.dart';
+import '../../widgets/form/password_form_field.dart';
+import '../../widgets/custom_button.dart';
+import '../../widgets/form/error_message_text.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -90,16 +92,13 @@ class _LoginPageState extends State<LoginPage> {
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 hintText: 'Email Address',
-                isPassword: false,
               ),
               const SizedBox(height: 20.0),
 
               // Password field
-              CustFormField(
+              PasswordFormField(
                 controller: _passwordController,
-                keyboardType: TextInputType.visiblePassword,
                 hintText: 'Password',
-                isPassword: true,
               ),
               const SizedBox(height: 20.0),
 

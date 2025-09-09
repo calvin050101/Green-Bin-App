@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:green_bin/models/waste_type_model.dart';
 import 'package:green_bin/widgets/custom_button.dart';
-import 'package:green_bin/widgets/error_message_text.dart';
+import 'package:green_bin/widgets/form/error_message_text.dart';
 
 import '../../providers/user_provider.dart';
 
 class CompleteScanPage extends ConsumerStatefulWidget {
   static String routeName = "/complete-scan";
   final WasteTypeModel confirmedWasteType;
+  final double weight;
 
-  const CompleteScanPage({super.key, required this.confirmedWasteType});
+  const CompleteScanPage({
+    super.key,
+    required this.confirmedWasteType,
+    required this.weight,
+  });
 
   @override
   ConsumerState<CompleteScanPage> createState() => _CompleteScanPageState();
@@ -20,18 +25,23 @@ class _CompleteScanPageState extends ConsumerState<CompleteScanPage> {
   bool _recordAdded = false;
   String? _errorMessage;
   late WasteTypeModel _confirmedWasteType;
+  late double _weight;
 
   @override
   void initState() {
     super.initState();
     _confirmedWasteType = widget.confirmedWasteType;
+    _weight = widget.weight;
     _addRecordToUserHistory();
   }
 
   Future<void> _addRecordToUserHistory() async {
     try {
       final userProfileService = ref.read(userProfileServiceProvider);
-      await userProfileService.addWasteRecord(wasteType: _confirmedWasteType);
+      await userProfileService.addWasteRecord(
+        wasteType: _confirmedWasteType,
+        weight: _weight,
+      );
       setState(() {
         _recordAdded = true;
       });
@@ -44,6 +54,9 @@ class _CompleteScanPageState extends ConsumerState<CompleteScanPage> {
 
   @override
   Widget build(BuildContext context) {
+    final totalPoints = (_confirmedWasteType.pointsPerKg * _weight).round();
+    final totalCarbon = _confirmedWasteType.carbonPerKg * _weight;
+
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.transparent),
 
@@ -84,10 +97,10 @@ class _CompleteScanPageState extends ConsumerState<CompleteScanPage> {
               const SizedBox(height: 20),
 
               _buildInfoRow('Waste Type:', _confirmedWasteType.label),
-              _buildInfoRow('Points:', '${_confirmedWasteType.points}'),
+              _buildInfoRow('Points:', '$totalPoints points'),
               _buildInfoRow(
                 'Carbon Footprint Saved:',
-                '${_confirmedWasteType.carbonFootprint.toStringAsPrecision(2)} kg CO₂',
+                '${totalCarbon.toStringAsFixed(2)} kg CO₂',
               ),
 
               const SizedBox(height: 40),

@@ -8,6 +8,7 @@ import 'package:green_bin/widgets/custom_button.dart';
 
 import '../../widgets/back_button.dart';
 import '../../widgets/card/waste_type_option_card.dart';
+import '../../widgets/form/cust_form_field.dart';
 
 class ConfirmWasteTypePage extends ConsumerStatefulWidget {
   static String routeName = "/confirm-waste-type";
@@ -23,6 +24,16 @@ class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
   WasteTypeModel? _selectedWasteType;
   String predictedWasteType = "Paper";
   double predictedConfidence = 0.9;
+
+  final TextEditingController _weightController = TextEditingController();
+  String errorMessage = '';
+
+  @override
+  void dispose() {
+    _selectedWasteType = null;
+    _weightController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +82,7 @@ class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
                 ),
                 const SizedBox(height: 15),
 
+                // Waste Type Option Cards
                 if (wasteTypes.isEmpty)
                   const Center(child: Text("No waste types found")),
 
@@ -88,6 +100,14 @@ class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
                 ),
                 const SizedBox(height: 30),
 
+                // Weight Input Field
+                CustFormField(
+                  controller: _weightController,
+                  keyboardType: TextInputType.number,
+                  hintText: 'Enter Weight (kg)',
+                ),
+                const SizedBox(height: 30),
+
                 CustomButton(
                   buttonText: "Confirm",
                   onPressed: () {
@@ -99,12 +119,26 @@ class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
                       );
                       return;
                     }
+
+                    final weight = double.tryParse(_weightController.text);
+                    if (weight == null || weight <= 0 || weight > 100) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            "Please enter a valid weight (0–100kg)",
+                          ),
+                        ),
+                      );
+                      return;
+                    }
+
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                         builder:
                             (context) => CompleteScanPage(
                               confirmedWasteType: _selectedWasteType!,
+                              weight: weight,
                             ),
                       ),
                     );

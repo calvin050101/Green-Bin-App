@@ -39,7 +39,8 @@ class WasteTypeOptionCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   "${wasteType.label} "
-                  "(${wasteType.points} pts, ${wasteType.carbonFootprint.toStringAsFixed(2)} kg CO₂)",
+                  "(${wasteType.pointsPerKg} pts, "
+                    "${wasteType.carbonPerKg.toStringAsFixed(2)} kg CO₂) / kg",
                   style: TextStyle(
                     fontSize: 16,
                     fontFamily: "Montserrat",

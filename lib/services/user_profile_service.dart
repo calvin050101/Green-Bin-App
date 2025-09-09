@@ -47,7 +47,10 @@ class UserProfileService {
   }
 
   /// --- Add Waste Record and update totals ---
-  Future<void> addWasteRecord({required WasteTypeModel wasteType}) async {
+  Future<void> addWasteRecord({
+    required WasteTypeModel wasteType,
+    required double weight // in kg
+  }) async {
     final currentUser = _auth.currentUser;
     if (currentUser == null) {
       throw Exception("No user is currently signed in to add a record.");
@@ -60,6 +63,7 @@ class UserProfileService {
       id: recordsRef.id,
       timestamp: DateTime.now(),
       wasteType: wasteType.label,
+      weight: weight,
     );
 
     await _firestore.runTransaction((transaction) async {
@@ -69,13 +73,16 @@ class UserProfileService {
       final currentCarbon =
           (userDoc.data()?['totalCarbonSaved'] ?? 0.0).toDouble();
 
+      final earnedPoints = (wasteType.pointsPerKg * weight).round();
+      final savedCarbon = wasteType.carbonPerKg * weight;
+
       // Add new record
       transaction.set(recordsRef, newRecord.toFirestore());
 
       // Update totals
       transaction.update(userDocRef, {
-        'totalPoints': currentPoints + wasteType.points,
-        'totalCarbonSaved': currentCarbon + wasteType.carbonFootprint,
+        'totalPoints': currentPoints + earnedPoints,
+        'totalCarbonSaved': currentCarbon + savedCarbon,
       });
     });
 

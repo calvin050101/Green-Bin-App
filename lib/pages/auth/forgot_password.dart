@@ -2,9 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../widgets/back_button.dart';
-import '../../widgets/cust_form_field.dart';
+import '../../widgets/form/cust_form_field.dart';
 import '../../widgets/custom_button.dart';
-import '../../widgets/error_message_text.dart';
+import '../../widgets/form/error_message_text.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   static const routeName = '/forgot-password';
@@ -81,7 +81,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 hintText: 'Email Address',
-                isPassword: false,
               ),
               const SizedBox(height: 20.0),
 

@@ -4,21 +4,19 @@ class CustFormField extends StatefulWidget {
   final TextEditingController controller;
   final TextInputType keyboardType;
   final String hintText;
-  final bool isPassword;
 
   const CustFormField({
     super.key,
     required this.controller,
     required this.keyboardType,
     required this.hintText,
-    required this.isPassword,
   });
 
   @override
-  State<CustFormField> createState() => _CustFormFieldState();
+  State<CustFormField> createState() => CustFormFieldState();
 }
 
-class _CustFormFieldState extends State<CustFormField> {
+class CustFormFieldState extends State<CustFormField> {
   @override
   Widget build(BuildContext context) {
     final OutlineInputBorder fieldBorder = OutlineInputBorder(
@@ -28,7 +26,6 @@ class _CustFormFieldState extends State<CustFormField> {
 
     return TextFormField(
       controller: widget.controller,
-      obscureText: widget.isPassword,
       keyboardType: widget.keyboardType,
       decoration: InputDecoration(
         hintText: widget.hintText,

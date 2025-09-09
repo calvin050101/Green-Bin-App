@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:green_bin/widgets/loading_error.dart';
+import 'package:green_bin/widgets/form/loading_error.dart';
 
 import '../../helper/list_view_functions.dart';
 import '../../providers/recycling_center_provider.dart';

@@ -23,7 +23,7 @@ class UserModel {
       email: data['email'],
       username: data['username'],
       totalPoints: data['totalPoints'],
-      totalCarbonSaved: data['totalCarbonSaved'],
+      totalCarbonSaved: data['totalCarbonSaved'].toDouble(),
     );
   }
 
@@ -40,7 +40,7 @@ class UserModel {
       email: email ?? this.email,
       username: username ?? this.username,
       totalPoints: totalPoints ?? this.totalPoints,
-      totalCarbonSaved: totalCarbonSaved ?? this.totalCarbonSaved,
+      totalCarbonSaved: totalCarbonSaved ?? this.totalCarbonSaved?.toDouble(),
       records: records ?? this.records,
     );
   }

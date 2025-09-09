@@ -1,14 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:green_bin/widgets/custom_button.dart';
-import 'package:green_bin/widgets/error_message_text.dart';
 
 import '../../providers/user_provider.dart';
 import '../../services/database_service.dart';
 import '../../services/auth_service.dart';
 import '../../widgets/back_button.dart';
-import '../../widgets/cust_form_field.dart';
+import '../../widgets/custom_button.dart';
+import '../../widgets/form/error_message_text.dart';
+import '../../widgets/form/cust_form_field.dart';
 
 class UpdateUsernamePage extends ConsumerStatefulWidget {
   static String routeName = "/update-username";
@@ -80,7 +80,6 @@ class _UpdateUsernamePageState extends ConsumerState<UpdateUsernamePage> {
             controller: _usernameController,
             keyboardType: TextInputType.text,
             hintText: 'New Username',
-            isPassword: false,
           ),
           const SizedBox(height: 20.0),
 

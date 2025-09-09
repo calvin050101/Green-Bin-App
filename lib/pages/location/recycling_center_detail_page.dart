@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:green_bin/providers/recycling_center_provider.dart';
 import 'package:green_bin/helper/location_functions.dart';
-import 'package:green_bin/widgets/loading_error.dart';
+import 'package:green_bin/widgets/form/loading_error.dart';
 import '../../models/recycling_center.dart';
 import '../../widgets/back_button.dart';
 

@@ -8,7 +8,7 @@ Widget listVerticalItems<T>(
   if (items.isEmpty) {
     return Center(
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 50.0),
+        padding: EdgeInsets.symmetric(vertical: 30.0),
         child: Text(emptyText),
       ),
     );

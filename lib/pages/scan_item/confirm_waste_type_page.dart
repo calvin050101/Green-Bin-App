@@ -86,17 +86,30 @@ class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
                 if (wasteTypes.isEmpty)
                   const Center(child: Text("No waste types found")),
 
-                ...wasteTypes.map(
-                  (waste) => WasteTypeOptionCard(
-                    wasteType: waste,
-                    icon: getWasteTypeIcon(waste.label),
-                    isSelected: _selectedWasteType?.id == waste.id,
-                    onTap: () {
-                      setState(() {
-                        _selectedWasteType = waste;
-                      });
-                    },
+                ExpansionTile(
+                  title: const Text(
+                    "Select Waste Type",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                      fontFamily: 'OpenSans',
+                    ),
                   ),
+                  children:
+                      wasteTypes
+                          .map(
+                            (waste) => WasteTypeOptionCard(
+                              wasteType: waste,
+                              icon: getWasteTypeIcon(waste.label),
+                              isSelected: _selectedWasteType?.id == waste.id,
+                              onTap: () {
+                                setState(() {
+                                  _selectedWasteType = waste;
+                                });
+                              },
+                            ),
+                          )
+                          .toList(),
                 ),
                 const SizedBox(height: 30),
 

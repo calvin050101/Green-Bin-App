@@ -1,21 +1,22 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'create_account.dart';
-import '../../services/auth_service.dart';
+import '../../providers/user_provider.dart';
 import '../../widgets/form/cust_form_field.dart';
 import '../../widgets/form/password_form_field.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/form/error_message_text.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  ConsumerState<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends ConsumerState<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   String errorMessage = '';
@@ -40,9 +41,10 @@ class _LoginPageState extends State<LoginPage> {
       barrierDismissible: true,
     );
 
-    // try sign in
     try {
-      await authService.value.login(
+      // Call UserService via Riverpod
+      final userService = ref.read(userServiceProvider);
+      await userService.login(
         email: _emailController.text,
         password: _passwordController.text,
       );
@@ -65,7 +67,6 @@ class _LoginPageState extends State<LoginPage> {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
         child: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
@@ -102,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 20.0),
 
-              if (errorMessage != "")
+              if (errorMessage.isNotEmpty)
                 ErrorMessageText(errorMessage: errorMessage),
               const SizedBox(height: 5.0),
 
@@ -112,10 +113,7 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        '/forgot-password',
-                      );
+                      Navigator.pushNamed(context, '/forgot-password');
                     },
                     child: Text(
                       "Forgot Password?",
@@ -154,7 +152,6 @@ class _LoginPageState extends State<LoginPage> {
             fontFamily: 'Montserrat',
           ),
         ),
-
         GestureDetector(
           onTap: () {
             Navigator.pushNamed(context, CreateAccountPage.routeName);

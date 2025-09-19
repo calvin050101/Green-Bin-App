@@ -11,8 +11,16 @@ class RecyclingCenterDetailPage extends ConsumerWidget {
 
   const RecyclingCenterDetailPage({super.key});
 
-  Widget _buildDetailRow(BuildContext context, String title, String? value) {
-    if (value == null || value.isEmpty || value == 'N/A') {
+  Widget _buildDetailRow(
+    BuildContext context,
+    String title,
+    String? value, {
+    List<Widget>? children,
+  }) {
+    final hasValue = value != null && value.isNotEmpty && value != 'N/A';
+    final hasChildren = children != null && children.isNotEmpty;
+
+    if (!hasValue && !hasChildren) {
       return const SizedBox.shrink();
     }
 
@@ -29,17 +37,16 @@ class RecyclingCenterDetailPage extends ConsumerWidget {
               fontFamily: 'OpenSans',
             ),
           ),
-
           const SizedBox(height: 4),
-
-          Text(
-            value,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Colors.black87,
-              fontFamily: 'OpenSans',
+          if (hasValue)
+            Text(
+              value,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: Colors.black87,
+                fontFamily: 'OpenSans',
+              ),
             ),
-          ),
-
+          if (hasChildren) ...children,
           const Divider(height: 16, thickness: 0.5),
         ],
       ),
@@ -123,7 +130,21 @@ class RecyclingCenterDetailPage extends ConsumerWidget {
                     _buildDetailRow(
                       context,
                       'Operating Hours',
-                      centerDetail?.openingHours!.weekdayText.join(', '),
+                      null, // We'll pass null so the normal text doesn't render
+                      children:
+                          centerDetail!.openingHours!.weekdayText
+                              .map(
+                                (day) => Text(
+                                  day,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodyLarge?.copyWith(
+                                    color: Colors.black87,
+                                    fontFamily: 'OpenSans',
+                                  ),
+                                ),
+                              )
+                              .toList(),
                     ),
 
                   _buildDetailRow(

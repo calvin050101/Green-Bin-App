@@ -1,28 +1,28 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:green_bin/services/auth_service.dart';
-import 'package:green_bin/services/database_service.dart';
-import 'package:green_bin/widgets/custom_button.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../providers/user_provider.dart';
 import '../../widgets/back_button.dart';
 import '../../widgets/form/cust_form_field.dart';
 import '../../widgets/form/error_message_text.dart';
 import '../../widgets/form/password_form_field.dart';
+import '../../widgets/custom_button.dart';
 
-class CreateAccountPage extends StatefulWidget {
+class CreateAccountPage extends ConsumerStatefulWidget {
   static String routeName = "/create-account";
   const CreateAccountPage({super.key});
 
   @override
-  State<CreateAccountPage> createState() => _CreateAccountPageState();
+  ConsumerState<CreateAccountPage> createState() => _CreateAccountPageState();
 }
 
-class _CreateAccountPageState extends State<CreateAccountPage> {
+class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  TextEditingController();
   String errorMessage = '';
 
   @override
@@ -58,18 +58,15 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       return;
     }
 
-    // try creating the user
     try {
-      // create user
-      UserCredential? userCredential = await authService.value.createAccount(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
+      // 🔹 Use UserService via Riverpod
+      final userService = ref.read(userServiceProvider);
 
-      await DatabaseService().createUser(
-        userCredential: userCredential,
-        username: _usernameController.text,
+      // Create account
+      await userService.createAccount(
         email: _emailController.text,
+        username: _usernameController.text,
+        password: _passwordController.text,
       );
 
       if (dialogContext.mounted) Navigator.pop(dialogContext);
@@ -90,12 +87,10 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         leadingWidth: 70,
         leading: CustBackButton(),
       ),
-
       body: Padding(
         padding: const EdgeInsets.only(left: 20, right: 20, bottom: 40),
         child: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
@@ -105,7 +100,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   height: 200.0,
                 ),
               ),
-
               SizedBox(height: 40),
 
               Text(
@@ -116,7 +110,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   fontFamily: 'Poppins',
                 ),
               ),
-
               SizedBox(height: 20),
 
               // Username Field
@@ -125,7 +118,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 keyboardType: TextInputType.name,
                 hintText: 'Username',
               ),
-
               const SizedBox(height: 20.0),
 
               // Email Field
@@ -134,7 +126,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 keyboardType: TextInputType.emailAddress,
                 hintText: 'Email Address',
               ),
-
               const SizedBox(height: 20.0),
 
               // Password Field
@@ -142,7 +133,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 controller: _passwordController,
                 hintText: 'Password',
               ),
-
               const SizedBox(height: 20.0),
 
               // Confirm password field
@@ -150,14 +140,12 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 controller: _confirmPasswordController,
                 hintText: 'Confirm Password',
               ),
-
               const SizedBox(height: 20.0),
 
-              if (errorMessage != "")
+              if (errorMessage.isNotEmpty)
                 ErrorMessageText(errorMessage: errorMessage),
               const SizedBox(height: 30.0),
 
-              // Continue Button
               CustomButton(buttonText: "Continue", onPressed: registerUser),
             ],
           ),

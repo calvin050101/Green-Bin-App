@@ -1,10 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../providers/user_provider.dart';
-import '../../services/database_service.dart';
-import '../../services/auth_service.dart';
 import '../../widgets/back_button.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/form/error_message_text.dart';
@@ -52,11 +49,9 @@ class _UpdateUsernamePageState extends ConsumerState<UpdateUsernamePage> {
         leadingWidth: 70,
         leading: CustBackButton(),
       ),
-
-      body:
-          _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : _mainBody(),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _mainBody(),
     );
   }
 
@@ -101,20 +96,13 @@ class _UpdateUsernamePageState extends ConsumerState<UpdateUsernamePage> {
       _errorMessage = null;
     });
 
-    User? currentUser = authService.value.currentUser;
-    if (currentUser == null) return;
-
     try {
-      final userProfileService = ref.read(userProfileServiceProvider);
-
-      final newUsername = _usernameController.text;
-      await userProfileService.updateUserData(
-        newUsername: _usernameController.text.trim(),
-      );
+      final userService = ref.read(userServiceProvider);
+      await userService.updateUsername(_usernameController.text.trim());
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text(
               'Profile updated successfully!',
               style: TextStyle(color: Colors.white),
@@ -124,13 +112,7 @@ class _UpdateUsernamePageState extends ConsumerState<UpdateUsernamePage> {
         );
         Navigator.pop(context);
       }
-
-      await authService.value.updateUsername(newUsername);
-      await currentUser.reload();
-      currentUser = authService.value.currentUser;
-
-      await DatabaseService().updateUsername(newUsername);
-    } on FirebaseAuthException catch (e) {
+    } catch (e) {
       setState(() {
         _errorMessage = e.toString();
       });
@@ -142,5 +124,5 @@ class _UpdateUsernamePageState extends ConsumerState<UpdateUsernamePage> {
       }
     }
   }
-
 }
+

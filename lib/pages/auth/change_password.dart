@@ -1,22 +1,23 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../widgets/custom_button.dart';
-import '../../services/auth_service.dart';
 import '../../widgets/back_button.dart';
-
 import '../../widgets/form/error_message_text.dart';
 import '../../widgets/form/password_form_field.dart';
+import '../../providers/user_provider.dart';
 
-class ChangePasswordPage extends StatefulWidget {
+class ChangePasswordPage extends ConsumerStatefulWidget {
   static String routeName = "/change-password";
+
   const ChangePasswordPage({super.key});
 
   @override
-  State<ChangePasswordPage> createState() => _ChangePasswordPageState();
+  ConsumerState<ChangePasswordPage> createState() => _ChangePasswordPageState();
 }
 
-class _ChangePasswordPageState extends State<ChangePasswordPage> {
+class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
   final TextEditingController _oldPasswordController = TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _confirmNewPasswordController =
@@ -32,7 +33,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
         leadingWidth: 70,
         leading: CustBackButton(),
       ),
-
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
@@ -46,28 +46,28 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 fontFamily: 'Poppins',
               ),
             ),
-            SizedBox(height: 40),
+            const SizedBox(height: 40),
 
             PasswordFormField(
               controller: _oldPasswordController,
               hintText: 'Old Password',
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             PasswordFormField(
               controller: _newPasswordController,
               hintText: 'New Password',
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             PasswordFormField(
               controller: _confirmNewPasswordController,
               hintText: 'Confirm New Password',
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
 
             ErrorMessageText(errorMessage: errorMessage),
-            SizedBox(height: 40),
+            const SizedBox(height: 40),
 
             CustomButton(
               buttonText: "Change Password",
@@ -82,7 +82,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   void changePassword() async {
     // show loading circle
     late BuildContext dialogContext;
-
     showDialog(
       context: context,
       builder: (BuildContext ctx) {
@@ -102,9 +101,10 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     }
 
     try {
-      User? currentUser = authService.value.currentUser;
+      final userService = ref.read(userServiceProvider);
+      final currentUser = userService.currentUser;
 
-      await authService.value.resetPassword(
+      await userService.resetPassword(
         email: currentUser!.email!,
         currentPassword: _oldPasswordController.text,
         newPassword: _newPasswordController.text,

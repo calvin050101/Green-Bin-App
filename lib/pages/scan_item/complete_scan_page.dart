@@ -37,8 +37,8 @@ class _CompleteScanPageState extends ConsumerState<CompleteScanPage> {
 
   Future<void> _addRecordToUserHistory() async {
     try {
-      final userProfileService = ref.read(userProfileServiceProvider);
-      await userProfileService.addWasteRecord(
+      final userService = ref.read(userServiceProvider);
+      await userService.addWasteRecord(
         wasteType: _confirmedWasteType,
         weight: _weight,
       );

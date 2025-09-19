@@ -1,71 +1,52 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../models/record_model.dart';
 import '../models/user_model.dart';
-import '../services/user_profile_service.dart';
+import '../services/user_service.dart';
 
-final firebaseAuthProvider = Provider((ref) => FirebaseAuth.instance);
-final firebaseFirestoreProvider = Provider((ref) => FirebaseFirestore.instance);
+/// Firebase singletons
+final firebaseAuthProvider = Provider<FirebaseAuth>(
+  (ref) => FirebaseAuth.instance,
+);
+final firebaseFirestoreProvider = Provider<FirebaseFirestore>(
+  (ref) => FirebaseFirestore.instance,
+);
 
-final currentUserProvider = FutureProvider<UserModel?>((ref) async {
+/// UserService wrapper
+final userServiceProvider = Provider<UserService>((ref) {
   final auth = ref.watch(firebaseAuthProvider);
-  final firestore = ref.watch(firebaseFirestoreProvider);
+  return UserService(auth: auth, ref: ref);
+});
 
-  final user = auth.currentUser;
-  if (user == null) {
-    return null;
-  }
+/// Current user with profile + records
+final currentUserProvider = FutureProvider<UserModel?>((ref) async {
+  final userService = ref.watch(userServiceProvider);
+  final user = userService.currentUser;
 
-  final docSnapshot = await firestore.collection('users').doc(user.uid).get();
+  if (user == null) return null;
 
+  final docSnapshot = await userService.getUserData();
   if (!docSnapshot.exists) {
     return UserModel(
-        uid: user.uid,
-        email: user.email,
-        totalPoints: 0,
-        totalCarbonSaved: 0,
-        records: []
+      uid: user.uid,
+      email: user.email,
+      totalPoints: 0,
+      totalCarbonSaved: 0,
+      records: [],
     );
   }
 
-  UserModel userModel = UserModel.fromFirestore(docSnapshot.data()!, user.uid);
+  var userModel = UserModel.fromFirestore(docSnapshot.data()!, user.uid);
+  final records = await userService.getUserRecords(user.uid);
 
-  // --- Fetch the 'records' subcollection ---
-  final recordsSnapshot =
-      await firestore
-          .collection('users')
-          .doc(user.uid)
-          .collection('records')
-          .orderBy('timestamp', descending: true)
-          .get();
-
-  List<RecordModel> records =
-      recordsSnapshot.docs
-          .map((doc) => RecordModel.fromFirestore(doc.data(), doc.id))
-          .toList();
-  userModel = userModel.copyWith(records: records);
-
-  return userModel;
+  return userModel.copyWith(records: records);
 });
 
+/// Real-time stream of user’s records
 final userRecordsStreamProvider =
-    StreamProvider.family<List<RecordModel>, String>((ref, userId) {
-      final firestore = ref.watch(firebaseFirestoreProvider);
-      return firestore
-          .collection('users')
-          .doc(userId)
-          .collection('records')
-          .orderBy('timestamp', descending: true) // Order as desired
-          .snapshots() // Get real-time updates
-          .map(
-            (snapshot) =>
-                snapshot.docs
-                    .map((doc) => RecordModel.fromFirestore(doc.data(), doc.id))
-                    .toList(),
-          );
-    });
-
-final userProfileServiceProvider = Provider((ref) {
-  return UserProfileService(ref);
+StreamProvider.family<List<RecordModel>, String>((ref, userId) {
+  final userService = ref.watch(userServiceProvider);
+  return userService.watchUserRecords(userId);
 });

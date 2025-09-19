@@ -8,15 +8,15 @@ import 'package:green_bin/widgets/custom_button.dart';
 import 'package:green_bin/widgets/page_direct_container.dart';
 import '../../models/user_level_model.dart';
 import '../../models/user_model.dart';
-import '../../services/auth_service.dart';
+import '../../providers/user_provider.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends ConsumerWidget {
   final AsyncValue<UserModel?> userAsyncValue;
 
   const ProfilePage({super.key, required this.userAsyncValue});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return userAsyncValue.when(
       data: (user) {
         if (user == null) {
@@ -25,7 +25,7 @@ class ProfilePage extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(backgroundColor: Colors.transparent),
-          body: showPage(user, context),
+          body: showPage(user, context, ref),
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -33,14 +33,12 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget showPage(UserModel user, BuildContext context) {
+  Widget showPage(UserModel user, BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20, bottom: 40),
       child: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-
           children: [
             Text(
               'Profile',
@@ -82,10 +80,12 @@ class ProfilePage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
+            // Logout button
             CustomButton(
               buttonText: "Log Out",
               onPressed: () async {
-                await authService.value.signOut();
+                final userService = ref.read(userServiceProvider);
+                await userService.signOut();
               },
             ),
             const SizedBox(height: 10),
@@ -106,9 +106,6 @@ class ProfilePage extends StatelessWidget {
     final UserLevel userLevel = getUserLevel(user.totalPoints!);
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-
       children: [
         Container(
           width: 90,
@@ -119,9 +116,7 @@ class ProfilePage extends StatelessWidget {
           ),
           child: Icon(Icons.person, size: 90, color: Color(0xFF70777F)),
         ),
-
         SizedBox(width: 25),
-
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -134,13 +129,11 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 6),
-
             Text(
               "${user.totalPoints!} Points",
               style: TextStyle(fontSize: 18, fontFamily: 'OpenSans'),
             ),
             SizedBox(height: 6),
-
             Text(
               userLevel.levelName,
               style: TextStyle(
@@ -156,10 +149,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  CustContainer userStatsContainer(
-    UserModel user,
-    BuildContext context,
-  ) {
+  CustContainer userStatsContainer(UserModel user, BuildContext context) {
     return CustContainer(
       child: Column(
         children: [
@@ -174,7 +164,6 @@ class ProfilePage extends StatelessWidget {
             context: context,
           ),
           SizedBox(height: 15),
-
           userStatsRow(
             rowIcon: Icon(Icons.cloud, size: 40, color: Colors.grey),
             rowTitle: "CO₂ Saved",
@@ -208,7 +197,6 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 4),
-
             Text(
               rowValue,
               style: TextStyle(fontSize: 16, fontFamily: 'OpenSans'),

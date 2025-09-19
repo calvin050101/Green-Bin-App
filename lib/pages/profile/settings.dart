@@ -1,17 +1,21 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:green_bin/pages/auth/update_username.dart';
-import 'package:green_bin/services/auth_service.dart';
 
+import '../../providers/user_provider.dart';
 import '../../widgets/back_button.dart';
 import '../auth/change_password.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends ConsumerWidget {
   static String routeName = "/settings";
 
   const SettingsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentUser = FirebaseAuth.instance.currentUser; // to grab email
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -19,15 +23,13 @@ class SettingsPage extends StatelessWidget {
         leadingWidth: 70,
         leading: CustBackButton(),
       ),
-
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 25),
-
-            Text(
+            const SizedBox(height: 25),
+            const Text(
               'Settings',
               style: TextStyle(
                 fontWeight: FontWeight.w700,
@@ -35,9 +37,9 @@ class SettingsPage extends StatelessWidget {
                 fontFamily: 'Poppins',
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
-            Text(
+            const Text(
               'Profile',
               style: TextStyle(
                 fontWeight: FontWeight.w600,
@@ -45,15 +47,14 @@ class SettingsPage extends StatelessWidget {
                 fontFamily: 'OpenSans',
               ),
             ),
-            SizedBox(height: 15),
+            const SizedBox(height: 15),
 
             profileUpdateLink(
               route: UpdateUsernamePage.routeName,
               name: "Update Username",
               context: context,
             ),
-
-            Divider(color: Color(0xFFD6D6D6), thickness: 1),
+            const Divider(color: Color(0xFFD6D6D6), thickness: 1),
 
             profileUpdateLink(
               route: ChangePasswordPage.routeName,
@@ -62,7 +63,7 @@ class SettingsPage extends StatelessWidget {
             ),
             const SizedBox(height: 40),
 
-            Text(
+            const Text(
               'Device',
               style: TextStyle(
                 fontWeight: FontWeight.w600,
@@ -70,11 +71,10 @@ class SettingsPage extends StatelessWidget {
                 fontFamily: 'OpenSans',
               ),
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
 
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
+              children: const [
                 Icon(Icons.location_pin),
                 SizedBox(width: 10),
                 Text(
@@ -83,12 +83,10 @@ class SettingsPage extends StatelessWidget {
                 ),
               ],
             ),
-
-            Divider(color: Color(0xFFD6D6D6), thickness: 1),
+            const Divider(color: Color(0xFFD6D6D6), thickness: 1),
 
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
+              children: const [
                 Icon(Icons.camera_alt_outlined),
                 SizedBox(width: 10),
                 Text(
@@ -99,7 +97,33 @@ class SettingsPage extends StatelessWidget {
             ),
             const SizedBox(height: 40),
 
-            deleteAccountButton(context),
+            // ✅ Delete Account
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed:
+                    () => _confirmDeleteAccount(
+                      context,
+                      ref,
+                      currentUser?.email ?? "",
+                    ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.redAccent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                ),
+                child: const Text(
+                  'Delete Account',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'Montserrat',
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -112,49 +136,25 @@ class SettingsPage extends StatelessWidget {
     required BuildContext context,
   }) {
     return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(context, route);
-      },
+      onTap: () => Navigator.pushNamed(context, route),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(name, style: TextStyle(fontSize: 20, fontFamily: 'OpenSans')),
-
-          Icon(Icons.arrow_forward_ios_rounded),
+          Text(
+            name,
+            style: const TextStyle(fontSize: 20, fontFamily: 'OpenSans'),
+          ),
+          const Icon(Icons.arrow_forward_ios_rounded),
         ],
       ),
     );
   }
 
-  SizedBox deleteAccountButton(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed:
-            () => _confirmDeleteAccount(
-              context,
-              authService.value.currentUser!.email!,
-            ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.redAccent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-        ),
-        child: const Text(
-          'Delete Account',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18.0,
-            fontWeight: FontWeight.w700,
-            fontFamily: 'Montserrat',
-          ),
-        ),
-      ),
-    );
-  }
-
-  Future<void> _confirmDeleteAccount(BuildContext context, String email) async {
+  Future<void> _confirmDeleteAccount(
+    BuildContext context,
+    WidgetRef ref,
+    String email,
+  ) async {
     final shouldDelete = await showDialog<bool>(
       context: context,
       builder:
@@ -164,55 +164,56 @@ class SettingsPage extends StatelessWidget {
               "Are you sure you want to permanently delete your account? "
               "This action cannot be undone.",
             ),
-            backgroundColor: Colors.white,
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(ctx).pop(false),
-                child: const Text("Cancel", style: TextStyle(color: Colors.black)),
+                child: const Text(
+                  "Cancel",
+                  style: TextStyle(color: Colors.black),
+                ),
               ),
               ElevatedButton(
                 onPressed: () => Navigator.of(ctx).pop(true),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.redAccent,
                 ),
-                child: const Text("Delete", style: TextStyle(color: Colors.white)),
+                child: const Text(
+                  "Delete",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           ),
     );
 
-    if (!context.mounted) return;
+    if (!context.mounted || shouldDelete != true) return;
 
-    if (shouldDelete == true) {
-      final password = await _showPasswordDialog(context);
-      if (password == null || password.isEmpty) return;
+    final password = await _showPasswordDialog(context);
+    if (password == null || password.isEmpty) return;
 
-      try {
-        await authService.value.deleteAccount(
-            email: authService.value.currentUser!.email!,
-            password: password
-        );
+    try {
+      await ref
+          .read(userServiceProvider)
+          .deleteAccount(email: email, password: password);
 
-        if (!context.mounted) return;
-        Navigator.of(context).pushReplacementNamed('/');
-      } catch (e) {
-        if (!context.mounted) return;
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("Error deleting account: $e")));
-      }
+      if (!context.mounted) return;
+      Navigator.of(context).pushReplacementNamed('/');
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error deleting account: $e")));
     }
   }
 
   Future<String?> _showPasswordDialog(BuildContext context) async {
-    final TextEditingController passwordController = TextEditingController();
+    final passwordController = TextEditingController();
 
     return showDialog<String>(
       context: context,
       builder:
           (ctx) => AlertDialog(
             title: const Text("Re-enter Password"),
-            backgroundColor: Colors.white,
             content: TextField(
               controller: passwordController,
               obscureText: true,
@@ -224,16 +225,20 @@ class SettingsPage extends StatelessWidget {
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(ctx).pop(null),
-                child: const Text("Cancel", style: TextStyle(color: Colors.black)),
+                child: const Text(
+                  "Cancel",
+                  style: TextStyle(color: Colors.black),
+                ),
               ),
               ElevatedButton(
-                onPressed: () {
-                  Navigator.of(ctx).pop(passwordController.text);
-                },
+                onPressed: () => Navigator.of(ctx).pop(passwordController.text),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.redAccent,
                 ),
-                child: const Text("Confirm", style: TextStyle(color: Colors.white)),
+                child: const Text(
+                  "Confirm",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           ),

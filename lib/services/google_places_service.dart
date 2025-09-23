@@ -16,7 +16,6 @@ class GooglePlacesService {
 
   GooglePlacesService(this._places);
 
-  // ... (Your existing searchRecyclingCenters method) ...
   Future<List<RecyclingCenter>> searchRecyclingCenters({
     required double latitude,
     required double longitude,
@@ -64,11 +63,9 @@ class GooglePlacesService {
     }
   }
 
-  // NEW METHOD: Get detailed information for a specific place_id
+  // Get detailed information for a specific place_id
   Future<PlaceDetails?> getPlaceDetails(String placeId) async {
     try {
-      // Specify the fields you want to retrieve to optimize costs and data usage.
-      // Basic fields for contact info, website, opening hours.
       final PlacesDetailsResponse response = await _places.getDetailsByPlaceId(
         placeId,
       );

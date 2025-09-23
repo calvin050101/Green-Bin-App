@@ -3,9 +3,9 @@ import 'package:url_launcher/url_launcher.dart';
 import '../models/recycling_center.dart';
 
 Future<void> launchGoogleMapsDirections(
-    RecyclingCenter center,
-    String name,
-    ) async {
+  RecyclingCenter center,
+  String name,
+) async {
   final lat = center.latitude;
   final lng = center.longitude;
 

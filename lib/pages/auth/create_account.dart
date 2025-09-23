@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../providers/user_provider.dart';
+import '../../services/user_service.dart';
 import '../../widgets/back_button.dart';
 import '../../widgets/form/cust_form_field.dart';
 import '../../widgets/form/error_message_text.dart';
@@ -11,6 +12,7 @@ import '../../widgets/custom_button.dart';
 
 class CreateAccountPage extends ConsumerStatefulWidget {
   static String routeName = "/create-account";
+
   const CreateAccountPage({super.key});
 
   @override
@@ -22,8 +24,9 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
-  TextEditingController();
+      TextEditingController();
   String errorMessage = '';
+  bool isChecked = false;
 
   @override
   void dispose() {
@@ -59,7 +62,6 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
     }
 
     try {
-      // 🔹 Use UserService via Riverpod
       final userService = ref.read(userServiceProvider);
 
       // Create account
@@ -146,11 +148,77 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
                 ErrorMessageText(errorMessage: errorMessage),
               const SizedBox(height: 30.0),
 
-              CustomButton(buttonText: "Continue", onPressed: registerUser),
+              // Agree to T&C and Privacy Policy
+              agreeTermsRow(context),
+
+              const SizedBox(height: 20),
+
+              CustomButton(
+                buttonText: "Continue",
+                onPressed: () {
+                  isChecked ? registerUser : null;
+                },
+              ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Row agreeTermsRow(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Checkbox(
+          value: isChecked,
+          onChanged: (value) {
+            setState(() {
+              isChecked = value ?? false;
+            });
+          },
+        ),
+
+        Expanded(
+          child: RichText(
+            text: TextSpan(
+              style: const TextStyle(
+                color: Colors.black,
+                fontFamily: "OpenSans",
+                fontSize: 14,
+              ),
+              children: [
+                const TextSpan(text: "I agree to the "),
+                TextSpan(
+                  text: "Terms & Conditions",
+                  style: const TextStyle(
+                    color: Colors.blue,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  recognizer:
+                      TapGestureRecognizer()
+                        ..onTap = () {
+                          Navigator.pushNamed(context, "/terms");
+                        },
+                ),
+                const TextSpan(text: " and "),
+                TextSpan(
+                  text: "Privacy Policy",
+                  style: const TextStyle(
+                    color: Colors.blue,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  recognizer:
+                      TapGestureRecognizer()
+                        ..onTap = () {
+                          Navigator.pushNamed(context, "/privacy");
+                        },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

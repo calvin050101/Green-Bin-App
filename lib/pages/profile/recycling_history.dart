@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:green_bin/helper/list_view_functions.dart';
 
-import '../../providers/user_provider.dart';
+import '../../providers/waste_records_provider.dart';
 import '../../widgets/back_button.dart';
 import '../../widgets/card/recycling_record_card.dart';
 

@@ -2,8 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../services/user_service.dart';
 import 'create_account.dart';
-import '../../providers/user_provider.dart';
 import '../../widgets/form/cust_form_field.dart';
 import '../../widgets/form/password_form_field.dart';
 import '../../widgets/custom_button.dart';

@@ -4,7 +4,7 @@ import 'package:green_bin/models/waste_type_model.dart';
 import 'package:green_bin/widgets/custom_button.dart';
 import 'package:green_bin/widgets/form/error_message_text.dart';
 
-import '../../providers/user_provider.dart';
+import '../../providers/waste_records_provider.dart';
 
 class CompleteScanPage extends ConsumerStatefulWidget {
   static String routeName = "/complete-scan";
@@ -37,10 +37,10 @@ class _CompleteScanPageState extends ConsumerState<CompleteScanPage> {
 
   Future<void> _addRecordToUserHistory() async {
     try {
-      final userService = ref.read(userServiceProvider);
-      await userService.addWasteRecord(
+      final wasteRecordsService = ref.read(wasteRecordsServiceProvider);
+      await wasteRecordsService.addWasteRecord(
         wasteType: _confirmedWasteType,
-        weight: _weight,
+        weight: _weight
       );
       setState(() {
         _recordAdded = true;

@@ -6,6 +6,12 @@ import '../models/record_model.dart';
 import '../models/waste_type_model.dart';
 import '../providers/user_provider.dart';
 
+/// UserService wrapper
+final userServiceProvider = Provider<UserService>((ref) {
+  final auth = ref.watch(firebaseAuthProvider);
+  return UserService(auth: auth, ref: ref);
+});
+
 class UserService {
   final FirebaseAuth _auth;
   final FirebaseFirestore _firestore;
@@ -126,21 +132,6 @@ class UserService {
     return snapshot.docs
         .map((doc) => RecordModel.fromFirestore(doc.data(), doc.id))
         .toList();
-  }
-
-  Stream<List<RecordModel>> watchUserRecords(String uid) {
-    return _firestore
-        .collection('users')
-        .doc(uid)
-        .collection('records')
-        .orderBy('timestamp', descending: true)
-        .snapshots()
-        .map(
-          (snapshot) =>
-              snapshot.docs
-                  .map((doc) => RecordModel.fromFirestore(doc.data(), doc.id))
-                  .toList(),
-        );
   }
 
   Future<void> addWasteRecord({

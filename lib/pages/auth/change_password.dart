@@ -2,11 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../services/user_service.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/back_button.dart';
 import '../../widgets/form/error_message_text.dart';
 import '../../widgets/form/password_form_field.dart';
-import '../../providers/user_provider.dart';
 
 class ChangePasswordPage extends ConsumerStatefulWidget {
   static String routeName = "/change-password";

@@ -54,7 +54,18 @@ class _LocationsPageState extends ConsumerState<LocationsPage> {
     final recyclingCentersAsyncValue = ref.watch(recyclingCentersProvider);
 
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.transparent),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: Text(
+          'Recycling Locations',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 24,
+            fontFamily: 'Poppins',
+          ),
+        ),
+        centerTitle: true,
+      ),
 
       body: recyclingCentersAsyncValue.when(
         data: (centers) {
@@ -62,21 +73,6 @@ class _LocationsPageState extends ConsumerState<LocationsPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 8.0,
-                  ),
-                  child: Text(
-                    'Recycling Locations',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 28,
-                      fontFamily: 'Poppins',
-                    ),
-                  ),
-                ),
-
                 listVerticalItems(
                   centers,
                   (context, center) => RecyclingCenterCard(center: center),

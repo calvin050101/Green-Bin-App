@@ -14,7 +14,18 @@ class GuideMainPage extends ConsumerWidget {
     final articlesAsyncValue = ref.watch(articlesListProvider);
 
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.transparent),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: Text(
+          'Waste Guide',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 24,
+            fontFamily: 'Poppins',
+          ),
+        ),
+        centerTitle: true,
+      ),
 
       body: articlesAsyncValue.when(
         data: (articles) {
@@ -24,16 +35,6 @@ class GuideMainPage extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Waste Guide',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 32,
-                      fontFamily: 'Poppins',
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
                   listVerticalItems(
                     articles,
                     (context, article) => articleCard(article, context),

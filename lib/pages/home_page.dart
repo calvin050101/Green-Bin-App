@@ -156,7 +156,7 @@ class HomePage extends ConsumerWidget {
             child: Opacity(
               opacity: 0.25,
               child: Image.asset(
-                'lib/assets/images/green-bin-banner.png',
+                'assets/images/green-bin-banner.png',
                 fit: BoxFit.cover,
               ),
             ),

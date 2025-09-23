@@ -52,7 +52,7 @@ class _MainWrapperScreenState extends ConsumerState<MainWrapperScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final userAsyncValue = ref.watch(currentUserProvider);
+    final userAsyncValue = ref.watch(currentUserStreamProvider);
 
     return Scaffold(
       body: _getPage(userAsyncValue),

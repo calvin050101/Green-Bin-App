@@ -38,3 +38,33 @@ final currentUserProvider = FutureProvider<UserModel?>((ref) async {
 
   return userModel.copyWith(records: records);
 });
+
+final currentUserStreamProvider = StreamProvider<UserModel?>((ref) {
+  final profile = ref.watch(userServiceProvider);
+  final recordsService = ref.watch(wasteRecordsServiceProvider);
+
+  final user = profile.currentUser;
+  if (user == null) return Stream.value(null);
+
+  // Stream Firestore user profile
+  final userDocStream = profile.watchUserData(user.uid);
+
+  return userDocStream.asyncMap((docSnapshot) async {
+    if (!docSnapshot.exists) {
+      return UserModel(
+        uid: user.uid,
+        email: user.email,
+        totalPoints: 0,
+        totalCarbonSaved: 0,
+        records: [],
+      );
+    }
+
+    var userModel = UserModel.fromFirestore(docSnapshot.data()!, user.uid);
+
+    // Grab records too
+    final records = await recordsService.getUserRecords(user.uid);
+    return userModel.copyWith(records: records);
+  });
+});
+

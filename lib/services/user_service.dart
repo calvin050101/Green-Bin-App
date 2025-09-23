@@ -118,6 +118,10 @@ class UserService {
     return _firestore.collection("users").doc(user.uid).get();
   }
 
+  Stream<DocumentSnapshot<Map<String, dynamic>>> watchUserData(String uid) {
+    return _firestore.collection("users").doc(uid).snapshots();
+  }
+
   /// ---------------- RECORDS ----------------
 
   Future<List<RecordModel>> getUserRecords(String uid) async {

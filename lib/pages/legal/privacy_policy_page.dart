@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_markdown/flutter_markdown.dart';
 
+import '../../constants/assets.dart';
 import '../../widgets/back_button.dart';
 
 class PrivacyPolicyPage extends StatefulWidget {
@@ -21,7 +22,7 @@ class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
   }
 
   Future<void> loadContent() async {
-    final text = await rootBundle.loadString("lib/assets/privacy_policy.md");
+    final text = await rootBundle.loadString(AppAssets.privacyPolicy);
     setState(() {
       content = text;
     });

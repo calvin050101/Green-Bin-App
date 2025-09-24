@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../constants/assets.dart';
 import '../../services/user_service.dart';
 import 'create_account.dart';
 import '../../widgets/form/cust_form_field.dart';
@@ -71,7 +72,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             children: [
               Center(
                 child: Image(
-                  image: AssetImage('lib/assets/images/recycle-bin.png'),
+                  image: AssetImage(AppAssets.recycleBin),
                   width: 200.0,
                   height: 200.0,
                 ),

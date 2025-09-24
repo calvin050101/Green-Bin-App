@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:green_bin/constants/assets.dart';
 import 'package:green_bin/helper/list_view_functions.dart';
 import '../models/user_level_model.dart';
 import '../widgets/cust_container.dart';
@@ -155,10 +156,7 @@ class HomePage extends ConsumerWidget {
           Positioned.fill(
             child: Opacity(
               opacity: 0.25,
-              child: Image.asset(
-                'assets/images/green-bin-banner.png',
-                fit: BoxFit.cover,
-              ),
+              child: Image.asset(AppAssets.greenBinBanner, fit: BoxFit.cover),
             ),
           ),
 

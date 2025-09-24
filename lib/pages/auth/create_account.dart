@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../constants/assets.dart';
 import '../../services/user_service.dart';
 import '../../widgets/back_button.dart';
 import '../../widgets/form/cust_form_field.dart';
@@ -97,7 +98,7 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
             children: [
               Center(
                 child: Image(
-                  image: AssetImage('lib/assets/images/recycle-bin.png'),
+                  image: AssetImage(AppAssets.recycleBin),
                   width: 200.0,
                   height: 200.0,
                 ),

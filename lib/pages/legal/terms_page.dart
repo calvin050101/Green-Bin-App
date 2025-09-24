@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_markdown/flutter_markdown.dart';
 
+import '../../constants/assets.dart';
 import '../../widgets/back_button.dart';
 
 class TermsPage extends StatefulWidget {
@@ -21,8 +22,7 @@ class _TermsPageState extends State<TermsPage> {
   }
 
   Future<void> loadContent() async {
-    final text = await rootBundle.loadString(
-        "lib/assets/terms_and_conditions.md");
+    final text = await rootBundle.loadString(AppAssets.termsAndConditions);
     setState(() {
       content = text;
     });
@@ -39,22 +39,19 @@ class _TermsPageState extends State<TermsPage> {
         title: Text("Terms and Conditions"),
       ),
       body: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: MarkdownBody(
-            data: content,
-            selectable: true,
-            styleSheet: MarkdownStyleSheet(
-              h1: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontFamily: 'OpenSans',
-              ),
-              p: TextStyle(fontFamily: 'OpenSans'),
-              strong: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontFamily: 'OpenSans',
-              ),
+        padding: const EdgeInsets.all(16),
+        child: MarkdownBody(
+          data: content,
+          selectable: true,
+          styleSheet: MarkdownStyleSheet(
+            h1: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'OpenSans'),
+            p: TextStyle(fontFamily: 'OpenSans'),
+            strong: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontFamily: 'OpenSans',
             ),
           ),
+        ),
       ),
     );
   }

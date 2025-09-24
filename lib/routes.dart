@@ -11,7 +11,6 @@ import 'package:green_bin/pages/location/recycling_center_detail_page.dart';
 import 'package:green_bin/pages/profile/recycling_history.dart';
 import 'package:green_bin/pages/profile/settings.dart';
 import 'package:green_bin/pages/profile/user_levels.dart';
-import 'package:green_bin/pages/scan_item/confirm_waste_type_page.dart';
 import 'package:green_bin/pages/scan_item/scan_item_main.dart';
 
 final appRoutes = {
@@ -23,7 +22,6 @@ final appRoutes = {
   ForgotPasswordPage.routeName: (context) => ForgotPasswordPage(),
 
   ScanItemMainPage.routeName: (context) => ScanItemMainPage(),
-  ConfirmWasteTypePage.routeName: (context) => ConfirmWasteTypePage(),
 
   ArticleDetailPage.routeName: (context) => ArticleDetailPage(),
   ArticleContentPage.routeName: (context) => ArticleContentPage(),

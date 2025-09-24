@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:green_bin/helper/waste_type_functions.dart';
@@ -13,7 +15,16 @@ import '../../widgets/form/cust_form_field.dart';
 class ConfirmWasteTypePage extends ConsumerStatefulWidget {
   static String routeName = "/confirm-waste-type";
 
-  const ConfirmWasteTypePage({super.key});
+  final File image;
+  final String predictedLabel;
+  final double confidence;
+
+  const ConfirmWasteTypePage({
+    super.key,
+    required this.image,
+    required this.predictedLabel,
+    required this.confidence,
+  });
 
   @override
   ConsumerState<ConfirmWasteTypePage> createState() =>
@@ -22,9 +33,6 @@ class ConfirmWasteTypePage extends ConsumerStatefulWidget {
 
 class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
   WasteTypeModel? _selectedWasteType;
-  String predictedWasteType = "Paper";
-  double predictedConfidence = 0.9;
-
   final TextEditingController _weightController = TextEditingController();
   String errorMessage = '';
 
@@ -67,8 +75,8 @@ class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
                 const SizedBox(height: 20),
 
                 predictedWasteTypeContainer(
-                  predictedWasteType,
-                  predictedConfidence,
+                  widget.predictedLabel,
+                  widget.confidence,
                 ),
                 const SizedBox(height: 30),
 
@@ -86,31 +94,7 @@ class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
                 if (wasteTypes.isEmpty)
                   const Center(child: Text("No waste types found")),
 
-                ExpansionTile(
-                  title: const Text(
-                    "Select Waste Type",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                      fontFamily: 'OpenSans',
-                    ),
-                  ),
-                  children:
-                      wasteTypes
-                          .map(
-                            (waste) => WasteTypeOptionCard(
-                              wasteType: waste,
-                              icon: getWasteTypeIcon(waste.label),
-                              isSelected: _selectedWasteType?.id == waste.id,
-                              onTap: () {
-                                setState(() {
-                                  _selectedWasteType = waste;
-                                });
-                              },
-                            ),
-                          )
-                          .toList(),
-                ),
+                wasteTypeOptionsTile(wasteTypes),
                 const SizedBox(height: 30),
 
                 // Weight Input Field
@@ -124,39 +108,10 @@ class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
                 CustomButton(
                   buttonText: "Confirm",
                   onPressed: () {
-                    if (_selectedWasteType == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Please select a waste type"),
-                        ),
-                      );
-                      return;
-                    }
-
-                    final weight = double.tryParse(_weightController.text);
-                    if (weight == null || weight <= 0 || weight > 20) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            "Please enter a valid weight (0–20kg)",
-                          ),
-                        ),
-                      );
-                      return;
-                    }
-
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) => CompleteScanPage(
-                              confirmedWasteType: _selectedWasteType!,
-                              weight: weight,
-                            ),
-                      ),
-                    );
+                    uploadRecyclingActivity(context);
                   },
                 ),
+
               ],
             ),
           );
@@ -167,6 +122,63 @@ class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
     );
   }
 
+  void uploadRecyclingActivity(BuildContext context) {
+    if (_selectedWasteType == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please select a waste type")),
+      );
+      return;
+    }
+
+    final weight = double.tryParse(_weightController.text);
+    if (weight == null || weight <= 0 || weight > 20) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please enter a valid weight (0–20kg)")),
+      );
+      return;
+    }
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context) => CompleteScanPage(
+              confirmedWasteType: _selectedWasteType!,
+              weight: weight,
+            ),
+      ),
+    );
+  }
+
+  ExpansionTile wasteTypeOptionsTile(List<WasteTypeModel> wasteTypes) {
+    return ExpansionTile(
+      title: const Text(
+        "Select Waste Type",
+        style: TextStyle(
+          fontSize: 16,
+          color: Colors.black,
+          fontFamily: 'OpenSans',
+        ),
+      ),
+      children:
+          wasteTypes
+              .map(
+                (waste) => WasteTypeOptionCard(
+                  wasteType: waste,
+                  icon: getWasteTypeIcon(waste.label),
+                  isSelected: _selectedWasteType?.id == waste.id,
+                  onTap: () {
+                    setState(() {
+                      _selectedWasteType = waste;
+                    });
+                  },
+                ),
+              )
+              .toList(),
+    );
+  }
+
+  /// Show scanned image
   Container wasteImageContainer(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.7,
@@ -175,14 +187,15 @@ class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
         color: Colors.grey[200],
         borderRadius: BorderRadius.circular(15),
         border: Border.all(color: Colors.grey[300]!, width: 2),
-        image: const DecorationImage(
-          image: AssetImage('lib/assets/images/cardboard-box.jpg'),
+        image: DecorationImage(
+          image: FileImage(widget.image),
           fit: BoxFit.cover,
         ),
       ),
     );
   }
 
+  /// Show predicted label + confidence
   Container predictedWasteTypeContainer(
     String predictedWasteType,
     double predictedConfidence,
@@ -194,9 +207,9 @@ class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
         color: const Color(0xFF4CAF50),
         borderRadius: BorderRadius.circular(10),
       ),
-      child: const Column(
+      child: Column(
         children: [
-          Text(
+          const Text(
             'Predicted Waste Type:',
             style: TextStyle(
               color: Colors.white,
@@ -205,11 +218,10 @@ class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
               fontFamily: 'OpenSans',
             ),
           ),
-          SizedBox(width: 10),
-
+          const SizedBox(height: 10),
           Text(
-            'Paper - 90%',
-            style: TextStyle(
+            '$predictedWasteType - ${(predictedConfidence * 100).toStringAsFixed(2)}%',
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 18,
               fontWeight: FontWeight.bold,

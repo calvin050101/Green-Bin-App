@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:green_bin/widgets/form/loading_error.dart';
 
 import '../../helper/list_view_functions.dart';
@@ -16,8 +15,6 @@ class LocationsPage extends ConsumerStatefulWidget {
 }
 
 class _LocationsPageState extends ConsumerState<LocationsPage> {
-  GoogleMapController? mapController;
-
   @override
   void initState() {
     super.initState();

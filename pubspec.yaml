@@ -42,9 +42,12 @@ dependencies:
 
   geolocator: ^12.0.0 # For getting current location
   flutter_google_maps_webservices: ^1.1.1 # For Google Places API calls
-  google_maps_flutter: ^2.12.2 # Optional: For displaying an interactive map
-  url_launcher: ^6.3.0 # Optional: For opening maps in an external app
+  url_launcher: ^6.3.0 # For opening maps in an external app
   latlong2: ^0.9.1
+
+  tflite_flutter: ^0.11.0      # For TensorFlow Lite
+  image_picker: ^0.8.5+3       # For picking images from the gallery
+  image: ^4.0.17               # For image processing
 
 dev_dependencies:
   flutter_test:
@@ -81,6 +84,8 @@ flutter:
      - assets/images/
      - assets/privacy_policy.md
      - assets/terms_and_conditions.md
+     - assets/waste_classification_model.tflite
+     - assets/labels.txt
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

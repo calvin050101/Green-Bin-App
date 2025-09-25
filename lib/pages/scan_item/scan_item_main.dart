@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:green_bin/pages/scan_item/confirm_waste_type_page.dart';
 import 'package:image_picker/image_picker.dart';
@@ -34,8 +34,18 @@ class _ScanItemMainPageState extends State<ScanItemMainPage> {
       _isLoading = true;
     });
 
+    await Future.delayed(Duration.zero);
+
     try {
-      final result = await _classifyImage(_image!);
+      // Run CPU-heavy preprocessing in background isolate
+      final input = await compute(
+        TFLiteHelper.preprocessImageFromPath,
+        _image!.path,
+      );
+
+      // Run inference on main isolate (interpreter only works here)
+      final result = await TFLiteHelper.runInferenceFromInput(input);
+
       setState(() {
         _predictedLabel = result["label"];
         _confidence = result["confidence"];
@@ -49,14 +59,6 @@ class _ScanItemMainPageState extends State<ScanItemMainPage> {
     }
   }
 
-  Future<Map<String, dynamic>> _classifyImage(File image) async {
-    try {
-      return await TFLiteHelper.runInference(image);
-    } catch (e) {
-      throw Exception("Classification failed: $e");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,43 +68,54 @@ class _ScanItemMainPageState extends State<ScanItemMainPage> {
         leadingWidth: 70,
         leading: CustBackButton(),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Scan Item',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 32,
-                fontFamily: 'Poppins',
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Scan Item',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 32,
+                    fontFamily: 'Poppins',
+                  ),
+                ),
+                const SizedBox(height: 40),
+                Center(child: uploadImageContainer(context)),
+                const SizedBox(height: 50),
+                CustomButton(
+                  buttonText: "Confirm Image",
+                  onPressed: () {
+                    if (_image == null || _isLoading) return;
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (_) => ConfirmWasteTypePage(
+                              image: _image!,
+                              predictedLabel: _predictedLabel,
+                              confidence: _confidence,
+                            ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+
+          // Loading overlay
+          if (_isLoading)
+            Container(
+              color: Colors.black.withValues(alpha: 0.4),
+              child: const Center(
+                child: CircularProgressIndicator(color: Colors.white),
               ),
             ),
-            const SizedBox(height: 40),
-
-            Center(child: uploadImageContainer(context)),
-            const SizedBox(height: 50),
-
-            CustomButton(
-              buttonText: "Confirm Image",
-              onPressed: () {
-                if (_image == null || _isLoading) return;
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (_) => ConfirmWasteTypePage(
-                          image: _image!,
-                          predictedLabel: _predictedLabel,
-                          confidence: _confidence,
-                        ),
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }

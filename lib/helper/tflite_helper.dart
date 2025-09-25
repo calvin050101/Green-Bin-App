@@ -13,16 +13,18 @@ class TFLiteHelper {
 
   /// Initialize TFLite model and labels
   static Future<void> init() async {
+    if (_isInitialized) return;
+
     try {
-      // Load model
       _interpreter = await Interpreter.fromAsset(
         AppAssets.wasteClassificationModel,
       );
 
       _isInitialized = true;
-      print("✅ TFLite model and labels loaded successfully");
+      print("✅ TFLite model loaded successfully");
     } catch (e) {
-      print("❌ Failed to load model or labels: $e");
+      print("❌ Failed to load model: $e");
+      rethrow; // optional: propagate error
     }
   }
 
@@ -33,7 +35,8 @@ class TFLiteHelper {
   }
 
   /// Preprocess and flatten to Float32List in NHWC order
-  static Float32List preprocessImage(File imageFile) {
+  static Float32List preprocessImageFromPath(String imagePath) {
+    final imageFile = File(imagePath);
     final image = img.decodeImage(imageFile.readAsBytesSync())!;
     final resizedImage = img.copyResize(image, width: 224, height: 224);
 
@@ -53,10 +56,9 @@ class TFLiteHelper {
     return floats;
   }
 
-  /// Run inference on a given image file
   static Future<Map<String, dynamic>> runInference(File image) async {
     // Preprocess → Float32List in NHWC order
-    final input = preprocessImage(image);
+    final input = preprocessImageFromPath(image.path);
 
     // Prepare output buffer
     var outputShape = interpreter.getOutputTensor(0).shape; // e.g. [1, 10]
@@ -68,22 +70,40 @@ class TFLiteHelper {
     // Convert to list
     final outputs = outputBuffer.toList();
 
-    // 🔹 Find Top-3 predictions
-    final indexed = List.generate(outputs.length, (i) => MapEntry(i, outputs[i]));
-    indexed.sort((a, b) => b.value.compareTo(a.value));
+    // Find the index of max confidence
+    int maxIndex = 0;
+    double maxValue = outputs[0];
+    for (int i = 1; i < outputs.length; i++) {
+      if (outputs[i] > maxValue) {
+        maxValue = outputs[i];
+        maxIndex = i;
+      }
+    }
 
-    final top3 = indexed.take(3).map((e) {
-      return {
-        "label": Labels.labelAt(e.key),
-        "confidence": e.value, // %
-      };
-    }).toList();
-
-    // Return Top-1 separately for convenience
     return {
-      "label": Labels.labelAt(indexed.first.key),
-      "confidence": indexed.first.value,
-      "top3": top3,
+      "label": Labels.labelAt(maxIndex),
+      "confidence": maxValue,
     };
   }
+
+  // Runs inference given preprocessed input
+  static Future<Map<String, dynamic>> runInferenceFromInput(Float32List input) async {
+    var outputShape = interpreter.getOutputTensor(0).shape; // e.g. [1, 10]
+    var outputBuffer = Float32List(outputShape.reduce((a, b) => a * b));
+
+    interpreter.run(input.buffer, outputBuffer.buffer);
+
+    // Top-1 prediction
+    final outputs = outputBuffer.toList();
+    int maxIndex = 0;
+    double maxValue = outputs[0];
+    for (int i = 1; i < outputs.length; i++) {
+      if (outputs[i] > maxValue) {
+        maxIndex = i;
+        maxValue = outputs[i];
+      }
+    }
+    return {"label": Labels.labelAt(maxIndex), "confidence": maxValue};
+  }
+
 }

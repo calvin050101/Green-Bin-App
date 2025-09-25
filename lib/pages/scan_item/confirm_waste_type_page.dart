@@ -34,7 +34,6 @@ class ConfirmWasteTypePage extends ConsumerStatefulWidget {
 class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
   WasteTypeModel? _selectedWasteType;
   final TextEditingController _weightController = TextEditingController();
-  String errorMessage = '';
 
   @override
   void dispose() {
@@ -44,8 +43,7 @@ class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
   }
 
   void autoSelectWasteType(List<WasteTypeModel> wasteTypes) {
-    // ✅ Auto-select if confidence ≥ 0.7 and not already selected
-    if (_selectedWasteType != null || widget.confidence < 0.7) {
+    if (_selectedWasteType != null) {
       return;
     }
 

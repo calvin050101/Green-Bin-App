@@ -126,7 +126,8 @@ class RecyclingCenterDetailPage extends ConsumerWidget {
                   // Details Section
                   _buildDetailRow(context, 'Address', center.address),
 
-                  if (centerDetail?.openingHours!.weekdayText != null)
+                  if (centerDetail?.openingHours != null &&
+                      centerDetail?.openingHours!.weekdayText != null)
                     _buildDetailRow(
                       context,
                       'Operating Hours',
@@ -147,13 +148,15 @@ class RecyclingCenterDetailPage extends ConsumerWidget {
                               .toList(),
                     ),
 
-                  _buildDetailRow(
-                    context,
-                    'Contact No.',
-                    centerDetail?.formattedPhoneNumber,
-                  ),
+                  if (centerDetail?.formattedPhoneNumber != null)
+                    _buildDetailRow(
+                      context,
+                      'Contact No.',
+                      centerDetail?.formattedPhoneNumber,
+                    ),
 
-                  _buildDetailRow(context, 'Website', centerDetail?.website),
+                  if (centerDetail?.website != null)
+                    _buildDetailRow(context, 'Website', centerDetail?.website),
 
                   const SizedBox(height: 20),
                 ],

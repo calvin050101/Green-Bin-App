@@ -33,7 +33,7 @@ class GooglePlacesService {
     required double latitude,
     required double longitude,
     String query = 'recycling center',
-    int radiusMeters = 32000,
+    int radiusMeters = 20000,
   }) async {
     final cacheKey = _makeCacheKey(
       latitude: latitude,

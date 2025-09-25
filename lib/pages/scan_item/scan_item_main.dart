@@ -82,38 +82,21 @@ class _ScanItemMainPageState extends State<ScanItemMainPage> {
             const SizedBox(height: 40),
 
             Center(child: uploadImageContainer(context)),
-            const SizedBox(height: 20),
-
-            // Prediction or loading state
-            if (_isLoading)
-              const Center(child: CircularProgressIndicator())
-            else if (_predictedLabel.isNotEmpty)
-              Center(
-                child: Text(
-                  "Prediction: $_predictedLabel "
-                      "(${(_confidence * 100).toStringAsFixed(2)}%)",
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-
             const SizedBox(height: 50),
 
             CustomButton(
-              buttonText: "Process Image",
+              buttonText: "Confirm Image",
               onPressed: () {
                 if (_image == null || _isLoading) return;
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => ConfirmWasteTypePage(
-                      image: _image!,
-                      predictedLabel: _predictedLabel,
-                      confidence: _confidence,
-                    ),
+                    builder:
+                        (_) => ConfirmWasteTypePage(
+                          image: _image!,
+                          predictedLabel: _predictedLabel,
+                          confidence: _confidence,
+                        ),
                   ),
                 );
               },
@@ -121,39 +104,39 @@ class _ScanItemMainPageState extends State<ScanItemMainPage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _pickImage,
-        child: const Icon(Icons.add_a_photo),
-      ),
     );
   }
 
-  Container uploadImageContainer(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.8,
-      height: MediaQuery.of(context).size.width * 0.6,
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey[300]!, width: 2),
-      ),
-      child: _image != null
-          ? Image.file(_image!, fit: BoxFit.cover)
-          : Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.image, size: 80, color: Colors.grey[600]),
-          const SizedBox(height: 10),
-          Text(
-            'Upload Image',
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.grey[700],
-              fontWeight: FontWeight.bold,
-              fontFamily: 'Montserrat',
-            ),
-          ),
-        ],
+  InkWell uploadImageContainer(BuildContext context) {
+    return InkWell(
+      onTap: _pickImage,
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.8,
+        height: MediaQuery.of(context).size.width * 0.6,
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.grey[300]!, width: 2),
+        ),
+        child:
+            _image != null
+                ? Image.file(_image!, fit: BoxFit.cover)
+                : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.image, size: 80, color: Colors.grey[600]),
+                    const SizedBox(height: 10),
+                    Text(
+                      'Upload Image',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.grey[700],
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Montserrat',
+                      ),
+                    ),
+                  ],
+                ),
       ),
     );
   }

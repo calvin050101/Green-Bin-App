@@ -43,6 +43,41 @@ class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
     super.dispose();
   }
 
+  void autoSelectWasteType(List<WasteTypeModel> wasteTypes) {
+    // ✅ Auto-select if confidence ≥ 0.7 and not already selected
+    if (_selectedWasteType != null || widget.confidence < 0.7) {
+      return;
+    }
+
+    final match = wasteTypes.firstWhere(
+      (w) => w.label.toLowerCase() == widget.predictedLabel.toLowerCase(),
+      orElse:
+          () =>
+              WasteTypeModel(id: "", label: "", pointsPerKg: 0, carbonPerKg: 0),
+    );
+
+    if (match.id.isEmpty) return;
+
+    // only update state once to avoid rebuild loops
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        setState(() {
+          _selectedWasteType = match;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              "Predicted waste type auto-selected: ${match.label}",
+              style: TextStyle(color: Colors.white, fontFamily: "OpenSans"),
+            ),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final asyncWasteTypes = ref.watch(wasteTypesStreamProvider);
@@ -56,6 +91,8 @@ class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
       ),
       body: asyncWasteTypes.when(
         data: (wasteTypes) {
+          autoSelectWasteType(wasteTypes);
+
           return SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40.0),
             child: Column(
@@ -111,7 +148,6 @@ class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
                     uploadRecyclingActivity(context);
                   },
                 ),
-
               ],
             ),
           );
@@ -144,6 +180,7 @@ class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
         builder:
             (context) => CompleteScanPage(
               confirmedWasteType: _selectedWasteType!,
+              image: widget.image,
               weight: weight,
             ),
       ),

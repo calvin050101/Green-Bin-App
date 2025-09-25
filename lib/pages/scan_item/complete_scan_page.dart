@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:green_bin/models/waste_type_model.dart';
@@ -10,11 +12,12 @@ class CompleteScanPage extends ConsumerStatefulWidget {
   static String routeName = "/complete-scan";
   final WasteTypeModel confirmedWasteType;
   final double weight;
+  final File image;
 
   const CompleteScanPage({
     super.key,
     required this.confirmedWasteType,
-    required this.weight,
+    required this.weight, required this.image,
   });
 
   @override
@@ -26,12 +29,14 @@ class _CompleteScanPageState extends ConsumerState<CompleteScanPage> {
   String? _errorMessage;
   late WasteTypeModel _confirmedWasteType;
   late double _weight;
+  late File _image;
 
   @override
   void initState() {
     super.initState();
     _confirmedWasteType = widget.confirmedWasteType;
     _weight = widget.weight;
+    _image = widget.image;
     _addRecordToUserHistory();
   }
 
@@ -130,8 +135,8 @@ class _CompleteScanPageState extends ConsumerState<CompleteScanPage> {
         color: Colors.grey[200],
         borderRadius: BorderRadius.circular(15),
         border: Border.all(color: Colors.grey[400]!),
-        image: const DecorationImage(
-          image: AssetImage('lib/assets/images/cardboard-box.jpg'),
+        image: DecorationImage(
+          image: FileImage(_image),
           fit: BoxFit.cover,
         ),
       ),

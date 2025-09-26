@@ -15,8 +15,8 @@ import 'package:green_bin/pages/scan_item/scan_item_main.dart';
 
 final appRoutes = {
   '/': (context) => AuthPage(),
-  "/terms": (context) => TermsPage(),
-  "/privacy": (context) => PrivacyPolicyPage(),
+  TermsPage.routeName: (context) => TermsPage(),
+  PrivacyPolicyPage.routeName: (context) => PrivacyPolicyPage(),
 
   CreateAccountPage.routeName: (context) => CreateAccountPage(),
   ForgotPasswordPage.routeName: (context) => ForgotPasswordPage(),

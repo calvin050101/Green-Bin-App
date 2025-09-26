@@ -6,6 +6,7 @@ import '../../constants/assets.dart';
 import '../../widgets/back_button.dart';
 
 class PrivacyPolicyPage extends StatefulWidget {
+  static String routeName = "/privacy";
   const PrivacyPolicyPage({super.key});
 
   @override

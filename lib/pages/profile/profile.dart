@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:green_bin/pages/legal/privacy_policy_page.dart';
 import 'package:green_bin/pages/profile/recycling_history.dart';
 import 'package:green_bin/pages/profile/settings.dart';
 import 'package:green_bin/pages/profile/user_levels.dart';
@@ -9,6 +10,7 @@ import 'package:green_bin/widgets/page_direct_container.dart';
 import '../../models/user_level_model.dart';
 import '../../models/user_model.dart';
 import '../../services/user_service.dart';
+import '../legal/terms_page.dart';
 
 class ProfilePage extends ConsumerWidget {
   final AsyncValue<UserModel?> userAsyncValue;
@@ -83,7 +85,7 @@ class ProfilePage extends ConsumerWidget {
             PageDirectContainer(
               text: "Terms and Conditions",
               onTap: () {
-                Navigator.pushNamed(context, "/terms");
+                Navigator.pushNamed(context, TermsPage.routeName);
               },
             ),
             const SizedBox(height: 10),
@@ -91,7 +93,7 @@ class ProfilePage extends ConsumerWidget {
             PageDirectContainer(
               text: "Privacy Policy",
               onTap: () {
-                Navigator.pushNamed(context, "/privacy");
+                Navigator.pushNamed(context, PrivacyPolicyPage.routeName);
               },
             ),
             const SizedBox(height: 20),

@@ -6,6 +6,7 @@ import '../../constants/assets.dart';
 import '../../widgets/back_button.dart';
 
 class TermsPage extends StatefulWidget {
+  static String routeName = "/terms";
   const TermsPage({super.key});
 
   @override

@@ -78,6 +78,22 @@ class ProfilePage extends ConsumerWidget {
                 Navigator.pushNamed(context, SettingsPage.routeName);
               },
             ),
+            const SizedBox(height: 10),
+
+            PageDirectContainer(
+              text: "Terms and Conditions",
+              onTap: () {
+                Navigator.pushNamed(context, "/terms");
+              },
+            ),
+            const SizedBox(height: 10),
+
+            PageDirectContainer(
+              text: "Privacy Policy",
+              onTap: () {
+                Navigator.pushNamed(context, "/privacy");
+              },
+            ),
             const SizedBox(height: 20),
 
             // Logout button

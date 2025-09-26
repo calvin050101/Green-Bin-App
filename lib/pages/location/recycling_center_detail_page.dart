@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:green_bin/providers/recycling_center_provider.dart';
@@ -77,14 +78,28 @@ class RecyclingCenterDetailPage extends ConsumerWidget {
                 children: [
                   // Center Image/Photo
                   if (center.photoUrl != null)
-                    Container(
+                    SizedBox(
                       height: 200,
                       width: double.infinity,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(center.photoUrl!),
-                          fit: BoxFit.cover,
-                        ),
+                      child: CachedNetworkImage(
+                        imageUrl: center.photoUrl!,
+                        fit: BoxFit.cover,
+                        placeholder:
+                            (context, url) => Container(
+                              color: Colors.grey[300],
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                        errorWidget:
+                            (context, url, error) => Container(
+                              color: Colors.grey[200],
+                              child: const Icon(
+                                Icons.broken_image,
+                                color: Colors.grey,
+                                size: 80,
+                              ),
+                            ),
                       ),
                     )
                   else
@@ -131,7 +146,7 @@ class RecyclingCenterDetailPage extends ConsumerWidget {
                     _buildDetailRow(
                       context,
                       'Operating Hours',
-                      null, // We'll pass null so the normal text doesn't render
+                      null,
                       children:
                           centerDetail!.openingHours!.weekdayText
                               .map(

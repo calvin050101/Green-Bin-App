@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../models/record_model.dart';
-import '../models/waste_type_model.dart';
 import '../providers/user_provider.dart';
 
 /// UserService wrapper
@@ -15,12 +13,10 @@ final userServiceProvider = Provider<UserService>((ref) {
 class UserService {
   final FirebaseAuth _auth;
   final FirebaseFirestore _firestore;
-  final Ref? _ref;
 
   UserService({FirebaseAuth? auth, FirebaseFirestore? firestore, Ref? ref})
     : _auth = auth ?? FirebaseAuth.instance,
-      _firestore = firestore ?? FirebaseFirestore.instance,
-      _ref = ref;
+      _firestore = firestore ?? FirebaseFirestore.instance;
 
   /// ---------------- AUTH ----------------
 
@@ -120,61 +116,5 @@ class UserService {
 
   Stream<DocumentSnapshot<Map<String, dynamic>>> watchUserData(String uid) {
     return _firestore.collection("users").doc(uid).snapshots();
-  }
-
-  /// ---------------- RECORDS ----------------
-
-  Future<List<RecordModel>> getUserRecords(String uid) async {
-    final snapshot =
-        await _firestore
-            .collection('users')
-            .doc(uid)
-            .collection('records')
-            .orderBy('timestamp', descending: true)
-            .get();
-
-    return snapshot.docs
-        .map((doc) => RecordModel.fromFirestore(doc.data(), doc.id))
-        .toList();
-  }
-
-  Future<void> addWasteRecord({
-    required WasteTypeModel wasteType,
-    required double weight, // in kg
-  }) async {
-    final user = currentUser;
-    if (user == null) throw Exception("No user is currently signed in.");
-
-    final userDocRef = _firestore.collection('users').doc(user.uid);
-    final recordsRef = userDocRef.collection('records').doc();
-
-    final newRecord = RecordModel(
-      id: recordsRef.id,
-      timestamp: DateTime.now(),
-      wasteType: wasteType.label,
-      weight: weight,
-    );
-
-    await _firestore.runTransaction((transaction) async {
-      final userDoc = await transaction.get(userDocRef);
-      final data = userDoc.data() ?? {};
-
-      final currentPoints = (data['totalPoints'] ?? 0) as int;
-      final currentCarbon = (data['totalCarbonSaved'] ?? 0.0).toDouble();
-
-      final earnedPoints = (wasteType.pointsPerKg * weight).round();
-      final savedCarbon = wasteType.carbonPerKg * weight;
-
-      // Add record
-      transaction.set(recordsRef, newRecord.toFirestore());
-
-      // Update totals
-      transaction.update(userDocRef, {
-        'totalPoints': currentPoints + earnedPoints,
-        'totalCarbonSaved': currentCarbon + savedCarbon,
-      });
-    });
-
-    _ref?.invalidate(currentUserProvider);
   }
 }

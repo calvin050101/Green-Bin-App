@@ -25,7 +25,7 @@ class _ScanItemMainPageState extends State<ScanItemMainPage> {
 
   Future<void> _pickImage() async {
     final pickedFile = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
+      source: ImageSource.camera,
     );
     if (pickedFile == null) return;
 
@@ -37,13 +37,11 @@ class _ScanItemMainPageState extends State<ScanItemMainPage> {
     await Future.delayed(Duration.zero);
 
     try {
-      // Run CPU-heavy preprocessing in background isolate
       final input = await compute(
         TFLiteHelper.preprocessImageFromPath,
         _image!.path,
       );
 
-      // Run inference on main isolate (interpreter only works here)
       final result = await TFLiteHelper.runInferenceFromInput(input);
 
       setState(() {
@@ -84,7 +82,7 @@ class _ScanItemMainPageState extends State<ScanItemMainPage> {
                   ),
                 ),
                 const SizedBox(height: 40),
-                Center(child: uploadImageContainer(context)),
+                Center(child: captureImageContainer(context)),
                 const SizedBox(height: 50),
                 CustomButton(
                   buttonText: "Confirm Image",
@@ -107,7 +105,6 @@ class _ScanItemMainPageState extends State<ScanItemMainPage> {
             ),
           ),
 
-          // Loading overlay
           if (_isLoading)
             Container(
               color: Colors.black.withValues(alpha: 0.4),
@@ -120,7 +117,7 @@ class _ScanItemMainPageState extends State<ScanItemMainPage> {
     );
   }
 
-  InkWell uploadImageContainer(BuildContext context) {
+  InkWell captureImageContainer(BuildContext context) {
     return InkWell(
       onTap: _pickImage,
       child: Container(
@@ -137,14 +134,15 @@ class _ScanItemMainPageState extends State<ScanItemMainPage> {
                 : Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.image, size: 80, color: Colors.grey[600]),
+                    Icon(Icons.camera_alt, size: 80, color: Colors.grey[600]),
                     const SizedBox(height: 10),
-                    Text(
-                      'Upload Image',
+                    const Text(
+                      'Tap to open camera\nand capture the item clearly',
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 18,
-                        color: Colors.grey[700],
-                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                        fontWeight: FontWeight.w500,
                         fontFamily: 'Montserrat',
                       ),
                     ),

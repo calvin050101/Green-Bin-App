@@ -25,7 +25,26 @@ class UserService {
   Future<UserCredential> login({
     required String email,
     required String password,
-  }) => _auth.signInWithEmailAndPassword(email: email, password: password);
+  }) async {
+    final credential = await _auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+
+    final user = credential.user;
+    if (user == null) throw Exception("Login failed.");
+
+    // Check if email is verified
+    if (!user.emailVerified) {
+      await _auth.signOut(); // prevent unverified login session
+      throw FirebaseAuthException(
+        code: "email-not-verified",
+        message: "Please verify your email before logging in.",
+      );
+    }
+
+    return credential;
+  }
 
   Future<UserCredential> createAccount({
     required String email,
@@ -50,6 +69,8 @@ class UserService {
 
     await user.updateDisplayName(username);
     await user.reload();
+
+    await user.sendEmailVerification();
 
     return credential;
   }

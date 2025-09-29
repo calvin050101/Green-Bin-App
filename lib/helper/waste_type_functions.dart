@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/record_model.dart';
 import '../models/waste_type_summary.dart';
+import 'package:material_symbols_icons/material_symbols_icons.dart';
 
 IconData getWasteTypeIcon(String wasteType) {
   switch (wasteType) {
@@ -10,13 +11,15 @@ IconData getWasteTypeIcon(String wasteType) {
     case "Paper":
       return Icons.description;
     case "Glass":
-      return Icons.wine_bar;
+      return Symbols.glass_cup;
     case "Metal":
       return Icons.kitchen;
     case "Organic":
       return Icons.eco;
     case "Textiles":
-      return Icons.checkroom;
+      return Symbols.apparel;
+    case "Shoes":
+      return Symbols.steps;
     case "E-Waste":
       return Icons.computer;
     case "Non-recyclables":

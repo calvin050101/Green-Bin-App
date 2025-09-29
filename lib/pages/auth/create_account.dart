@@ -38,6 +38,34 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
     super.dispose();
   }
 
+  void verifyFormInput() {
+    if (_usernameController.text.isEmpty ||
+        _emailController.text.isEmpty ||
+        _passwordController.text.isEmpty ||
+        _confirmPasswordController.text.isEmpty) {
+      setState(() {
+        errorMessage = "Please fill in all fields";
+      });
+      return;
+    }
+
+    if (_passwordController.text != _confirmPasswordController.text) {
+      setState(() {
+        errorMessage = "Passwords don't match";
+      });
+      return;
+    }
+
+    if (!isChecked) {
+      setState(() {
+        errorMessage = "Please agree to the Terms and Privacy Policy";
+      });
+      return;
+    }
+
+    registerUser();
+  }
+
   void registerUser() async {
     late BuildContext dialogContext;
 
@@ -50,17 +78,6 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
       },
       barrierDismissible: true,
     );
-
-    // make sure passwords match
-    if (_passwordController.text != _confirmPasswordController.text) {
-      if (dialogContext.mounted) {
-        Navigator.pop(dialogContext);
-      }
-      setState(() {
-        errorMessage = "Passwords don't match";
-      });
-      return;
-    }
 
     try {
       final userService = ref.read(userServiceProvider);
@@ -156,9 +173,7 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
 
               CustomButton(
                 buttonText: "Continue",
-                onPressed: () {
-                  isChecked ? registerUser : null;
-                },
+                onPressed: verifyFormInput,
               ),
             ],
           ),

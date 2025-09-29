@@ -159,7 +159,17 @@ class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
   void uploadRecyclingActivity(BuildContext context) {
     if (_selectedWasteType == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please select a waste type")),
+        const SnackBar(
+          content: Text(
+            "Please select a waste type",
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black,
+              fontFamily: 'OpenSans',
+            ),
+          ),
+          backgroundColor: Colors.green,
+        ),
       );
       return;
     }
@@ -167,7 +177,17 @@ class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
     final weight = double.tryParse(_weightController.text);
     if (weight == null || weight <= 0 || weight > 20) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter a valid weight (0–20kg)")),
+        const SnackBar(
+          content: Text(
+            "Please enter a valid weight (0–20kg)",
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black,
+              fontFamily: 'OpenSans',
+            ),
+          ),
+          backgroundColor: Colors.green,
+        ),
       );
       return;
     }

@@ -14,7 +14,7 @@ class SettingsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentUser = FirebaseAuth.instance.currentUser; // to grab email
+    final currentUser = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
       appBar: AppBar(
@@ -63,41 +63,7 @@ class SettingsPage extends ConsumerWidget {
             ),
             const SizedBox(height: 40),
 
-            const Text(
-              'Device',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 20,
-                fontFamily: 'OpenSans',
-              ),
-            ),
-            const SizedBox(height: 20.0),
-
-            Row(
-              children: const [
-                Icon(Icons.location_pin),
-                SizedBox(width: 10),
-                Text(
-                  "Manage Location Services",
-                  style: TextStyle(fontSize: 20, fontFamily: 'OpenSans'),
-                ),
-              ],
-            ),
-            const Divider(color: Color(0xFFD6D6D6), thickness: 1),
-
-            Row(
-              children: const [
-                Icon(Icons.camera_alt_outlined),
-                SizedBox(width: 10),
-                Text(
-                  "Manage Camera Access",
-                  style: TextStyle(fontSize: 20, fontFamily: 'OpenSans'),
-                ),
-              ],
-            ),
-            const SizedBox(height: 40),
-
-            // ✅ Delete Account
+            // Delete Account
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -159,6 +125,7 @@ class SettingsPage extends ConsumerWidget {
       context: context,
       builder:
           (ctx) => AlertDialog(
+            backgroundColor: Colors.white,
             title: const Text("Delete Account"),
             content: const Text(
               "Are you sure you want to permanently delete your account? "
@@ -197,12 +164,18 @@ class SettingsPage extends ConsumerWidget {
           .deleteAccount(email: email, password: password);
 
       if (!context.mounted) return;
-      Navigator.of(context).pushReplacementNamed('/');
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        '/', // replace with your actual login route
+        (Route<dynamic> route) => false,
+      );
     } catch (e) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Error deleting account: $e")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Error deleting account: $e"),
+          backgroundColor: Colors.white,
+        ),
+      );
     }
   }
 
@@ -213,6 +186,7 @@ class SettingsPage extends ConsumerWidget {
       context: context,
       builder:
           (ctx) => AlertDialog(
+            backgroundColor: Colors.white,
             title: const Text("Re-enter Password"),
             content: TextField(
               controller: passwordController,

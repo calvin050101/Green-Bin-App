@@ -43,18 +43,29 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     );
 
     try {
-      // Call UserService via Riverpod
       final userService = ref.read(userServiceProvider);
       await userService.login(
-        email: _emailController.text,
-        password: _passwordController.text,
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
       );
 
       if (dialogContext.mounted) Navigator.pop(dialogContext);
+
+      // Navigate to home if successful
+      if (mounted) {
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          '/home',
+          (Route<dynamic> route) => false,
+        );
+      }
     } on FirebaseAuthException catch (e) {
       if (dialogContext.mounted) Navigator.pop(dialogContext);
       setState(() {
-        errorMessage = e.message ?? '';
+        if (e.code == "email-not-verified") {
+          errorMessage = "Please verify your email before logging in.";
+        } else {
+          errorMessage = e.message ?? 'Login failed';
+        }
       });
     }
   }

@@ -82,6 +82,14 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
   void changePassword() async {
     // show loading circle
     late BuildContext dialogContext;
+
+    if (_newPasswordController.text != _confirmNewPasswordController.text) {
+      setState(() {
+        errorMessage = "Passwords don't match";
+      });
+      return;
+    }
+
     showDialog(
       context: context,
       builder: (BuildContext ctx) {
@@ -89,16 +97,6 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
         return const Center(child: CircularProgressIndicator());
       },
     );
-
-    if (_newPasswordController.text != _confirmNewPasswordController.text) {
-      if (dialogContext.mounted) {
-        Navigator.pop(dialogContext);
-      }
-      setState(() {
-        errorMessage = "Passwords don't match";
-      });
-      return;
-    }
 
     try {
       final userService = ref.read(userServiceProvider);
@@ -109,8 +107,23 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
         currentPassword: _oldPasswordController.text,
         newPassword: _newPasswordController.text,
       );
+      setState(() {errorMessage = '';});
 
       if (dialogContext.mounted) Navigator.pop(dialogContext);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              "Password changed successfully",
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black,
+                fontFamily: 'OpenSans',
+              ),
+            ),
+            backgroundColor: Colors.green,
+          )
+      );
     } on FirebaseAuthException catch (e) {
       if (dialogContext.mounted) Navigator.pop(dialogContext);
       setState(() {

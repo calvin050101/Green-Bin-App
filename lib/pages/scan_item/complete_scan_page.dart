@@ -59,7 +59,7 @@ class _CompleteScanPageState extends ConsumerState<CompleteScanPage> {
 
   @override
   Widget build(BuildContext context) {
-    final totalPoints = (_confirmedWasteType.pointsPerKg * _weight).round();
+    final totalPoints = (_confirmedWasteType.pointsPerKg * _weight).ceil();
     final totalCarbon = _confirmedWasteType.carbonPerKg * _weight;
 
     return Scaffold(

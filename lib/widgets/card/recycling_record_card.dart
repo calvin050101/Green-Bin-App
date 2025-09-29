@@ -33,6 +33,15 @@ class RecyclingRecordCard extends StatelessWidget {
           DateFormat('yyyy-MM-dd hh:mm a').format(record.timestamp.toLocal()),
           style: const TextStyle(fontFamily: 'OpenSans', fontSize: 12),
         ),
+        trailing: Text(
+          "${record.weight.toStringAsFixed(2)} kg",
+          style: const TextStyle(
+            fontFamily: 'OpenSans',
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: Colors.black54,
+          ),
+        ),
       ),
     );
   }

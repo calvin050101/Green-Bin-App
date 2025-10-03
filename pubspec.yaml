@@ -58,31 +58,31 @@ flutter:
   fonts:
     - family: Montserrat
       fonts:
-        - asset: lib/fonts/Montserrat/Montserrat-Bold.ttf
+        - asset: assets/fonts/Montserrat/Montserrat-Regular.ttf
           weight: 700
-        - asset: lib/fonts/Montserrat/Montserrat-Light.ttf
+        - asset: assets/fonts/Montserrat/Montserrat-Light.ttf
           weight: 300
-        - asset: lib/fonts/Montserrat/Montserrat-Medium.ttf
-        - asset: lib/fonts/Montserrat/Montserrat-Regular.ttf
-        - asset: lib/fonts/Montserrat/Montserrat-SemiBold.ttf
+        - asset: assets/fonts/Montserrat/Montserrat-Medium.ttf
+        - asset: assets/fonts/Montserrat/Montserrat-Regular.ttf
+        - asset: assets/fonts/Montserrat/Montserrat-SemiBold.ttf
           weight: 600
     - family: OpenSans
       fonts:
-        - asset: lib/fonts/OpenSans/OpenSans-Bold.ttf
+        - asset: assets/fonts/OpenSans/OpenSans-Bold.ttf
           weight: 700
-        - asset: lib/fonts/OpenSans/OpenSans-Light.ttf
+        - asset: assets/fonts/OpenSans/OpenSans-Light.ttf
           weight: 300
-        - asset: lib/fonts/OpenSans/OpenSans-Medium.ttf
-        - asset: lib/fonts/OpenSans/OpenSans-Regular.ttf
-        - asset: lib/fonts/OpenSans/OpenSans-SemiBold.ttf
+        - asset: assets/fonts/OpenSans/OpenSans-Medium.ttf
+        - asset: assets/fonts/OpenSans/OpenSans-Regular.ttf
+        - asset: assets/fonts/OpenSans/OpenSans-SemiBold.ttf
           weight: 600
     - family: Poppins
       fonts:
-         - asset: lib/fonts/Poppins/Poppins-Bold.ttf
+         - asset: assets/fonts/Poppins/Poppins-Bold.ttf
            weight: 700
-         - asset: lib/fonts/Poppins/Poppins-Light.ttf
+         - asset: assets/fonts/Poppins/Poppins-Light.ttf
            weight: 300
-         - asset: lib/fonts/Poppins/Poppins-Medium.ttf
-         - asset: lib/fonts/Poppins/Poppins-Regular.ttf
-         - asset: lib/fonts/Poppins/Poppins-SemiBold.ttf
+         - asset: assets/fonts/Poppins/Poppins-Medium.ttf
+         - asset: assets/fonts/Poppins/Poppins-Regular.ttf
+         - asset: assets/fonts/Poppins/Poppins-SemiBold.ttf
            weight: 600

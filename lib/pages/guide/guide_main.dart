@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -58,13 +59,13 @@ class GuideMainPage extends ConsumerWidget {
       child: ListTile(
         leading:
             article.imageUrl != null
-                ? Image.network(
-                  article.imageUrl!,
+                ? CachedNetworkImage(
+                  imageUrl: article.imageUrl!,
                   width: 60,
                   height: 60,
                   fit: BoxFit.fitHeight,
                 )
-                : const Icon(Icons.article),
+                : const Icon(Icons.article, color: Color(0xFF4CAF50)),
         title: Text(
           article.title,
           style: TextStyle(

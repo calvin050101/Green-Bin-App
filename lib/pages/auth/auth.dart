@@ -14,7 +14,6 @@ class AuthPage extends ConsumerWidget {
       body: StreamBuilder(
         stream: FirebaseAuth.instance.userChanges(),
         builder: (context, snapshot) {
-          // user is logged in
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -23,13 +22,29 @@ class AuthPage extends ConsumerWidget {
 
           if (user == null) {
             return const LoginPage();
-          } else if (!user.emailVerified) {
-            return const VerifyEmailPage();
-          } else {
-            return MainWrapperScreen();
           }
+
+          if (!user.emailVerified) {
+            return const VerifyEmailPage();
+          }
+
+          return FutureBuilder(
+            future: user.getIdToken(true),
+            builder: (context, tokenSnapshot) {
+              if (tokenSnapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (tokenSnapshot.hasError) {
+                return Center(
+                  child: Text("Error refreshing session: ${tokenSnapshot.error}"),
+                );
+              }
+              return const MainWrapperScreen();
+            },
+          );
         },
       ),
     );
   }
 }
+

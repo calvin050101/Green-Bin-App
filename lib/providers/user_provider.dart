@@ -46,7 +46,6 @@ final currentUserStreamProvider = StreamProvider<UserModel?>((ref) {
   final user = profile.currentUser;
   if (user == null) return Stream.value(null);
 
-  // Stream Firestore user profile
   final userDocStream = profile.watchUserData(user.uid);
 
   return userDocStream.asyncMap((docSnapshot) async {

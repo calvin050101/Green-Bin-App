@@ -38,7 +38,7 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
     super.dispose();
   }
 
-  void verifyFormInput() {
+  void registerUser() async {
     if (_usernameController.text.isEmpty ||
         _emailController.text.isEmpty ||
         _passwordController.text.isEmpty ||
@@ -63,10 +63,6 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
       return;
     }
 
-    registerUser();
-  }
-
-  void registerUser() async {
     late BuildContext dialogContext;
 
     // show loading circle
@@ -173,7 +169,7 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
 
               CustomButton(
                 buttonText: "Continue",
-                onPressed: verifyFormInput,
+                onPressed: registerUser,
               ),
             ],
           ),

@@ -2,15 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:green_bin/models/waste_type_model.dart';
 import 'package:green_bin/services/waste_type_service.dart';
 
-/// Provides a future of waste types (fetch once)
-final wasteTypesProvider = FutureProvider<List<WasteTypeModel>>((ref) async {
-  final service = ref.watch(wasteTypeServiceProvider);
-  return service.fetchWasteTypes();
-});
-
 /// Provides a stream of waste types (auto-updating)
-final wasteTypesStreamProvider =
-    StreamProvider<List<WasteTypeModel>>((ref) {
-      final service = ref.watch(wasteTypeServiceProvider);
-      return service.streamWasteTypes();
-    });
+final wasteTypesStreamProvider = StreamProvider<List<WasteTypeModel>>((ref) {
+  final service = ref.watch(wasteTypeServiceProvider);
+  return service.streamWasteTypes();
+});

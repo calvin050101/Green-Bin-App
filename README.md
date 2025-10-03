@@ -22,14 +22,14 @@ GreenBin integrates AI waste classification, location-based recycling info, and 
 
 ## 🛠️ Tech Stack
 
-| Component             | Technology        |
-|----------------------|-------------------|
-| Frontend             | Flutter           |
-| Backend              | Firebase          |
-| AI/ML Model          | TensorFlow Lite   |
-| IDE                  | Android Studio    |
-| Database             | Firebase Firestore|
-| Platform             | Android (Mobile)  |
+| Component   | Technology         |
+|-------------|--------------------|
+| Frontend    | Flutter            |
+| Backend     | Firebase           |
+| AI/ML Model | TensorFlow Lite    |
+| IDE         | Android Studio     |
+| Database    | Firebase Firestore |
+| Platform    | Android (Mobile)   |
 
 ---
 

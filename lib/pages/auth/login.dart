@@ -30,6 +30,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   }
 
   void loginUser() async {
+    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+      setState(() {
+        errorMessage = "Please fill in all fields";
+      });
+      return;
+    }
+
     late BuildContext dialogContext;
 
     // show loading circle
@@ -50,14 +57,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       );
 
       if (dialogContext.mounted) Navigator.pop(dialogContext);
-
-      // Navigate to home if successful
-      if (mounted) {
-        Navigator.of(context).pushNamedAndRemoveUntil(
-          '/home',
-          (Route<dynamic> route) => false,
-        );
-      }
     } on FirebaseAuthException catch (e) {
       if (dialogContext.mounted) Navigator.pop(dialogContext);
       setState(() {

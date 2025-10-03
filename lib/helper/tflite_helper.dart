@@ -21,10 +21,8 @@ class TFLiteHelper {
       );
 
       _isInitialized = true;
-      print("✅ TFLite model loaded successfully");
     } catch (e) {
-      print("❌ Failed to load model: $e");
-      rethrow; // optional: propagate error
+      rethrow;
     }
   }
 
@@ -56,44 +54,16 @@ class TFLiteHelper {
     return floats;
   }
 
-  static Future<Map<String, dynamic>> runInference(File image) async {
-    // Preprocess → Float32List in NHWC order
-    final input = preprocessImageFromPath(image.path);
-
-    // Prepare output buffer
-    var outputShape = interpreter.getOutputTensor(0).shape; // e.g. [1, 10]
-    var outputBuffer = Float32List(outputShape.reduce((a, b) => a * b));
-
-    // Run inference
-    interpreter.run(input.buffer, outputBuffer.buffer);
-
-    // Convert to list
-    final outputs = outputBuffer.toList();
-
-    // Find the index of max confidence
-    int maxIndex = 0;
-    double maxValue = outputs[0];
-    for (int i = 1; i < outputs.length; i++) {
-      if (outputs[i] > maxValue) {
-        maxValue = outputs[i];
-        maxIndex = i;
-      }
-    }
-
-    return {
-      "label": Labels.labelAt(maxIndex),
-      "confidence": maxValue,
-    };
-  }
-
-  // Runs inference given preprocessed input
-  static Future<Map<String, dynamic>> runInferenceFromInput(Float32List input) async {
-    var outputShape = interpreter.getOutputTensor(0).shape; // e.g. [1, 10]
+  /// Runs inference given preprocessed input
+  static Future<Map<String, dynamic>> runInferenceFromInput(
+    Float32List input,
+  ) async {
+    var outputShape = interpreter.getOutputTensor(0).shape;
     var outputBuffer = Float32List(outputShape.reduce((a, b) => a * b));
 
     interpreter.run(input.buffer, outputBuffer.buffer);
 
-    // Top-1 prediction
+    // Top prediction
     final outputs = outputBuffer.toList();
     int maxIndex = 0;
     double maxValue = outputs[0];
@@ -105,5 +75,4 @@ class TFLiteHelper {
     }
     return {"label": Labels.labelAt(maxIndex), "confidence": maxValue};
   }
-
 }

@@ -11,32 +11,16 @@ class WasteTypeService {
   final FirebaseFirestore _firestore;
 
   WasteTypeService({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
-  CollectionReference get _collection =>
-      _firestore.collection("wasteTypes");
+  CollectionReference get _collection => _firestore.collection("wasteTypes");
 
-  /// Get all waste types once
-  Future<List<WasteTypeModel>> fetchWasteTypes() async {
-    final snapshot = await _collection.get();
-    return snapshot.docs
-        .map((doc) => WasteTypeModel.fromFirestore(doc))
-        .toList();
-  }
-
-  /// Get waste types as a stream (for real-time updates)
+  /// Get waste types
   Stream<List<WasteTypeModel>> streamWasteTypes() {
     return _collection.snapshots().map((snapshot) {
       return snapshot.docs
           .map((doc) => WasteTypeModel.fromFirestore(doc))
           .toList();
     });
-  }
-
-  /// Get a single waste type by ID
-  Future<WasteTypeModel?> getWasteTypeById(String id) async {
-    final doc = await _collection.doc(id).get();
-    if (!doc.exists) return null;
-    return WasteTypeModel.fromFirestore(doc);
   }
 }

@@ -107,22 +107,27 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
         currentPassword: _oldPasswordController.text,
         newPassword: _newPasswordController.text,
       );
-      setState(() {errorMessage = '';});
+
+      if (!mounted) return;
+
+      setState(() {
+        errorMessage = '';
+      });
 
       if (dialogContext.mounted) Navigator.pop(dialogContext);
 
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              "Password changed successfully",
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black,
-                fontFamily: 'OpenSans',
-              ),
+        const SnackBar(
+          content: Text(
+            "Password changed successfully",
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black,
+              fontFamily: 'OpenSans',
             ),
-            backgroundColor: Colors.green,
-          )
+          ),
+          backgroundColor: Colors.green,
+        ),
       );
     } on FirebaseAuthException catch (e) {
       if (dialogContext.mounted) Navigator.pop(dialogContext);

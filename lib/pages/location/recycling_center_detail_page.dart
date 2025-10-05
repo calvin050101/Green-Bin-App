@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_google_maps_webservices/src/places.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:green_bin/providers/recycling_center_provider.dart';
 import 'package:green_bin/helper/location_functions.dart';
@@ -84,22 +85,8 @@ class RecyclingCenterDetailPage extends ConsumerWidget {
                       child: CachedNetworkImage(
                         imageUrl: center.photoUrl!,
                         fit: BoxFit.cover,
-                        placeholder:
-                            (context, url) => Container(
-                              color: Colors.grey[300],
-                              child: const Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            ),
-                        errorWidget:
-                            (context, url, error) => Container(
-                              color: Colors.grey[200],
-                              child: const Icon(
-                                Icons.broken_image,
-                                color: Colors.grey,
-                                size: 80,
-                              ),
-                            ),
+                        placeholder: centerImagePlaceholder,
+                        errorWidget: placeImageError,
                       ),
                     )
                   else
@@ -147,20 +134,7 @@ class RecyclingCenterDetailPage extends ConsumerWidget {
                       context,
                       'Operating Hours',
                       null,
-                      children:
-                          centerDetail!.openingHours!.weekdayText
-                              .map(
-                                (day) => Text(
-                                  day,
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.bodyLarge?.copyWith(
-                                    color: Colors.black87,
-                                    fontFamily: 'OpenSans',
-                                  ),
-                                ),
-                              )
-                              .toList(),
+                      children: buildOpeningHoursList(centerDetail, context),
                     ),
 
                   if (centerDetail?.formattedPhoneNumber != null)
@@ -191,24 +165,48 @@ class RecyclingCenterDetailPage extends ConsumerWidget {
     );
   }
 
-  SizedBox _googleMapsButton(RecyclingCenter center) {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton.icon(
-        onPressed: () {
-          launchGoogleMapsDirections(center, center.name);
-        },
-        icon: const Icon(Icons.map, color: Colors.white),
-        label: const Text(
-          'Google Maps',
-          style: TextStyle(color: Colors.white, fontSize: 16),
-        ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blue, // Google Maps blue
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        ),
+  List<Text> buildOpeningHoursList(
+    PlaceDetails? centerDetail,
+    BuildContext context,
+  ) =>
+      centerDetail!.openingHours!.weekdayText
+          .map(
+            (day) => Text(
+              day,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: Colors.black87,
+                fontFamily: 'OpenSans',
+              ),
+            ),
+          )
+          .toList();
+
+  Widget centerImagePlaceholder(context, url) => Container(
+    color: Colors.grey[300],
+    child: const Center(child: CircularProgressIndicator()),
+  );
+
+  Widget placeImageError(context, url, error) => Container(
+    color: Colors.grey[200],
+    child: const Icon(Icons.broken_image, color: Colors.grey, size: 80),
+  );
+
+  SizedBox _googleMapsButton(RecyclingCenter center) => SizedBox(
+    width: double.infinity,
+    child: ElevatedButton.icon(
+      onPressed: () {
+        launchGoogleMapsDirections(center, center.name);
+      },
+      icon: const Icon(Icons.map, color: Colors.white),
+      label: const Text(
+        'Google Maps',
+        style: TextStyle(color: Colors.white, fontSize: 16),
       ),
-    );
-  }
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.blue,
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+    ),
+  );
 }

@@ -50,46 +50,42 @@ class _UpdateUsernamePageState extends ConsumerState<UpdateUsernamePage> {
         leadingWidth: 70,
         leading: CustBackButton(),
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _mainBody(),
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : _mainBody(),
     );
   }
 
-  Widget _mainBody() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Update Username',
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 32,
-              fontFamily: 'Poppins',
-            ),
+  Widget _mainBody() => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 20),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Update Username',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 32,
+            fontFamily: 'Poppins',
           ),
-          SizedBox(height: 40),
+        ),
+        SizedBox(height: 40),
 
-          CustFormField(
-            controller: _usernameController,
-            keyboardType: TextInputType.text,
-            hintText: 'New Username',
-          ),
-          const SizedBox(height: 20.0),
+        CustFormField(
+          controller: _usernameController,
+          keyboardType: TextInputType.text,
+          hintText: 'New Username',
+        ),
+        const SizedBox(height: 20.0),
 
-          ErrorMessageText(errorMessage: _errorMessage),
-          SizedBox(height: 40),
+        ErrorMessageText(errorMessage: _errorMessage),
+        SizedBox(height: 40),
 
-          CustomButton(
-            buttonText: "Update Username",
-            onPressed: updateUsername,
-          ),
-        ],
-      ),
-    );
-  }
+        CustomButton(buttonText: "Update Username", onPressed: updateUsername),
+      ],
+    ),
+  );
 
   void updateUsername() async {
     setState(() {
@@ -98,6 +94,14 @@ class _UpdateUsernamePageState extends ConsumerState<UpdateUsernamePage> {
     });
 
     try {
+      // Validate if username text is empty
+      if (_usernameController.text.trim().isEmpty) {
+        setState(() {
+          _errorMessage = 'Username cannot be empty';
+        });
+        return;
+      }
+
       final userService = ref.read(userServiceProvider);
       await userService.updateUsername(_usernameController.text.trim());
 
@@ -126,4 +130,3 @@ class _UpdateUsernamePageState extends ConsumerState<UpdateUsernamePage> {
     }
   }
 }
-

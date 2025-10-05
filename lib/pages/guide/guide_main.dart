@@ -52,8 +52,7 @@ class GuideMainPage extends ConsumerWidget {
     );
   }
 
-  Card articleCard(Article article, BuildContext context) {
-    return Card(
+  Card articleCard(Article article, BuildContext context) => Card(
       margin: const EdgeInsets.all(8.0),
       color: Colors.white,
       child: ListTile(
@@ -87,5 +86,4 @@ class GuideMainPage extends ConsumerWidget {
         },
       ),
     );
-  }
 }

@@ -16,7 +16,7 @@ final recyclingCentersProvider =
       final places = ref.watch(googlePlacesProvider);
 
       try {
-        // 1. Get current location
+        // Get current location
         LocationPermission permission = await Geolocator.checkPermission();
         if (permission == LocationPermission.denied) {
           permission = await Geolocator.requestPermission();
@@ -27,12 +27,13 @@ final recyclingCentersProvider =
             );
           }
         }
+
         Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high,
           timeLimit: const Duration(seconds: 10),
         );
 
-        // 2. Search for recycling centers near the current location
+        // Search for recycling centers near the current location
         final googlePlacesService = GooglePlacesService(places);
         final centers = await googlePlacesService.searchRecyclingCenters(
           latitude: position.latitude,

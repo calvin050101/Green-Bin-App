@@ -19,6 +19,7 @@ class WasteRecordsService {
       : _firestore = firestore ?? FirebaseFirestore.instance,
         _ref = ref;
 
+  // Get User Records
   Future<List<RecordModel>> getUserRecords(String uid) async {
     final snapshot = await _firestore
         .collection('users')
@@ -32,6 +33,7 @@ class WasteRecordsService {
         .toList();
   }
 
+  // Stream of Waste Records
   Stream<List<RecordModel>> watchUserRecords(String uid) {
     return _firestore
         .collection('users')

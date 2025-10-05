@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:green_bin/models/recycling_center.dart';
+import 'package:green_bin/pages/location/recycling_center_detail_page.dart';
 
 import '../../helper/location_functions.dart';
 
@@ -37,7 +38,7 @@ class RecyclingCenterCard extends StatelessWidget {
           onPressed: () {
             Navigator.pushNamed(
               context,
-              "/recycling-center-detail",
+              RecyclingCenterDetailPage.routeName,
               arguments: center,
             );
           },

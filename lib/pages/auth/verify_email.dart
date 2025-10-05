@@ -53,17 +53,20 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
+
             if (isEmailSent)
               const Text(
                 "Verification email sent again.",
                 style: TextStyle(fontSize: 18, fontFamily: "Poppins"),
               ),
             const SizedBox(height: 20),
+
             CustomButton(
               onPressed: _sendVerificationEmail,
               buttonText: 'Resend Email',
             ),
             const SizedBox(height: 20),
+
             CustomButton(
               onPressed: _checkVerification,
               buttonText: 'I have verified',

@@ -123,34 +123,7 @@ class SettingsPage extends ConsumerWidget {
   ) async {
     final shouldDelete = await showDialog<bool>(
       context: context,
-      builder:
-          (ctx) => AlertDialog(
-            backgroundColor: Colors.white,
-            title: const Text("Delete Account"),
-            content: const Text(
-              "Are you sure you want to permanently delete your account? "
-              "This action cannot be undone.",
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(ctx).pop(false),
-                child: const Text(
-                  "Cancel",
-                  style: TextStyle(color: Colors.black),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () => Navigator.of(ctx).pop(true),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent,
-                ),
-                child: const Text(
-                  "Delete",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
-          ),
+      builder: (ctx) => deleteAccountAlertDialog(ctx),
     );
 
     if (!context.mounted || shouldDelete != true) return;
@@ -165,7 +138,7 @@ class SettingsPage extends ConsumerWidget {
 
       if (!context.mounted) return;
       Navigator.of(context).pushNamedAndRemoveUntil(
-        '/', // replace with your actual login route
+        '/',
         (Route<dynamic> route) => false,
       );
     } catch (e) {
@@ -178,6 +151,26 @@ class SettingsPage extends ConsumerWidget {
       );
     }
   }
+
+  AlertDialog deleteAccountAlertDialog(BuildContext ctx) => AlertDialog(
+    backgroundColor: Colors.white,
+    title: const Text("Delete Account"),
+    content: const Text(
+      "Are you sure you want to permanently delete your account? "
+      "This action cannot be undone.",
+    ),
+    actions: [
+      TextButton(
+        onPressed: () => Navigator.of(ctx).pop(false),
+        child: const Text("Cancel", style: TextStyle(color: Colors.black)),
+      ),
+      ElevatedButton(
+        onPressed: () => Navigator.of(ctx).pop(true),
+        style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+        child: const Text("Delete", style: TextStyle(color: Colors.white)),
+      ),
+    ],
+  );
 
   Future<String?> _showPasswordDialog(BuildContext context) async {
     final passwordController = TextEditingController();

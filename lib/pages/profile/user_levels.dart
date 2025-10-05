@@ -5,6 +5,7 @@ import '../../widgets/cust_container.dart';
 
 class UserLevelsPage extends StatelessWidget {
   static String routeName = "/user-levels";
+
   const UserLevelsPage({super.key});
 
   @override
@@ -48,29 +49,24 @@ class UserLevelsPage extends StatelessWidget {
     );
   }
 
-  Padding userLevelContainer(String points, String label) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 15.0),
-      child: CustContainer(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              points,
-              style: TextStyle(fontSize: 16, fontFamily: 'OpenSans'),
-            ),
+  Padding userLevelContainer(String points, String label) => Padding(
+    padding: const EdgeInsets.only(bottom: 15.0),
+    child: CustContainer(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(points, style: TextStyle(fontSize: 16, fontFamily: 'OpenSans')),
 
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 16,
-                fontFamily: 'OpenSans',
-                fontWeight: FontWeight.bold,
-              ),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 16,
+              fontFamily: 'OpenSans',
+              fontWeight: FontWeight.bold,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
 }

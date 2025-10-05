@@ -22,6 +22,7 @@ class UserService {
 
   User? get currentUser => _auth.currentUser;
 
+  // Login
   Future<UserCredential> login({
     required String email,
     required String password,
@@ -46,6 +47,7 @@ class UserService {
     return credential;
   }
 
+  // Create Account
   Future<UserCredential> createAccount({
     required String email,
     required String password,
@@ -75,6 +77,7 @@ class UserService {
     return credential;
   }
 
+  // Update Username
   Future<void> updateUsername(String newUsername) async {
     final user = _auth.currentUser;
     if (user == null) throw Exception("No user logged in");

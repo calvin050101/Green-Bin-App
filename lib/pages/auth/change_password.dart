@@ -80,7 +80,17 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
   }
 
   void changePassword() async {
-    // show loading circle
+    // validate password text isn't empty
+    if (_oldPasswordController.text.isEmpty ||
+        _newPasswordController.text.isEmpty ||
+        _confirmNewPasswordController.text.isEmpty) {
+      setState(() {
+        errorMessage = "Please fill in all fields";
+      });
+      return;
+    }
+
+    // show loading
     late BuildContext dialogContext;
 
     if (_newPasswordController.text != _confirmNewPasswordController.text) {

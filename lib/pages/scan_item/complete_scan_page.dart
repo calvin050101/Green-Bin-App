@@ -6,7 +6,7 @@ import 'package:green_bin/models/waste_type_model.dart';
 import 'package:green_bin/widgets/custom_button.dart';
 import 'package:green_bin/widgets/form/error_message_text.dart';
 
-import '../../providers/waste_records_provider.dart';
+import '../../services/waste_records_service.dart';
 
 class CompleteScanPage extends ConsumerStatefulWidget {
   static String routeName = "/complete-scan";
@@ -17,7 +17,8 @@ class CompleteScanPage extends ConsumerStatefulWidget {
   const CompleteScanPage({
     super.key,
     required this.confirmedWasteType,
-    required this.weight, required this.image,
+    required this.weight,
+    required this.image,
   });
 
   @override
@@ -45,7 +46,7 @@ class _CompleteScanPageState extends ConsumerState<CompleteScanPage> {
       final wasteRecordsService = ref.read(wasteRecordsServiceProvider);
       await wasteRecordsService.addWasteRecord(
         wasteType: _confirmedWasteType,
-        weight: _weight
+        weight: _weight,
       );
       setState(() {
         _recordAdded = true;
@@ -127,49 +128,42 @@ class _CompleteScanPageState extends ConsumerState<CompleteScanPage> {
     );
   }
 
-  Container _wasteImageContainer(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.7,
-      height: MediaQuery.of(context).size.width * 0.5,
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: Colors.grey[400]!),
-        image: DecorationImage(
-          image: FileImage(_image),
-          fit: BoxFit.cover,
-        ),
-      ),
-    );
-  }
+  Container _wasteImageContainer(BuildContext context) => Container(
+    width: MediaQuery.of(context).size.width * 0.7,
+    height: MediaQuery.of(context).size.width * 0.5,
+    decoration: BoxDecoration(
+      color: Colors.grey[200],
+      borderRadius: BorderRadius.circular(15),
+      border: Border.all(color: Colors.grey[400]!),
+      image: DecorationImage(image: FileImage(_image), fit: BoxFit.cover),
+    ),
+  );
 
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 16,
-              fontFamily: 'OpenSans',
-              color: Colors.grey[700],
-              fontWeight: FontWeight.w500,
-            ),
+  Widget _buildInfoRow(String label, String value) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 5.0),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 16,
+            fontFamily: 'OpenSans',
+            color: Colors.grey[700],
+            fontWeight: FontWeight.w500,
           ),
-          const SizedBox(width: 10),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 16,
-              fontFamily: 'OpenSans',
-              color: Colors.black87,
-              fontWeight: FontWeight.bold,
-            ),
+        ),
+        const SizedBox(width: 10),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 16,
+            fontFamily: 'OpenSans',
+            color: Colors.black87,
+            fontWeight: FontWeight.bold,
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
 }

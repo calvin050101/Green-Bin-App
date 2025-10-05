@@ -174,6 +174,7 @@ class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
       return;
     }
 
+    // Validate weight
     final weight = double.tryParse(_weightController.text);
     if (weight == null || weight <= 0 || weight > 20) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -192,6 +193,7 @@ class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
       return;
     }
 
+    // Continue to CompleteScanPage
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -205,86 +207,78 @@ class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
     );
   }
 
-  ExpansionTile wasteTypeOptionsTile(List<WasteTypeModel> wasteTypes) {
-    return ExpansionTile(
-      title: const Text(
-        "Select Waste Type",
-        style: TextStyle(
-          fontSize: 16,
-          color: Colors.black,
-          fontFamily: 'OpenSans',
+  ExpansionTile wasteTypeOptionsTile(List<WasteTypeModel> wasteTypes) =>
+      ExpansionTile(
+        title: const Text(
+          "Select Waste Type",
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.black,
+            fontFamily: 'OpenSans',
+          ),
         ),
-      ),
-      children:
-          wasteTypes
-              .map(
-                (waste) => WasteTypeOptionCard(
-                  wasteType: waste,
-                  icon: getWasteTypeIcon(waste.label),
-                  isSelected: _selectedWasteType?.id == waste.id,
-                  onTap: () {
-                    setState(() {
-                      _selectedWasteType = waste;
-                    });
-                  },
-                ),
-              )
-              .toList(),
-    );
-  }
+        children:
+            wasteTypes
+                .map(
+                  (waste) => WasteTypeOptionCard(
+                    wasteType: waste,
+                    icon: getWasteTypeIcon(waste.label),
+                    isSelected: _selectedWasteType?.id == waste.id,
+                    onTap: () {
+                      setState(() {
+                        _selectedWasteType = waste;
+                      });
+                    },
+                  ),
+                )
+                .toList(),
+      );
 
   /// Show scanned image
-  Container wasteImageContainer(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.7,
-      height: MediaQuery.of(context).size.width * 0.5,
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: Colors.grey[300]!, width: 2),
-        image: DecorationImage(
-          image: FileImage(widget.image),
-          fit: BoxFit.cover,
-        ),
-      ),
-    );
-  }
+  Container wasteImageContainer(BuildContext context) => Container(
+    width: MediaQuery.of(context).size.width * 0.7,
+    height: MediaQuery.of(context).size.width * 0.5,
+    decoration: BoxDecoration(
+      color: Colors.grey[200],
+      borderRadius: BorderRadius.circular(15),
+      border: Border.all(color: Colors.grey[300]!, width: 2),
+      image: DecorationImage(image: FileImage(widget.image), fit: BoxFit.cover),
+    ),
+  );
 
   /// Show predicted label + confidence
   Container predictedWasteTypeContainer(
     String predictedWasteType,
     double predictedConfidence,
-  ) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: const Color(0xFF4CAF50),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        children: [
-          const Text(
-            'Predicted Waste Type:',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'OpenSans',
-            ),
+  ) => Container(
+    width: double.infinity,
+    padding: const EdgeInsets.all(12),
+    decoration: BoxDecoration(
+      color: const Color(0xFF4CAF50),
+      borderRadius: BorderRadius.circular(10),
+    ),
+    child: Column(
+      children: [
+        const Text(
+          'Predicted Waste Type:',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'OpenSans',
           ),
-          const SizedBox(height: 10),
-          Text(
-            '$predictedWasteType - ${(predictedConfidence * 100).toStringAsFixed(2)}%',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'OpenSans',
-            ),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          '$predictedWasteType - ${(predictedConfidence * 100).toStringAsFixed(2)}%',
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'OpenSans',
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
 }

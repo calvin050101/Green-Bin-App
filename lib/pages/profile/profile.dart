@@ -35,90 +35,89 @@ class ProfilePage extends ConsumerWidget {
     );
   }
 
-  Widget showPage(UserModel user, BuildContext context, WidgetRef ref) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 40),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Profile',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 32,
-                fontFamily: 'Poppins',
+  Widget showPage(UserModel user, BuildContext context, WidgetRef ref) =>
+      Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20, bottom: 40),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Profile',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 32,
+                  fontFamily: 'Poppins',
+                ),
               ),
-            ),
-            const SizedBox(height: 40),
+              const SizedBox(height: 40),
 
-            profileInfo(user),
-            const SizedBox(height: 30),
+              profileInfo(user),
+              const SizedBox(height: 30),
 
-            userStatsContainer(user, context),
-            const SizedBox(height: 30),
+              userStatsContainer(user, context),
+              const SizedBox(height: 30),
 
-            PageDirectContainer(
-              text: "User Levels",
-              onTap: () {
-                Navigator.pushNamed(context, UserLevelsPage.routeName);
-              },
-            ),
-            const SizedBox(height: 10),
-
-            PageDirectContainer(
-              text: "Recycling History",
-              onTap: () {
-                Navigator.pushNamed(context, RecyclingHistoryPage.routeName);
-              },
-            ),
-            const SizedBox(height: 10),
-
-            PageDirectContainer(
-              text: "Settings",
-              onTap: () {
-                Navigator.pushNamed(context, SettingsPage.routeName);
-              },
-            ),
-            const SizedBox(height: 10),
-
-            PageDirectContainer(
-              text: "Terms and Conditions",
-              onTap: () {
-                Navigator.pushNamed(context, TermsPage.routeName);
-              },
-            ),
-            const SizedBox(height: 10),
-
-            PageDirectContainer(
-              text: "Privacy Policy",
-              onTap: () {
-                Navigator.pushNamed(context, PrivacyPolicyPage.routeName);
-              },
-            ),
-            const SizedBox(height: 20),
-
-            // Logout button
-            CustomButton(
-              buttonText: "Log Out",
-              onPressed: () async {
-                final userService = ref.read(userServiceProvider);
-                await userService.signOut();
-              },
-            ),
-            const SizedBox(height: 10),
-
-            Center(
-              child: Text(
-                "App version: v1.0.0",
-                style: TextStyle(fontSize: 14, fontFamily: "OpenSans"),
+              PageDirectContainer(
+                text: "User Levels",
+                onTap: () {
+                  Navigator.pushNamed(context, UserLevelsPage.routeName);
+                },
               ),
-            ),
-          ],
+              const SizedBox(height: 10),
+
+              PageDirectContainer(
+                text: "Recycling History",
+                onTap: () {
+                  Navigator.pushNamed(context, RecyclingHistoryPage.routeName);
+                },
+              ),
+              const SizedBox(height: 10),
+
+              PageDirectContainer(
+                text: "Settings",
+                onTap: () {
+                  Navigator.pushNamed(context, SettingsPage.routeName);
+                },
+              ),
+              const SizedBox(height: 10),
+
+              PageDirectContainer(
+                text: "Terms and Conditions",
+                onTap: () {
+                  Navigator.pushNamed(context, TermsPage.routeName);
+                },
+              ),
+              const SizedBox(height: 10),
+
+              PageDirectContainer(
+                text: "Privacy Policy",
+                onTap: () {
+                  Navigator.pushNamed(context, PrivacyPolicyPage.routeName);
+                },
+              ),
+              const SizedBox(height: 20),
+
+              // Logout button
+              CustomButton(
+                buttonText: "Log Out",
+                onPressed: () async {
+                  final userService = ref.read(userServiceProvider);
+                  await userService.signOut();
+                },
+              ),
+              const SizedBox(height: 10),
+
+              Center(
+                child: Text(
+                  "App version: v1.0.0",
+                  style: TextStyle(fontSize: 14, fontFamily: "OpenSans"),
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 
   Row profileInfo(UserModel user) {
     final UserLevel userLevel = getUserLevel(user.totalPoints!);
@@ -167,61 +166,58 @@ class ProfilePage extends ConsumerWidget {
     );
   }
 
-  CustContainer userStatsContainer(UserModel user, BuildContext context) {
-    return CustContainer(
-      child: Column(
-        children: [
-          userStatsRow(
-            rowIcon: Icon(
-              Icons.recycling,
-              size: 40,
-              color: Theme.of(context).colorScheme.primary,
+  CustContainer userStatsContainer(UserModel user, BuildContext context) =>
+      CustContainer(
+        child: Column(
+          children: [
+            userStatsRow(
+              rowIcon: Icon(
+                Icons.recycling,
+                size: 40,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              rowTitle: "Items Sorted",
+              rowValue: '${user.records?.length}',
+              context: context,
             ),
-            rowTitle: "Items Sorted",
-            rowValue: '${user.records?.length}',
-            context: context,
-          ),
-          SizedBox(height: 15),
-          userStatsRow(
-            rowIcon: Icon(Icons.cloud, size: 40, color: Colors.grey),
-            rowTitle: "CO₂ Saved",
-            rowValue: "${user.totalCarbonSaved?.toStringAsFixed(2)} kg",
-            context: context,
-          ),
-        ],
-      ),
-    );
-  }
+            SizedBox(height: 15),
+            userStatsRow(
+              rowIcon: Icon(Icons.cloud, size: 40, color: Colors.grey),
+              rowTitle: "CO₂ Saved",
+              rowValue: "${user.totalCarbonSaved?.toStringAsFixed(2)} kg",
+              context: context,
+            ),
+          ],
+        ),
+      );
 
   Row userStatsRow({
     required Icon rowIcon,
     required String rowTitle,
     required String rowValue,
     required BuildContext context,
-  }) {
-    return Row(
-      children: [
-        rowIcon,
-        SizedBox(width: 20),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              rowTitle,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-                fontFamily: 'OpenSans',
-              ),
+  }) => Row(
+    children: [
+      rowIcon,
+      SizedBox(width: 20),
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            rowTitle,
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+              fontFamily: 'OpenSans',
             ),
-            SizedBox(height: 4),
-            Text(
-              rowValue,
-              style: TextStyle(fontSize: 16, fontFamily: 'OpenSans'),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
+          ),
+          SizedBox(height: 4),
+          Text(
+            rowValue,
+            style: TextStyle(fontSize: 16, fontFamily: 'OpenSans'),
+          ),
+        ],
+      ),
+    ],
+  );
 }

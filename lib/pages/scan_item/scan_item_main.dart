@@ -82,8 +82,10 @@ class _ScanItemMainPageState extends State<ScanItemMainPage> {
                   ),
                 ),
                 const SizedBox(height: 40),
+
                 Center(child: captureImageContainer(context)),
                 const SizedBox(height: 50),
+
                 CustomButton(
                   buttonText: "Confirm Image",
                   onPressed: () {
@@ -117,38 +119,38 @@ class _ScanItemMainPageState extends State<ScanItemMainPage> {
     );
   }
 
-  InkWell captureImageContainer(BuildContext context) {
-    return InkWell(
-      onTap: _pickImage,
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.8,
-        height: MediaQuery.of(context).size.width * 0.6,
-        decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.grey[300]!, width: 2),
-        ),
-        child:
-            _image != null
-                ? Image.file(_image!, fit: BoxFit.cover)
-                : Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.camera_alt, size: 80, color: Colors.grey[600]),
-                    const SizedBox(height: 10),
-                    const Text(
-                      'Tap to open camera\nand capture the item clearly',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.black87,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: 'Montserrat',
-                      ),
-                    ),
-                  ],
-                ),
+  InkWell captureImageContainer(BuildContext context) => InkWell(
+    onTap: _pickImage,
+    child: Container(
+      width: MediaQuery.of(context).size.width * 0.8,
+      height: MediaQuery.of(context).size.width * 0.6,
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey[300]!, width: 2),
       ),
-    );
-  }
+      child:
+          _image != null
+              ? Image.file(_image!, fit: BoxFit.cover)
+              : defaultImageContainer(),
+    ),
+  );
+
+  Column defaultImageContainer() => Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Icon(Icons.camera_alt, size: 80, color: Colors.grey[600]),
+      const SizedBox(height: 10),
+      const Text(
+        'Tap to open camera\nand capture the item clearly',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 18,
+          color: Colors.black87,
+          fontWeight: FontWeight.w500,
+          fontFamily: 'Montserrat',
+        ),
+      ),
+    ],
+  );
 }

@@ -152,32 +152,30 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     );
   }
 
-  Row createAccountText(BuildContext context) {
-    return Row(
-      children: [
-        Text(
-          "Don't have an Account? ",
+  Row createAccountText(BuildContext context) => Row(
+    children: [
+      Text(
+        "Don't have an Account? ",
+        style: TextStyle(
+          color: Colors.brown[700],
+          fontSize: 16.0,
+          fontFamily: 'Montserrat',
+        ),
+      ),
+      GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(context, CreateAccountPage.routeName);
+        },
+        child: Text(
+          "Create One",
           style: TextStyle(
             color: Colors.brown[700],
             fontSize: 16.0,
+            fontWeight: FontWeight.bold,
             fontFamily: 'Montserrat',
           ),
         ),
-        GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, CreateAccountPage.routeName);
-          },
-          child: Text(
-            "Create One",
-            style: TextStyle(
-              color: Colors.brown[700],
-              fontSize: 16.0,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'Montserrat',
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
 }

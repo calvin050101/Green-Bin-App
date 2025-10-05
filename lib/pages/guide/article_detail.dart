@@ -56,8 +56,7 @@ class ArticleDetailPage extends ConsumerWidget {
 
                   listVerticalItems(
                     topics!,
-                    (context, topic) =>
-                        articleLinkContainer(topic, context),
+                    (context, topic) => articleLinkContainer(topic, context),
                     'No articles published yet.',
                   ),
                 ],
@@ -71,19 +70,18 @@ class ArticleDetailPage extends ConsumerWidget {
     );
   }
 
-  Widget articleLinkContainer(ArticleTopic? topic, BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 15),
-      child: PageDirectContainer(
-        text: topic?.title ?? '-',
-        onTap: () {
-          Navigator.pushNamed(
-            context,
-            ArticleContentPage.routeName,
-            arguments: topic,
-          );
-        },
-      ),
-    );
-  }
+  Widget articleLinkContainer(ArticleTopic? topic, BuildContext context) =>
+      Padding(
+        padding: const EdgeInsets.only(bottom: 15),
+        child: PageDirectContainer(
+          text: topic?.title ?? '-',
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              ArticleContentPage.routeName,
+              arguments: topic,
+            );
+          },
+        ),
+      );
 }

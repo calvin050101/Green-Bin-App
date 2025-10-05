@@ -167,10 +167,7 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
 
               const SizedBox(height: 20),
 
-              CustomButton(
-                buttonText: "Continue",
-                onPressed: registerUser,
-              ),
+              CustomButton(buttonText: "Continue", onPressed: registerUser),
             ],
           ),
         ),
@@ -201,31 +198,11 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
               ),
               children: [
                 const TextSpan(text: "I agree to the "),
-                TextSpan(
-                  text: "Terms & Conditions",
-                  style: const TextStyle(
-                    color: Colors.blue,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  recognizer:
-                      TapGestureRecognizer()
-                        ..onTap = () {
-                          Navigator.pushNamed(context, "/terms");
-                        },
-                ),
+                linkSpan(context, "Terms and Conditions", "/terms"),
+
                 const TextSpan(text: " and "),
-                TextSpan(
-                  text: "Privacy Policy",
-                  style: const TextStyle(
-                    color: Colors.blue,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  recognizer:
-                      TapGestureRecognizer()
-                        ..onTap = () {
-                          Navigator.pushNamed(context, "/privacy");
-                        },
-                ),
+
+                linkSpan(context, "Privacy Policy", "/privacy"),
               ],
             ),
           ),
@@ -233,4 +210,14 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
       ],
     );
   }
+
+  TextSpan linkSpan(BuildContext context, String text, String link) => TextSpan(
+    text: text,
+    style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+    recognizer:
+        TapGestureRecognizer()
+          ..onTap = () {
+            Navigator.pushNamed(context, link);
+          },
+  );
 }

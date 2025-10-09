@@ -31,17 +31,20 @@ class VoucherListPage extends ConsumerWidget {
         centerTitle: true,
       ),
 
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20),
-        child: vouchersAsync.when(
-          data:
-              (vouchers) => listVerticalItems(
-                vouchers,
-                (context, voucher) => VoucherCard(voucher: voucher),
-                "No vouchers available",
-              ),
-          loading: () => Center(child: CircularProgressIndicator()),
-          error: (e, _) => Center(child: Text("Error: $e")),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20),
+          child: vouchersAsync.when(
+            data:
+                (vouchers) => listVerticalItems(
+                  items: vouchers,
+                  itemBuilder:
+                      (context, voucher) => VoucherCard(voucher: voucher),
+                  emptyText: "No vouchers available",
+                ),
+            loading: () => Center(child: CircularProgressIndicator()),
+            error: (e, _) => Center(child: Text("Error: $e")),
+          ),
         ),
       ),
     );

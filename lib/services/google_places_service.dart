@@ -2,11 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_google_maps_webservices/places.dart';
 import '../models/recycling_center.dart';
 import 'package:latlong2/latlong.dart';
-import '../../api_keys.dart';
-
-final googlePlacesProvider = Provider(
-  (ref) => GoogleMapsPlaces(apiKey: googlePlacesApiKey),
-);
+import '../providers/common_providers.dart';
 
 final googlePlacesServiceProvider = Provider(
   (ref) => GooglePlacesService(ref.read(googlePlacesProvider)),

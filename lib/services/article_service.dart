@@ -2,8 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/article_model.dart';
 import '../models/article_topic_model.dart';
-
-final firebaseFirestoreProvider = Provider((ref) => FirebaseFirestore.instance);
+import '../providers/common_providers.dart';
 
 final articleServiceProvider = Provider(
   (ref) => ArticleService(ref.read(firebaseFirestoreProvider)),
@@ -51,6 +50,6 @@ class ArticleService {
             .map((doc) => ArticleTopic.fromFirestore(doc))
             .toList();
 
-    return article.copyWith(topics: topics);
+    return article.copyWithTopics(topics: topics);
   }
 }

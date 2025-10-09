@@ -27,12 +27,4 @@ class RedeemedVoucher {
       redeemedAt: ts is Timestamp ? ts.toDate() : null,
     );
   }
-
-  Map<String, dynamic> toMap() => {
-    'voucherId': voucherId,
-    'title': title,
-    'description': description,
-    'cost': cost,
-    'redeemedAt': redeemedAt,
-  };
 }

@@ -71,9 +71,11 @@ class _LocationsPageState extends ConsumerState<LocationsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 listVerticalItems(
-                  centers,
-                  (context, center) => RecyclingCenterCard(center: center),
-                  'No recycling centers found nearby. Try adjusting your search radius or location.',
+                  items: centers,
+                  itemBuilder:
+                      (context, center) => RecyclingCenterCard(center: center),
+                  emptyText:
+                      'No recycling centers found nearby. Try adjusting your search radius or location.',
                 ),
               ],
             ),

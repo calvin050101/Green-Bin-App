@@ -1,25 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:green_bin/services/voucher_service.dart';
+import 'package:green_bin/services/waste_records_service.dart';
 
-import '../providers/user_provider.dart';
-
-/// UserService wrapper
-final userServiceProvider = Provider<UserService>((ref) {
-  final auth = ref.watch(firebaseAuthProvider);
-  return UserService(auth: auth, ref: ref);
-});
+import '../models/user_model.dart';
 
 class UserService {
   final FirebaseAuth _auth;
   final FirebaseFirestore _firestore;
+  final WasteRecordsService _wasteRecordsService;
+  final VoucherService _voucherService;
 
-  UserService({FirebaseAuth? auth, FirebaseFirestore? firestore, Ref? ref})
-    : _auth = auth ?? FirebaseAuth.instance,
-      _firestore = firestore ?? FirebaseFirestore.instance;
+  UserService({
+    FirebaseAuth? auth,
+    FirebaseFirestore? firestore,
+    required wasteRecordsService,
+    required voucherService,
+  }) : _auth = auth ?? FirebaseAuth.instance,
+       _firestore = firestore ?? FirebaseFirestore.instance,
+       _wasteRecordsService = wasteRecordsService,
+       _voucherService = voucherService;
 
-  /// ---------------- AUTH ----------------
-
+  // Auth
   User? get currentUser => _auth.currentUser;
 
   // Login
@@ -130,8 +132,64 @@ class UserService {
     await user.delete();
   }
 
-  /// ---------------- FIRESTORE PROFILE ----------------
+  Future<UserModel?> fetchFullUser() async {
+    final user = currentUser;
+    if (user == null) return null;
 
+    final docSnapshot = await getUserData();
+    if (!docSnapshot.exists) {
+      return UserModel(
+        uid: user.uid,
+        email: user.email,
+        totalPoints: 0,
+        totalCarbonSaved: 0,
+        records: [],
+        redeemedVouchers: [],
+      );
+    }
+
+    var userModel = UserModel.fromFirestore(docSnapshot, user.uid);
+    final records = await _wasteRecordsService.getUserRecords(user.uid);
+    final redeemedVouchers = await _voucherService.getRedeemedVouchers(
+      user.uid,
+    );
+
+    return userModel.copyWith(
+      records: records,
+      redeemedVouchers: redeemedVouchers,
+    );
+  }
+
+  Stream<UserModel?> watchFullUser() {
+    final user = currentUser;
+    if (user == null) return Stream.value(null);
+
+    return watchUserData(user.uid).asyncMap((docSnapshot) async {
+      if (!docSnapshot.exists) {
+        return UserModel(
+          uid: user.uid,
+          email: user.email,
+          totalPoints: 0,
+          totalCarbonSaved: 0,
+          records: [],
+          redeemedVouchers: [],
+        );
+      }
+
+      var userModel = UserModel.fromFirestore(docSnapshot, user.uid);
+      final records = await _wasteRecordsService.getUserRecords(user.uid);
+      final redeemedVouchers = await _voucherService.getRedeemedVouchers(
+        user.uid,
+      );
+
+      return userModel.copyWith(
+        records: records,
+        redeemedVouchers: redeemedVouchers,
+      );
+    });
+  }
+
+  // Firestore Profile
   Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() {
     final user = currentUser;
     if (user == null) throw Exception("No user logged in.");

@@ -1,36 +1,41 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:green_bin/providers/user_provider.dart';
-import 'package:green_bin/services/user_service.dart';
 
 import '../models/record_model.dart';
 import '../models/waste_type_model.dart';
+import '../providers/common_providers.dart';
+import '../providers/user_provider.dart';
 
 final wasteRecordsServiceProvider = Provider<WasteRecordsService>((ref) {
   final firestore = ref.watch(firebaseFirestoreProvider);
   return WasteRecordsService(firestore: firestore, ref: ref);
 });
 
+final userRecordsStreamProvider =
+    StreamProvider.family<List<WasteRecord>, String>((ref, userId) {
+      final wasteRecordsService = ref.watch(wasteRecordsServiceProvider);
+      return wasteRecordsService.watchUserRecords(userId);
+    });
+
 class WasteRecordsService {
   final FirebaseFirestore _firestore;
   final Ref _ref;
 
   WasteRecordsService({FirebaseFirestore? firestore, required Ref ref})
-      : _firestore = firestore ?? FirebaseFirestore.instance,
-        _ref = ref;
+    : _firestore = firestore ?? FirebaseFirestore.instance,
+      _ref = ref;
 
   // Get User Records
   Future<List<WasteRecord>> getUserRecords(String uid) async {
-    final snapshot = await _firestore
-        .collection('users')
-        .doc(uid)
-        .collection('records')
-        .orderBy('timestamp', descending: true)
-        .get();
+    final snapshot =
+        await _firestore
+            .collection('users')
+            .doc(uid)
+            .collection('records')
+            .orderBy('timestamp', descending: true)
+            .get();
 
-    return snapshot.docs
-        .map((doc) => WasteRecord.fromFirestore(doc, doc.id))
-        .toList();
+    return snapshot.docs.map((doc) => WasteRecord.fromFirestore(doc)).toList();
   }
 
   // Stream of Waste Records
@@ -43,10 +48,10 @@ class WasteRecordsService {
         .snapshots()
         .map(
           (snapshot) =>
-          snapshot.docs
-              .map((doc) => WasteRecord.fromFirestore(doc, doc.id))
-              .toList(),
-    );
+              snapshot.docs
+                  .map((doc) => WasteRecord.fromFirestore(doc))
+                  .toList(),
+        );
   }
 
   Future<void> addWasteRecord({
@@ -55,7 +60,9 @@ class WasteRecordsService {
   }) async {
     final user = _ref.watch(userServiceProvider);
 
-    final userDocRef = _firestore.collection('users').doc(user.currentUser?.uid);
+    final userDocRef = _firestore
+        .collection('users')
+        .doc(user.currentUser?.uid);
     final recordsRef = userDocRef.collection('records').doc();
 
     final newRecord = WasteRecord(

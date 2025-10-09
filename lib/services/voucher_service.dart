@@ -19,7 +19,7 @@ class VoucherService {
         .snapshots()
         .map(
           (snapshot) =>
-              snapshot.docs.map((doc) => Voucher.fromDoc(doc)).toList(),
+              snapshot.docs.map((doc) => Voucher.fromFirestore(doc)).toList(),
         );
   }
 

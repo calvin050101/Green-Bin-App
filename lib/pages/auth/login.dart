@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../constants/assets.dart';
-import '../../services/user_service.dart';
+import '../../providers/user_provider.dart';
 import 'create_account.dart';
 import '../../widgets/form/cust_form_field.dart';
 import '../../widgets/form/password_form_field.dart';

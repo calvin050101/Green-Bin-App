@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../constants/assets.dart';
-import '../../services/user_service.dart';
+import '../../providers/user_provider.dart';
 import '../../widgets/back_button.dart';
 import '../../widgets/form/cust_form_field.dart';
 import '../../widgets/form/error_message_text.dart';

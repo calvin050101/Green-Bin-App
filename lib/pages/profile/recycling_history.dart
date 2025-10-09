@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:green_bin/helper/list_view_functions.dart';
 
-import '../../providers/waste_records_provider.dart';
+import '../../services/waste_records_service.dart';
 import '../../widgets/back_button.dart';
 import '../../widgets/card/recycling_record_card.dart';
 
@@ -53,9 +53,9 @@ class RecyclingHistoryPage extends ConsumerWidget {
                 ),
 
                 listVerticalItems(
-                  records,
-                  (context, record) => RecyclingRecordCard(record: record),
-                  'No recycling records found yet.',
+                  items: records,
+                  itemBuilder: (context, record) => RecyclingRecordCard(record: record),
+                  emptyText: 'No recycling records found yet.',
                 ),
               ],
             ),

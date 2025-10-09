@@ -55,9 +55,9 @@ class ArticleDetailPage extends ConsumerWidget {
                   const SizedBox(height: 20),
 
                   listVerticalItems(
-                    topics!,
-                    (context, topic) => articleLinkContainer(topic, context),
-                    'No articles published yet.',
+                    items: topics!,
+                    itemBuilder: (context, topic) => articleLinkContainer(topic, context),
+                    emptyText: 'No articles published yet.',
                   ),
                 ],
               ),

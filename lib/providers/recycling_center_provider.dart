@@ -1,15 +1,9 @@
 import 'package:flutter_google_maps_webservices/places.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
-
-import '../api_keys.dart';
 import '../models/recycling_center.dart';
 import '../services/google_places_service.dart';
-
-// Provider for the Google Places API client
-final googlePlacesProvider = Provider(
-  (ref) => GoogleMapsPlaces(apiKey: googlePlacesApiKey),
-);
+import 'common_providers.dart';
 
 final recyclingCentersProvider =
     FutureProvider.autoDispose<List<RecyclingCenter>>((ref) async {

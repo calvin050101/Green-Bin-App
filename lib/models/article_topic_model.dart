@@ -23,8 +23,4 @@ class ArticleTopic {
       order: data['order'] as int? ?? 0,
     );
   }
-
-  Map<String, dynamic> toFirestore() {
-    return {'title': title, 'content': content, 'order': order};
-  }
 }

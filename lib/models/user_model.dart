@@ -18,7 +18,7 @@ class UserModel {
     this.totalPoints,
     this.totalCarbonSaved,
     this.records,
-    this.redeemedVouchers
+    this.redeemedVouchers,
   });
 
   factory UserModel.fromFirestore(DocumentSnapshot doc, String uid) {
@@ -32,29 +32,16 @@ class UserModel {
     );
   }
 
-  Map<String, dynamic> toFirestore() {
-    return {
-      'email': email,
-      'totalPoints': totalPoints,
-      'totalCarbonSaved': totalCarbonSaved,
-    };
-  }
-
   UserModel copyWith({
-    String? uid,
-    String? email,
-    String? username,
-    int? totalPoints,
-    double? totalCarbonSaved,
     List<WasteRecord>? records,
     List<RedeemedVoucher>? redeemedVouchers,
   }) {
     return UserModel(
-      uid: uid ?? this.uid,
-      email: email ?? this.email,
-      username: username ?? this.username,
-      totalPoints: totalPoints ?? this.totalPoints,
-      totalCarbonSaved: totalCarbonSaved ?? this.totalCarbonSaved?.toDouble(),
+      uid: uid,
+      email: email,
+      username: username,
+      totalPoints: totalPoints,
+      totalCarbonSaved: totalCarbonSaved,
       records: records ?? this.records,
       redeemedVouchers: redeemedVouchers ?? this.redeemedVouchers,
     );

@@ -17,7 +17,7 @@ class RecyclingCenter {
     required this.latitude,
     required this.longitude,
     this.distance,
-    this.photoUrl
+    this.photoUrl,
   });
 
   // Factory constructor to convert PlacesSearchResult to RecyclingCenter
@@ -35,10 +35,13 @@ class RecyclingCenter {
       latitude: result.geometry!.location.lat,
       longitude: result.geometry!.location.lng,
       distance: null,
-      // Distance needs to be calculated manually or derived
       photoUrl:
           result.photos.isNotEmpty == true
-              ? 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${result.photos.first.photoReference}&key=$googlePlacesApiKey'
+              ? Uri.https('maps.googleapis.com', '/maps/api/place/photo', {
+                'maxwidth': '400',
+                'photoreference': result.photos.first.photoReference,
+                'key': googlePlacesApiKey,
+              }).toString()
               : null,
     );
   }

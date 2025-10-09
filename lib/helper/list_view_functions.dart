@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 
-Widget listVerticalItems<T>(
-  List<T> items,
-  Widget Function(BuildContext, T) itemBuilder,
-  String emptyText,
-) {
+Widget listVerticalItems<T>({
+  required List<T> items,
+  required Widget Function(BuildContext, T) itemBuilder,
+  required String emptyText,
+}) {
   if (items.isEmpty) {
     return Center(
       child: Padding(
@@ -22,11 +22,11 @@ Widget listVerticalItems<T>(
   );
 }
 
-Widget listHorizontalItems<T>(
-  List<T> items,
-  Widget Function(BuildContext, T) itemBuilder,
-  String emptyText,
-) {
+Widget listHorizontalItems<T>({
+  required List<T> items,
+  required Widget Function(BuildContext, T) itemBuilder,
+  required String emptyText,
+}) {
   if (items.isEmpty) {
     return Center(
       child: Padding(

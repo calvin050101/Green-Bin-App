@@ -195,7 +195,7 @@ class RecyclingCenterDetailPage extends ConsumerWidget {
     width: double.infinity,
     child: ElevatedButton.icon(
       onPressed: () {
-        launchGoogleMapsDirections(center, center.name);
+        launchGoogleMapsDirections(center);
       },
       icon: const Icon(Icons.map, color: Colors.white),
       label: const Text(

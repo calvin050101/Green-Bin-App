@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:green_bin/pages/auth/update_username.dart';
 
-import '../../services/user_service.dart';
+import '../../providers/user_provider.dart';
 import '../../widgets/back_button.dart';
 import '../auth/change_password.dart';
 

@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:green_bin/helper/waste_type_functions.dart';
 import 'package:green_bin/models/waste_type_model.dart';
 import 'package:green_bin/pages/scan_item/complete_scan_page.dart';
-import 'package:green_bin/providers/waste_type_provider.dart';
+import 'package:green_bin/services/waste_type_service.dart';
 import 'package:green_bin/widgets/custom_button.dart';
 
 import '../../widgets/back_button.dart';

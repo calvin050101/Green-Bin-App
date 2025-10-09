@@ -39,20 +39,13 @@ class Article {
   }
 
   // Helper to create a new Article instance with topics loaded
-  Article copyWith({
-    String? id,
-    String? title,
-    DateTime? publishedDate,
-    String? imageUrl,
-    String? summary,
-    List<ArticleTopic>? topics,
-  }) {
+  Article copyWithTopics({List<ArticleTopic>? topics}) {
     return Article(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      publishedDate: publishedDate ?? this.publishedDate,
-      imageUrl: imageUrl ?? this.imageUrl,
-      summary: summary ?? this.summary,
+      id: id,
+      title: title,
+      publishedDate: publishedDate,
+      imageUrl: imageUrl,
+      summary: summary,
       topics: topics ?? this.topics,
     );
   }

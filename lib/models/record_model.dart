@@ -13,10 +13,10 @@ class WasteRecord {
     required this.weight,
   });
 
-  factory WasteRecord.fromFirestore(DocumentSnapshot doc, String id) {
+  factory WasteRecord.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return WasteRecord(
-      id: id,
+      id: doc.id,
       timestamp: data['timestamp'].toDate(),
       wasteType: data['wasteType'],
       weight: data['weight'],

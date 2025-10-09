@@ -132,10 +132,10 @@ class HomePage extends ConsumerWidget {
                 SizedBox(
                   height: 140,
                   child: listHorizontalItems(
-                    wasteTypeCounts,
-                    (context, wasteTypeCount) =>
+                    items: wasteTypeCounts,
+                    itemBuilder: (context, wasteTypeCount) =>
                         WasteTypeSummaryCard(summary: wasteTypeCount),
-                    "No waste records found.",
+                    emptyText: "No waste records found.",
                   ),
                 ),
                 const SizedBox(height: 30),
@@ -318,12 +318,12 @@ class HomePage extends ConsumerWidget {
         SizedBox(
           height: 100,
           child: listHorizontalItems(
-            funFacts,
-            (context, fact) => FunFactCard(
+            items: funFacts,
+            itemBuilder: (context, fact) => FunFactCard(
               icon: fact['icon'] as IconData,
               text: fact['text'] as String,
             ),
-            "No fun facts found.",
+            emptyText: "No fun facts found.",
           ),
         ),
         const SizedBox(height: 30),

@@ -5,6 +5,7 @@ class Voucher {
   final String title;
   final String description;
   final int cost;
+  final String imageUrl;
   final bool active;
 
   Voucher({
@@ -12,26 +13,19 @@ class Voucher {
     required this.title,
     required this.description,
     required this.cost,
+    required this.imageUrl,
     required this.active,
   });
 
-  factory Voucher.fromDoc(DocumentSnapshot doc) {
+  factory Voucher.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return Voucher(
       id: doc.id,
       title: data['title'] ?? '',
       description: data['description'] ?? '',
       cost: data['cost'] ?? 0,
+      imageUrl: data['imageUrl'] ?? '',
       active: data['active'] ?? true,
     );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'title': title,
-      'description': description,
-      'cost': cost,
-      'active': active,
-    };
   }
 }

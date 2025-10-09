@@ -37,9 +37,9 @@ class GuideMainPage extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   listVerticalItems(
-                    articles,
-                    (context, article) => articleCard(article, context),
-                    'No articles published yet.',
+                    items: articles,
+                    itemBuilder: (context, article) => articleCard(article, context),
+                    emptyText: 'No articles published yet.',
                   ),
                 ],
               ),

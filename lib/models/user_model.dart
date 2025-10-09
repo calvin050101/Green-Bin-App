@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:green_bin/models/record_model.dart';
+import 'package:green_bin/models/redeemed_vouchers_model.dart';
 
 class UserModel {
   final String uid;
@@ -6,7 +8,8 @@ class UserModel {
   final String? username;
   final int? totalPoints;
   final double? totalCarbonSaved;
-  final List<RecordModel>? records;
+  final List<WasteRecord>? records;
+  final List<RedeemedVoucher>? redeemedVouchers;
 
   UserModel({
     required this.uid,
@@ -14,10 +17,12 @@ class UserModel {
     this.username,
     this.totalPoints,
     this.totalCarbonSaved,
-    this.records
+    this.records,
+    this.redeemedVouchers
   });
 
-  factory UserModel.fromFirestore(Map<String, dynamic> data, String uid) {
+  factory UserModel.fromFirestore(DocumentSnapshot doc, String uid) {
+    final data = doc.data() as Map<String, dynamic>;
     return UserModel(
       uid: uid,
       email: data['email'],
@@ -27,13 +32,22 @@ class UserModel {
     );
   }
 
+  Map<String, dynamic> toFirestore() {
+    return {
+      'email': email,
+      'totalPoints': totalPoints,
+      'totalCarbonSaved': totalCarbonSaved,
+    };
+  }
+
   UserModel copyWith({
     String? uid,
     String? email,
     String? username,
     int? totalPoints,
     double? totalCarbonSaved,
-    List<RecordModel>? records,
+    List<WasteRecord>? records,
+    List<RedeemedVoucher>? redeemedVouchers,
   }) {
     return UserModel(
       uid: uid ?? this.uid,
@@ -42,6 +56,7 @@ class UserModel {
       totalPoints: totalPoints ?? this.totalPoints,
       totalCarbonSaved: totalCarbonSaved ?? this.totalCarbonSaved?.toDouble(),
       records: records ?? this.records,
+      redeemedVouchers: redeemedVouchers ?? this.redeemedVouchers,
     );
   }
 }

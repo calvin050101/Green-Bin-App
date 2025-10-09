@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:green_bin/constants/assets.dart';
 import 'package:green_bin/helper/list_view_functions.dart';
+import 'package:green_bin/pages/vouchers/voucher_list_page.dart';
 import '../models/user_level_model.dart';
 import '../widgets/cust_container.dart';
 import '../widgets/card/waste_type_summary_card.dart';
@@ -141,7 +142,32 @@ class HomePage extends ConsumerWidget {
               ],
             ),
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: 20),
+
+          // List of vouchers
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, VoucherListPage.routeName);
+                  },
+                  child: const Text(
+                    "Vouchers",
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 20),
         ],
       ],
     );

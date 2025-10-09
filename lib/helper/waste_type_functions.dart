@@ -29,7 +29,7 @@ IconData getWasteTypeIcon(String wasteType) {
   }
 }
 
-List<WasteTypeSummary> getWasteTypeCounts(List<RecordModel>? records) {
+List<WasteTypeSummary> getWasteTypeCounts(List<WasteRecord>? records) {
   if (records == null || records.isEmpty) {
     return [];
   }

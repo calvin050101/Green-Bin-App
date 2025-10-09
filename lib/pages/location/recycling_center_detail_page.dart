@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_google_maps_webservices/src/places.dart';
+import 'package:flutter_google_maps_webservices/places.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:green_bin/providers/recycling_center_provider.dart';
 import 'package:green_bin/helper/location_functions.dart';

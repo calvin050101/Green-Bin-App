@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/user_model.dart';
 import '../services/user_service.dart';
+import '../services/voucher_service.dart';
 import '../services/waste_records_service.dart';
 
 /// Firebase singletons
@@ -18,8 +19,8 @@ final firebaseFirestoreProvider = Provider<FirebaseFirestore>(
 final currentUserProvider = FutureProvider<UserModel?>((ref) async {
   final userService = ref.watch(userServiceProvider);
   final wasteRecordsService = ref.watch(wasteRecordsServiceProvider);
-  final user = userService.currentUser;
 
+  final user = userService.currentUser;
   if (user == null) return null;
 
   final docSnapshot = await userService.getUserData();
@@ -30,18 +31,21 @@ final currentUserProvider = FutureProvider<UserModel?>((ref) async {
       totalPoints: 0,
       totalCarbonSaved: 0,
       records: [],
+      redeemedVouchers: [],
     );
   }
 
-  var userModel = UserModel.fromFirestore(docSnapshot.data()!, user.uid);
+  var userModel = UserModel.fromFirestore(docSnapshot, user.uid);
   final records = await wasteRecordsService.getUserRecords(user.uid);
 
   return userModel.copyWith(records: records);
 });
 
+/// Real-time stream of user + records
 final currentUserStreamProvider = StreamProvider<UserModel?>((ref) {
   final profile = ref.watch(userServiceProvider);
   final recordsService = ref.watch(wasteRecordsServiceProvider);
+  final vouchersService = ref.watch(voucherServiceProvider);
 
   final user = profile.currentUser;
   if (user == null) return Stream.value(null);
@@ -56,14 +60,20 @@ final currentUserStreamProvider = StreamProvider<UserModel?>((ref) {
         totalPoints: 0,
         totalCarbonSaved: 0,
         records: [],
+        redeemedVouchers: [],
       );
     }
 
-    var userModel = UserModel.fromFirestore(docSnapshot.data()!, user.uid);
+    var userModel = UserModel.fromFirestore(docSnapshot, user.uid);
 
-    // Grab records too
     final records = await recordsService.getUserRecords(user.uid);
-    return userModel.copyWith(records: records);
+    final redeemedVouchers = await vouchersService.getRedeemedVouchers(user.uid);
+
+    return userModel.copyWith(
+      records: records,
+      redeemedVouchers: redeemedVouchers,
+    );
   });
 });
+
 

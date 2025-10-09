@@ -26,6 +26,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   }
 
   Future passwordReset() async {
+    // check if email is empty
+    if (_emailController.text.trim().isEmpty) {
+      setState(() {
+        _errorMessage = 'Email cannot be empty';
+      });
+      return;
+    }
+
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(
         email: _emailController.text.trim(),

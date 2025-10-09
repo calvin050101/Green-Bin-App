@@ -13,11 +13,9 @@ class WasteTypeService {
   WasteTypeService({FirebaseFirestore? firestore})
     : _firestore = firestore ?? FirebaseFirestore.instance;
 
-  CollectionReference get _collection => _firestore.collection("wasteTypes");
-
   /// Get waste types
   Stream<List<WasteTypeModel>> streamWasteTypes() {
-    return _collection.snapshots().map((snapshot) {
+    return _firestore.collection("wasteTypes").snapshots().map((snapshot) {
       return snapshot.docs
           .map((doc) => WasteTypeModel.fromFirestore(doc))
           .toList();

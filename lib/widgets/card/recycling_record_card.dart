@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import '../../helper/waste_type_functions.dart';
 
 class RecyclingRecordCard extends StatelessWidget {
-  final RecordModel record;
+  final WasteRecord record;
 
   const RecyclingRecordCard({super.key, required this.record});
 

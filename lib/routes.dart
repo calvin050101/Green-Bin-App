@@ -12,6 +12,7 @@ import 'package:green_bin/pages/profile/recycling_history.dart';
 import 'package:green_bin/pages/profile/settings.dart';
 import 'package:green_bin/pages/profile/user_levels.dart';
 import 'package:green_bin/pages/scan_item/scan_item_main.dart';
+import 'package:green_bin/pages/vouchers/voucher_list_page.dart';
 
 final appRoutes = {
   '/': (context) => AuthPage(),
@@ -20,6 +21,8 @@ final appRoutes = {
 
   CreateAccountPage.routeName: (context) => CreateAccountPage(),
   ForgotPasswordPage.routeName: (context) => ForgotPasswordPage(),
+
+  VoucherListPage.routeName: (context) => VoucherListPage(),
 
   ScanItemMainPage.routeName: (context) => ScanItemMainPage(),
 

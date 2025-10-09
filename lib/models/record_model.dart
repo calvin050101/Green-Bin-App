@@ -1,18 +1,21 @@
-class RecordModel {
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class WasteRecord {
   final String id;
   final String wasteType;
   final DateTime timestamp;
   final double weight;
 
-  RecordModel({
+  WasteRecord({
     required this.id,
     required this.timestamp,
     required this.wasteType,
     required this.weight,
   });
 
-  factory RecordModel.fromFirestore(Map<String, dynamic> data, String id) {
-    return RecordModel(
+  factory WasteRecord.fromFirestore(DocumentSnapshot doc, String id) {
+    final data = doc.data() as Map<String, dynamic>;
+    return WasteRecord(
       id: id,
       timestamp: data['timestamp'].toDate(),
       wasteType: data['wasteType'],

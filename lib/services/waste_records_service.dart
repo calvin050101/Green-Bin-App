@@ -20,7 +20,7 @@ class WasteRecordsService {
         _ref = ref;
 
   // Get User Records
-  Future<List<RecordModel>> getUserRecords(String uid) async {
+  Future<List<WasteRecord>> getUserRecords(String uid) async {
     final snapshot = await _firestore
         .collection('users')
         .doc(uid)
@@ -29,12 +29,12 @@ class WasteRecordsService {
         .get();
 
     return snapshot.docs
-        .map((doc) => RecordModel.fromFirestore(doc.data(), doc.id))
+        .map((doc) => WasteRecord.fromFirestore(doc, doc.id))
         .toList();
   }
 
   // Stream of Waste Records
-  Stream<List<RecordModel>> watchUserRecords(String uid) {
+  Stream<List<WasteRecord>> watchUserRecords(String uid) {
     return _firestore
         .collection('users')
         .doc(uid)
@@ -44,7 +44,7 @@ class WasteRecordsService {
         .map(
           (snapshot) =>
           snapshot.docs
-              .map((doc) => RecordModel.fromFirestore(doc.data(), doc.id))
+              .map((doc) => WasteRecord.fromFirestore(doc, doc.id))
               .toList(),
     );
   }
@@ -58,7 +58,7 @@ class WasteRecordsService {
     final userDocRef = _firestore.collection('users').doc(user.currentUser?.uid);
     final recordsRef = userDocRef.collection('records').doc();
 
-    final newRecord = RecordModel(
+    final newRecord = WasteRecord(
       id: recordsRef.id,
       timestamp: DateTime.now(),
       wasteType: wasteType.label,

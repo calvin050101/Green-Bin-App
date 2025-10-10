@@ -4,6 +4,7 @@ class RedeemedVoucher {
   final String voucherId;
   final String title;
   final String description;
+  final String imageUrl;
   final int cost;
   final DateTime? redeemedAt;
 
@@ -11,11 +12,12 @@ class RedeemedVoucher {
     required this.voucherId,
     required this.title,
     required this.description,
+    required this.imageUrl,
     required this.cost,
     this.redeemedAt,
   });
 
-  factory RedeemedVoucher.fromMap(DocumentSnapshot doc) {
+  factory RedeemedVoucher.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     final ts = data['redeemedAt'];
 
@@ -23,6 +25,7 @@ class RedeemedVoucher {
       voucherId: data['voucherId'] ?? '',
       title: data['title'] ?? '',
       description: data['description'] ?? '',
+      imageUrl: data['imgUrl'] ?? '',
       cost: data['cost'] ?? 0,
       redeemedAt: ts is Timestamp ? ts.toDate() : null,
     );

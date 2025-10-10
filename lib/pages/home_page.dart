@@ -6,6 +6,7 @@ import 'package:green_bin/constants/assets.dart';
 import 'package:green_bin/helper/list_view_functions.dart';
 import 'package:green_bin/pages/vouchers/voucher_list_page.dart';
 import '../models/user_level_model.dart';
+import '../widgets/card/redeemed_voucher_card.dart';
 import '../widgets/cust_container.dart';
 import '../widgets/card/waste_type_summary_card.dart';
 import '../widgets/card/fun_fact_card.dart';
@@ -109,6 +110,7 @@ class HomePage extends ConsumerWidget {
           const SizedBox(height: 20),
         ],
 
+        // Recycling Waste Counts
         if (user.records!.isNotEmpty) ...[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -123,7 +125,6 @@ class HomePage extends ConsumerWidget {
           ),
           const SizedBox(height: 20),
 
-          // Recycling Waste Counts
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
@@ -133,8 +134,9 @@ class HomePage extends ConsumerWidget {
                   height: 140,
                   child: listHorizontalItems(
                     items: wasteTypeCounts,
-                    itemBuilder: (context, wasteTypeCount) =>
-                        WasteTypeSummaryCard(summary: wasteTypeCount),
+                    itemBuilder:
+                        (context, wasteTypeCount) =>
+                            WasteTypeSummaryCard(summary: wasteTypeCount),
                     emptyText: "No waste records found.",
                   ),
                 ),
@@ -147,27 +149,59 @@ class HomePage extends ConsumerWidget {
           // List of vouchers
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                InkWell(
-                  onTap: () {
+                const Text(
+                  "My Vouchers",
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 20,
+                  ),
+                ),
+                TextButton.icon(
+                  onPressed: () {
                     Navigator.pushNamed(context, VoucherListPage.routeName);
                   },
-                  child: const Text(
-                    "Vouchers",
+                  icon: const Icon(
+                    Icons.chevron_right,
+                    size: 20,
+                    color: Colors.blueAccent,
+                  ),
+                  label: const Text(
+                    "See all vouchers",
                     style: TextStyle(
                       fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      color: Colors.blueAccent,
                     ),
+                  ),
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    minimumSize: const Size(60, 30),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
                 ),
               ],
             ),
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
+
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: listVerticalItems(
+              items: user.redeemedVouchers!,
+              itemBuilder:
+                  (context, voucher) => RedeemedVoucherCard(voucher: voucher),
+              emptyText: "No vouchers found.",
+            ),
+          ),
+
+          const SizedBox(height: 40),
         ],
       ],
     );
@@ -319,10 +353,11 @@ class HomePage extends ConsumerWidget {
           height: 100,
           child: listHorizontalItems(
             items: funFacts,
-            itemBuilder: (context, fact) => FunFactCard(
-              icon: fact['icon'] as IconData,
-              text: fact['text'] as String,
-            ),
+            itemBuilder:
+                (context, fact) => FunFactCard(
+                  icon: fact['icon'] as IconData,
+                  text: fact['text'] as String,
+                ),
             emptyText: "No fun facts found.",
           ),
         ),

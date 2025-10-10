@@ -24,7 +24,7 @@ class Voucher {
       title: data['title'] ?? '',
       description: data['description'] ?? '',
       cost: data['cost'] ?? 0,
-      imageUrl: data['imageUrl'] ?? '',
+      imageUrl: data['imgUrl'] ?? '',
       active: data['active'] ?? true,
     );
   }

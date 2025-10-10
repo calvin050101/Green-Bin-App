@@ -83,6 +83,6 @@ class VoucherService {
             .collection('redeemedVouchers')
             .get();
 
-    return snapshot.docs.map((doc) => RedeemedVoucher.fromMap(doc)).toList();
+    return snapshot.docs.map((doc) => RedeemedVoucher.fromFirestore(doc)).toList();
   }
 }

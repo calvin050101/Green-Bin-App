@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../constants/assets.dart';
-import '../../providers/user_provider.dart';
+import '../../services/user_service.dart';
 import 'create_account.dart';
 import '../../widgets/form/cust_form_field.dart';
 import '../../widgets/form/password_form_field.dart';
@@ -54,6 +54,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       await userService.login(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
+      );
+
+      await FirebaseAuth.instance.authStateChanges().firstWhere(
+        (user) => user != null,
       );
 
       if (dialogContext.mounted) Navigator.pop(dialogContext);

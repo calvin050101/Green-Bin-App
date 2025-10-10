@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:green_bin/pages/auth/login.dart';
-import 'package:green_bin/pages/auth/verify_email.dart';
 import '../main_wrapper_screen.dart';
 
 class AuthPage extends ConsumerWidget {
@@ -24,24 +23,7 @@ class AuthPage extends ConsumerWidget {
             return const LoginPage();
           }
 
-          if (!user.emailVerified) {
-            return const VerifyEmailPage();
-          }
-
-          return FutureBuilder(
-            future: user.getIdToken(true),
-            builder: (context, tokenSnapshot) {
-              if (tokenSnapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              if (tokenSnapshot.hasError) {
-                return Center(
-                  child: Text("Error refreshing session: ${tokenSnapshot.error}"),
-                );
-              }
-              return const MainWrapperScreen();
-            },
-          );
+          return const MainWrapperScreen();
         },
       ),
     );

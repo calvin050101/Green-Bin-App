@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:green_bin/services/user_service.dart';
 
 import '../models/record_model.dart';
 import '../models/waste_type_model.dart';
 import '../providers/common_providers.dart';
-import '../providers/user_provider.dart';
 
 final wasteRecordsServiceProvider = Provider<WasteRecordsService>((ref) {
   final firestore = ref.watch(firebaseFirestoreProvider);

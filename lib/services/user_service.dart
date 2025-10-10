@@ -1,28 +1,30 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:green_bin/services/voucher_service.dart';
 import 'package:green_bin/services/waste_records_service.dart';
 
 import '../models/user_model.dart';
+import '../providers/common_providers.dart';
+
+final userServiceProvider = Provider<UserService>((ref) {
+  final auth = ref.watch(firebaseAuthProvider);
+  return UserService(auth: auth, ref: ref);
+});
 
 class UserService {
   final FirebaseAuth _auth;
-  final FirebaseFirestore _firestore;
-  final WasteRecordsService _wasteRecordsService;
-  final VoucherService _voucherService;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final Ref _ref;
 
-  UserService({
-    FirebaseAuth? auth,
-    FirebaseFirestore? firestore,
-    required wasteRecordsService,
-    required voucherService,
-  }) : _auth = auth ?? FirebaseAuth.instance,
-       _firestore = firestore ?? FirebaseFirestore.instance,
-       _wasteRecordsService = wasteRecordsService,
-       _voucherService = voucherService;
+  UserService({FirebaseAuth? auth, required Ref ref})
+    : _auth = auth ?? FirebaseAuth.instance,
+      _ref = ref;
 
   // Auth
   User? get currentUser => _auth.currentUser;
+
+  FirebaseAuth get auth => _auth;
 
   // Login
   Future<UserCredential> login({
@@ -36,15 +38,6 @@ class UserService {
 
     final user = credential.user;
     if (user == null) throw Exception("Login failed.");
-
-    // Check if email is verified
-    if (!user.emailVerified) {
-      await _auth.signOut(); // prevent unverified login session
-      throw FirebaseAuthException(
-        code: "email-not-verified",
-        message: "Please verify your email before logging in.",
-      );
-    }
 
     return credential;
   }
@@ -74,8 +67,6 @@ class UserService {
     await user.updateDisplayName(username);
     await user.reload();
 
-    await user.sendEmailVerification();
-
     return credential;
   }
 
@@ -94,7 +85,10 @@ class UserService {
     await user.reload();
   }
 
-  Future<void> signOut() => _auth.signOut();
+  Future<void> signOut(WidgetRef ref) async {
+    await _auth.signOut();
+    ref.invalidate(userServiceProvider);
+  }
 
   Future<void> resetPassword({
     required String currentPassword,
@@ -132,71 +126,74 @@ class UserService {
     await user.delete();
   }
 
+  // Returns one-time user data merged with records & vouchers
   Future<UserModel?> fetchFullUser() async {
-    final user = currentUser;
+    final user = _auth.currentUser;
     if (user == null) return null;
 
-    final docSnapshot = await getUserData();
-    if (!docSnapshot.exists) {
-      return UserModel(
-        uid: user.uid,
-        email: user.email,
-        totalPoints: 0,
-        totalCarbonSaved: 0,
-        records: [],
-        redeemedVouchers: [],
-      );
-    }
+    final doc = await _firestore.collection("users").doc(user.uid).get();
+    final wasteRecordsService = _ref.watch(wasteRecordsServiceProvider);
+    final voucherService = _ref.watch(voucherServiceProvider);
 
-    var userModel = UserModel.fromFirestore(docSnapshot, user.uid);
-    final records = await _wasteRecordsService.getUserRecords(user.uid);
-    final redeemedVouchers = await _voucherService.getRedeemedVouchers(
-      user.uid,
-    );
+    final baseUser =
+        doc.exists
+            ? UserModel.fromFirestore(doc, user.uid)
+            : UserModel(
+              uid: user.uid,
+              email: user.email,
+              totalPoints: 0,
+              totalCarbonSaved: 0,
+              records: [],
+              redeemedVouchers: [],
+            );
 
-    return userModel.copyWith(
+    final records = await wasteRecordsService.getUserRecords(user.uid);
+    final redeemedVouchers = await voucherService.getRedeemedVouchers(user.uid);
+
+    return baseUser.copyWith(
       records: records,
       redeemedVouchers: redeemedVouchers,
     );
   }
 
-  Stream<UserModel?> watchFullUser() {
-    final user = currentUser;
-    if (user == null) return Stream.value(null);
+  // Returns a stream of user data merged with records & vouchers
+  Stream<UserModel?> watchFullUser() async* {
+    // Wait until FirebaseAuth emits a valid (non-null) user
+    final user = await _auth.authStateChanges().firstWhere(
+      (u) => u != null && u.emailVerified,
+    );
 
-    return watchUserData(user.uid).asyncMap((docSnapshot) async {
-      if (!docSnapshot.exists) {
-        return UserModel(
-          uid: user.uid,
-          email: user.email,
-          totalPoints: 0,
-          totalCarbonSaved: 0,
-          records: [],
-          redeemedVouchers: [],
-        );
-      }
+    // Refresh ID token to ensure Firestore rules are valid
+    await user!.getIdToken(true);
 
-      var userModel = UserModel.fromFirestore(docSnapshot, user.uid);
-      final records = await _wasteRecordsService.getUserRecords(user.uid);
-      final redeemedVouchers = await _voucherService.getRedeemedVouchers(
+    final userDocStream =
+        _firestore.collection("users").doc(user.uid).snapshots();
+
+    final wasteRecordsService = _ref.watch(wasteRecordsServiceProvider);
+    final voucherService = _ref.watch(voucherServiceProvider);
+
+    yield* userDocStream.asyncMap((doc) async {
+      final baseUser =
+          doc.exists
+              ? UserModel.fromFirestore(doc, user.uid)
+              : UserModel(
+                uid: user.uid,
+                email: user.email,
+                totalPoints: 0,
+                totalCarbonSaved: 0,
+                records: [],
+                redeemedVouchers: [],
+              );
+
+      final records = await wasteRecordsService.getUserRecords(user.uid);
+      final redeemedVouchers = await voucherService.getRedeemedVouchers(
         user.uid,
       );
 
-      return userModel.copyWith(
+      return baseUser.copyWith(
         records: records,
         redeemedVouchers: redeemedVouchers,
       );
     });
-  }
-
-  // Firestore Profile
-  Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() {
-    final user = currentUser;
-    if (user == null) throw Exception("No user logged in.");
-    return _firestore.collection("users").doc(user.uid).get();
-  }
-
-  Stream<DocumentSnapshot<Map<String, dynamic>>> watchUserData(String uid) {
-    return _firestore.collection("users").doc(uid).snapshots();
   }
 }

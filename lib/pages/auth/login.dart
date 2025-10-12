@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../constants/assets.dart';
-import '../../services/user_service.dart';
+import '../../services/auth_service.dart';
 import 'create_account.dart';
 import '../../widgets/form/cust_form_field.dart';
 import '../../widgets/form/password_form_field.dart';
@@ -50,8 +50,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     );
 
     try {
-      final userService = ref.read(userServiceProvider);
-      await userService.login(
+      final authService = ref.read(authServiceProvider);
+      await authService.login(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );

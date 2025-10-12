@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../constants/assets.dart';
-import '../../services/user_service.dart';
+import '../../services/auth_service.dart';
 import '../../widgets/back_button.dart';
 import '../../widgets/form/cust_form_field.dart';
 import '../../widgets/form/error_message_text.dart';
@@ -76,16 +76,33 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
     );
 
     try {
-      final userService = ref.read(userServiceProvider);
+      final authService = ref.read(authServiceProvider);
 
       // Create account
-      await userService.createAccount(
+      await authService.createAccount(
         email: _emailController.text,
         username: _usernameController.text,
         password: _passwordController.text,
       );
 
+      if (!mounted) return;
+
       if (dialogContext.mounted) Navigator.pop(dialogContext);
+
+      // Show snackbar stating account created
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Account created successfully!",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      // Return to login page
+      Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
       if (dialogContext.mounted) Navigator.pop(dialogContext);
       setState(() {

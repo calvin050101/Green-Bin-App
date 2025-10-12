@@ -1,14 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:green_bin/services/user_service.dart';
 
 import '../models/record_model.dart';
 import '../models/waste_type_model.dart';
-import '../providers/common_providers.dart';
 
 final wasteRecordsServiceProvider = Provider<WasteRecordsService>((ref) {
-  final firestore = ref.watch(firebaseFirestoreProvider);
-  return WasteRecordsService(firestore: firestore, ref: ref);
+  return WasteRecordsService();
 });
 
 final userRecordsStreamProvider =
@@ -18,25 +16,7 @@ final userRecordsStreamProvider =
     });
 
 class WasteRecordsService {
-  final FirebaseFirestore _firestore;
-  final Ref _ref;
-
-  WasteRecordsService({FirebaseFirestore? firestore, required Ref ref})
-    : _firestore = firestore ?? FirebaseFirestore.instance,
-      _ref = ref;
-
-  // Get User Records
-  Future<List<WasteRecord>> getUserRecords(String uid) async {
-    final snapshot =
-        await _firestore
-            .collection('users')
-            .doc(uid)
-            .collection('records')
-            .orderBy('timestamp', descending: true)
-            .get();
-
-    return snapshot.docs.map((doc) => WasteRecord.fromFirestore(doc)).toList();
-  }
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Stream of Waste Records
   Stream<List<WasteRecord>> watchUserRecords(String uid) {
@@ -58,11 +38,9 @@ class WasteRecordsService {
     required WasteTypeModel wasteType,
     required double weight, // in kg
   }) async {
-    final user = _ref.watch(userServiceProvider);
+    final user = FirebaseAuth.instance.currentUser;
 
-    final userDocRef = _firestore
-        .collection('users')
-        .doc(user.currentUser?.uid);
+    final userDocRef = _firestore.collection('users').doc(user?.uid);
     final recordsRef = userDocRef.collection('records').doc();
 
     final newRecord = WasteRecord(

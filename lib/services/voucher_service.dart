@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:green_bin/models/redeemed_vouchers_model.dart';
 import '../models/voucher_model.dart';
 
 final voucherServiceProvider = Provider<VoucherService>((ref) {
@@ -9,11 +8,11 @@ final voucherServiceProvider = Provider<VoucherService>((ref) {
 });
 
 class VoucherService {
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   /// Stream all active vouchers
   Stream<List<Voucher>> getAvailableVouchers() {
-    return _db
+    return _firestore
         .collection('vouchers')
         .where('active', isEqualTo: true)
         .snapshots()
@@ -25,13 +24,13 @@ class VoucherService {
 
   /// Redeem a voucher if user has enough points
   Future<void> redeemVoucher(String userId, Voucher voucher) async {
-    final userDoc = _db.collection('users').doc(userId);
+    final userDoc = _firestore.collection('users').doc(userId);
     final redeemedVouchersRef = userDoc
         .collection('redeemedVouchers')
         .doc(voucher.id);
 
     try {
-      await _db.runTransaction((transaction) async {
+      await _firestore.runTransaction((transaction) async {
         final snapshot = await transaction.get(userDoc);
 
         if (!snapshot.exists) {
@@ -64,25 +63,5 @@ class VoucherService {
       debugPrintStack(stackTrace: st);
       rethrow;
     }
-  }
-
-  /// Stream user's redeemed vouchers
-  Stream<List<Map<String, dynamic>>> getUserVouchers(String userId) {
-    return _db.collection('users').doc(userId).snapshots().map((doc) {
-      final data = doc.data() ?? {};
-      final vouchers = (data['redeemedVouchers'] as List?) ?? [];
-      return vouchers.map((v) => Map<String, dynamic>.from(v)).toList();
-    });
-  }
-
-  Future<List<RedeemedVoucher>> getRedeemedVouchers(String userId) async {
-    final snapshot =
-        await _db
-            .collection('users')
-            .doc(userId)
-            .collection('redeemedVouchers')
-            .get();
-
-    return snapshot.docs.map((doc) => RedeemedVoucher.fromFirestore(doc)).toList();
   }
 }

@@ -21,6 +21,17 @@ class UserModel {
     this.redeemedVouchers,
   });
 
+  factory UserModel.defaultUser({required String uid, String? email}) {
+    return UserModel(
+      uid: uid,
+      email: email,
+      totalPoints: 0,
+      totalCarbonSaved: 0,
+      records: [],
+      redeemedVouchers: [],
+    );
+  }
+
   factory UserModel.fromFirestore(DocumentSnapshot doc, String uid) {
     final data = doc.data() as Map<String, dynamic>;
     return UserModel(

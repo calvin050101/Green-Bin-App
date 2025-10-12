@@ -1,199 +1,132 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:green_bin/services/voucher_service.dart';
-import 'package:green_bin/services/waste_records_service.dart';
 
+import '../models/record_model.dart';
+import '../models/redeemed_vouchers_model.dart';
 import '../models/user_model.dart';
-import '../providers/common_providers.dart';
 
 final userServiceProvider = Provider<UserService>((ref) {
-  final auth = ref.watch(firebaseAuthProvider);
-  return UserService(auth: auth, ref: ref);
+  return UserService();
 });
 
 class UserService {
-  final FirebaseAuth _auth;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final Ref _ref;
 
-  UserService({FirebaseAuth? auth, required Ref ref})
-    : _auth = auth ?? FirebaseAuth.instance,
-      _ref = ref;
+  Future<UserModel?> _getUser(String uid) async {
+    try {
+      final doc = await _firestore.collection("users").doc(uid).get();
 
-  // Auth
-  User? get currentUser => _auth.currentUser;
+      if (!doc.exists) {
+        return null;
+      }
 
-  FirebaseAuth get auth => _auth;
-
-  // Login
-  Future<UserCredential> login({
-    required String email,
-    required String password,
-  }) async {
-    final credential = await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-
-    final user = credential.user;
-    if (user == null) throw Exception("Login failed.");
-
-    return credential;
+      return UserModel.fromFirestore(doc, uid);
+    } on FirebaseException catch (e) {
+      throw UserServiceException('Failed to fetch user: ${e.message}');
+    }
   }
 
-  // Create Account
-  Future<UserCredential> createAccount({
-    required String email,
-    required String password,
-    required String username,
-  }) async {
-    final credential = await _auth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-
-    final user = credential.user;
-    if (user == null) throw Exception("User creation failed.");
-
-    // Create Firestore profile
-    await _firestore.collection("users").doc(user.uid).set({
-      "username": username,
-      "email": email,
-      "totalPoints": 0,
-      "totalCarbonSaved": 0,
-    });
-
-    await user.updateDisplayName(username);
-    await user.reload();
-
-    return credential;
+  // Stream user profile
+  Stream<UserModel?> _watchUser(String uid) {
+    return _firestore
+        .collection("users")
+        .doc(uid)
+        .snapshots()
+        .map((doc) {
+          if (!doc.exists) {
+            return null;
+          }
+          return UserModel.fromFirestore(doc, uid);
+        })
+        .handleError((error) {
+          throw UserServiceException('Failed to stream user: $error');
+        });
   }
 
-  // Update Username
-  Future<void> updateUsername(String newUsername) async {
-    final user = _auth.currentUser;
-    if (user == null) throw Exception("No user logged in");
+  // Get User Records
+  Future<List<WasteRecord>> _getUserRecords(String uid) async {
+    final snapshot =
+        await _firestore
+            .collection('users')
+            .doc(uid)
+            .collection('records')
+            .orderBy('timestamp', descending: true)
+            .get();
 
-    // Update Firestore profile
-    await _firestore.collection("users").doc(user.uid).update({
-      "username": newUsername,
-    });
-
-    // Optionally update FirebaseAuth displayName
-    await user.updateDisplayName(newUsername);
-    await user.reload();
+    return snapshot.docs.map((doc) => WasteRecord.fromFirestore(doc)).toList();
   }
 
-  Future<void> signOut(WidgetRef ref) async {
-    await _auth.signOut();
-    ref.invalidate(userServiceProvider);
+  Future<List<RedeemedVoucher>> _getRedeemedVouchers(String uid) async {
+    final snapshot =
+        await _firestore
+            .collection('users')
+            .doc(uid)
+            .collection('redeemedVouchers')
+            .get();
+
+    return snapshot.docs
+        .map((doc) => RedeemedVoucher.fromFirestore(doc))
+        .toList();
   }
 
-  Future<void> resetPassword({
-    required String currentPassword,
-    required String newPassword,
-    required String email,
-  }) async {
-    final credential = EmailAuthProvider.credential(
-      email: email,
-      password: currentPassword,
-    );
-    final user = currentUser;
-    if (user == null) throw Exception("No user logged in.");
-    await user.reauthenticateWithCredential(credential);
-    await user.updatePassword(newPassword);
-  }
-
-  Future<void> deleteAccount({
-    required String email,
-    required String password,
-  }) async {
-    final user = _auth.currentUser;
-    if (user == null) throw Exception("No user logged in");
-
-    // Reauthenticate before deleting
-    final credential = EmailAuthProvider.credential(
-      email: email,
-      password: password,
-    );
-    await user.reauthenticateWithCredential(credential);
-
-    // Delete user document from Firestore
-    await _firestore.collection("users").doc(user.uid).delete();
-
-    // Delete from FirebaseAuth
-    await user.delete();
-  }
-
-  // Returns one-time user data merged with records & vouchers
+  // Get full user data once
   Future<UserModel?> fetchFullUser() async {
-    final user = _auth.currentUser;
-    if (user == null) return null;
+    try {
+      final uid = _auth.currentUser?.uid;
+      final userModel = await _getUser(uid!);
 
-    final doc = await _firestore.collection("users").doc(user.uid).get();
-    final wasteRecordsService = _ref.watch(wasteRecordsServiceProvider);
-    final voucherService = _ref.watch(voucherServiceProvider);
+      final records = await _getUserRecords(uid);
+      final redeemedVouchers = await _getRedeemedVouchers(uid);
 
-    final baseUser =
-        doc.exists
-            ? UserModel.fromFirestore(doc, user.uid)
-            : UserModel(
-              uid: user.uid,
-              email: user.email,
-              totalPoints: 0,
-              totalCarbonSaved: 0,
-              records: [],
-              redeemedVouchers: [],
-            );
-
-    final records = await wasteRecordsService.getUserRecords(user.uid);
-    final redeemedVouchers = await voucherService.getRedeemedVouchers(user.uid);
-
-    return baseUser.copyWith(
-      records: records,
-      redeemedVouchers: redeemedVouchers,
-    );
+      return userModel?.copyWith(
+        records: records,
+        redeemedVouchers: redeemedVouchers,
+      );
+    } catch (e) {
+      throw UserServiceException('Failed to fetch full user data: $e');
+    }
   }
 
-  // Returns a stream of user data merged with records & vouchers
+  // Stream full user data
   Stream<UserModel?> watchFullUser() async* {
-    // Wait until FirebaseAuth emits a valid (non-null) user
     final user = await _auth.authStateChanges().firstWhere(
-      (u) => u != null && u.emailVerified,
+      (u) => u != null,
     );
 
     // Refresh ID token to ensure Firestore rules are valid
     await user!.getIdToken(true);
 
-    final userDocStream =
-        _firestore.collection("users").doc(user.uid).snapshots();
+    final uid = user.uid;
 
-    final wasteRecordsService = _ref.watch(wasteRecordsServiceProvider);
-    final voucherService = _ref.watch(voucherServiceProvider);
+    yield* _watchUser(uid).asyncMap((baseUser) async {
+      if (baseUser == null) {
+        // Return default user with empty records/vouchers if no profile exists
+        return UserModel.defaultUser(uid: uid);
+      }
 
-    yield* userDocStream.asyncMap((doc) async {
-      final baseUser =
-          doc.exists
-              ? UserModel.fromFirestore(doc, user.uid)
-              : UserModel(
-                uid: user.uid,
-                email: user.email,
-                totalPoints: 0,
-                totalCarbonSaved: 0,
-                records: [],
-                redeemedVouchers: [],
-              );
+      try {
+        final records = await _getUserRecords(uid);
+        final redeemedVouchers = await _getRedeemedVouchers(uid);
 
-      final records = await wasteRecordsService.getUserRecords(user.uid);
-      final redeemedVouchers = await voucherService.getRedeemedVouchers(
-        user.uid,
-      );
-
-      return baseUser.copyWith(
-        records: records,
-        redeemedVouchers: redeemedVouchers,
-      );
+        return baseUser.copyWith(
+          records: records,
+          redeemedVouchers: redeemedVouchers,
+        );
+      } catch (e) {
+        // Return base user without records/vouchers if aggregation fails
+        return baseUser.copyWith(records: const [], redeemedVouchers: const []);
+      }
     });
   }
+}
+
+class UserServiceException implements Exception {
+  final String message;
+
+  UserServiceException(this.message);
+
+  @override
+  String toString() => 'UserServiceException: $message';
 }

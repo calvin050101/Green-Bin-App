@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:green_bin/pages/auth/update_username.dart';
 
-import '../../services/user_service.dart';
+import '../../services/auth_service.dart';
 import '../../widgets/back_button.dart';
 import '../auth/change_password.dart';
 
@@ -133,14 +133,13 @@ class SettingsPage extends ConsumerWidget {
 
     try {
       await ref
-          .read(userServiceProvider)
+          .read(authServiceProvider)
           .deleteAccount(email: email, password: password);
 
       if (!context.mounted) return;
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        '/',
-        (Route<dynamic> route) => false,
-      );
+      Navigator.of(
+        context,
+      ).pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
     } catch (e) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

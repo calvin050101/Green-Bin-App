@@ -38,6 +38,20 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       await FirebaseAuth.instance.sendPasswordResetEmail(
         email: _emailController.text.trim(),
       );
+
+      if (!mounted) return;
+
+      // Load message stating password reset email sent
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Password reset email sent!',
+            style: TextStyle(color: Colors.white, fontFamily: "OpenSans"),
+          ),
+          backgroundColor: Colors.green,
+          duration: const Duration(seconds: 2),
+        ),
+      );
     } on FirebaseAuthException catch (e) {
       setState(() {
         _errorMessage = e.message ?? '';

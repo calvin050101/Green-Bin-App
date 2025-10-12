@@ -8,13 +8,6 @@ final availableVouchersProvider = StreamProvider<List<Voucher>>((ref) {
   return service.getAvailableVouchers();
 });
 
-/// Stream of redeemed vouchers for the current user
-final userVouchersProvider =
-    StreamProvider.family<List<Map<String, dynamic>>, String>((ref, userId) {
-      final service = ref.watch(voucherServiceProvider);
-      return service.getUserVouchers(userId);
-    });
-
 /// Redeem voucher action
 final redeemVoucherProvider =
     FutureProvider.family<void, (String userId, Voucher voucher)>((

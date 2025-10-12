@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../providers/user_provider.dart';
-import '../../services/user_service.dart';
+import '../../services/auth_service.dart';
 import '../../widgets/back_button.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/form/error_message_text.dart';
@@ -102,8 +102,8 @@ class _UpdateUsernamePageState extends ConsumerState<UpdateUsernamePage> {
         return;
       }
 
-      final userService = ref.read(userServiceProvider);
-      await userService.updateUsername(_usernameController.text.trim());
+      final authService = ref.read(authServiceProvider);
+      await authService.updateUsername(_usernameController.text.trim());
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

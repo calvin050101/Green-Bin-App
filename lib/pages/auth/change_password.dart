@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../services/user_service.dart';
+import '../../services/auth_service.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/back_button.dart';
 import '../../widgets/form/error_message_text.dart';
@@ -109,10 +109,10 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
     );
 
     try {
-      final userService = ref.read(userServiceProvider);
-      final currentUser = userService.currentUser;
+      final authService = ref.read(authServiceProvider);
+      final currentUser = authService.currentUser;
 
-      await userService.resetPassword(
+      await authService.resetPassword(
         email: currentUser!.email!,
         currentPassword: _oldPasswordController.text,
         newPassword: _newPasswordController.text,

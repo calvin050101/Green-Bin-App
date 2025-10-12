@@ -9,7 +9,7 @@ import 'package:green_bin/widgets/custom_button.dart';
 import 'package:green_bin/widgets/page_direct_container.dart';
 import '../../models/user_level_model.dart';
 import '../../models/user_model.dart';
-import '../../services/user_service.dart';
+import '../../services/auth_service.dart';
 import '../legal/terms_page.dart';
 
 class ProfilePage extends ConsumerWidget {
@@ -102,8 +102,7 @@ class ProfilePage extends ConsumerWidget {
               CustomButton(
                 buttonText: "Log Out",
                 onPressed: () async {
-                  final userService = ref.read(userServiceProvider);
-                  await userService.signOut(ref);
+                  await ref.read(authServiceProvider).signOut(ref);
                 },
               ),
               const SizedBox(height: 10),

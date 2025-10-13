@@ -132,11 +132,32 @@ class SettingsPage extends ConsumerWidget {
     if (password == null || password.isEmpty) return;
 
     try {
+      if (!context.mounted) return;
+
+      // Show loading indicator
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (ctx) => const Center(child: CircularProgressIndicator()),
+      );
+
       await ref
           .read(authServiceProvider)
           .deleteAccount(email: email, password: password);
 
       if (!context.mounted) return;
+
+      // Show message stating thank you for using the app
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Thank you for using GreenBin!",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.blue
+        )
+      );
+
       Navigator.of(
         context,
       ).pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
@@ -144,8 +165,11 @@ class SettingsPage extends ConsumerWidget {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Error deleting account: $e"),
-          backgroundColor: Colors.white,
+          content: Text(
+            "Error deleting account: $e",
+            style: const TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.red,
         ),
       );
     }

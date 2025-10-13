@@ -109,7 +109,7 @@ class _UpdateUsernamePageState extends ConsumerState<UpdateUsernamePage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
-              'Profile updated successfully!',
+              'Username updated successfully!',
               style: TextStyle(color: Colors.white),
             ),
             backgroundColor: Color(0xFF4CAF50),

@@ -1,4 +1,5 @@
 import 'package:flutter_google_maps_webservices/places.dart';
+import 'package:latlong2/latlong.dart';
 import '../api_keys.dart';
 
 class RecyclingCenter {
@@ -20,6 +21,19 @@ class RecyclingCenter {
     this.photoUrl,
   });
 
+  // Getter for safe distance access
+  double get effectiveDistance => distance ?? double.infinity;
+
+  // Update distance from current location
+  void updateDistanceFrom(LatLng currentLocation) {
+    final distanceCalculator = const Distance();
+    distance = distanceCalculator.as(
+      LengthUnit.Meter,
+      currentLocation,
+      LatLng(latitude, longitude),
+    );
+  }
+
   // Factory constructor to convert PlacesSearchResult to RecyclingCenter
   factory RecyclingCenter.fromPlaceSearch(PlacesSearchResult result) {
     if (result.geometry == null) {
@@ -28,7 +42,7 @@ class RecyclingCenter {
       );
     }
 
-    return RecyclingCenter(
+    var recyclingCenter = RecyclingCenter(
       id: result.placeId,
       name: result.name,
       address: result.vicinity ?? result.formattedAddress ?? 'N/A',
@@ -44,5 +58,7 @@ class RecyclingCenter {
               }).toString()
               : null,
     );
+
+    return recyclingCenter;
   }
 }

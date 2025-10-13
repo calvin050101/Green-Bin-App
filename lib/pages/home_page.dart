@@ -29,25 +29,29 @@ class HomePage extends ConsumerWidget {
         }
 
         return Scaffold(
-          appBar: AppBar(
-            title: Center(
-              child: Text(
-                "GreenBin",
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.primary,
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w600,
-                  fontSize: 32,
-                ),
-              ),
-            ),
-            backgroundColor: Colors.transparent,
-          ),
+          appBar: buildAppBar(context),
           body: SingleChildScrollView(child: showHome(user, context, ref)),
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stack) => Center(child: Text('Error: $error')),
+    );
+  }
+
+  AppBar buildAppBar(BuildContext context) {
+    return AppBar(
+      title: Center(
+        child: Text(
+          "GreenBin",
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.primary,
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w600,
+            fontSize: 32,
+          ),
+        ),
+      ),
+      backgroundColor: Colors.transparent,
     );
   }
 
@@ -62,7 +66,7 @@ class HomePage extends ConsumerWidget {
       children: [
         const SizedBox(height: 20),
 
-        topContainer(context),
+        topBanner(context),
         const SizedBox(height: 40),
 
         // Welcome Text
@@ -207,7 +211,7 @@ class HomePage extends ConsumerWidget {
     );
   }
 
-  SizedBox topContainer(BuildContext context) {
+  SizedBox topBanner(BuildContext context) {
     return SizedBox(
       width: double.infinity,
       child: Stack(
@@ -229,7 +233,7 @@ class HomePage extends ConsumerWidget {
                   Text(
                     "Sort Smarter. Recycle Better.",
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.surface,
+                      color: Color(0xFF333333),
                       fontWeight: FontWeight.w700,
                       fontSize: 20,
                       fontFamily: 'Poppins',
@@ -238,7 +242,7 @@ class HomePage extends ConsumerWidget {
                   Text(
                     "Let GreenBin guide you to a cleaner tomorrow.",
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.surface,
+                      color: Color(0xFF333333),
                       fontSize: 16,
                       fontFamily: 'Poppins',
                     ),
@@ -270,7 +274,7 @@ class HomePage extends ConsumerWidget {
           Text(
             "You have saved ${totalCarbonSaved.toStringAsFixed(2)} kg CO₂ by recycling.",
             style: TextStyle(
-              color: Theme.of(context).colorScheme.surface,
+              color: Color(0xFF333333),
               fontWeight: FontWeight.w600,
               fontSize: 16,
               fontFamily: 'OpenSans',
@@ -283,7 +287,7 @@ class HomePage extends ConsumerWidget {
               value: progress,
               minHeight: 10,
               borderRadius: BorderRadius.circular(5),
-              backgroundColor: Theme.of(context).colorScheme.surface,
+              backgroundColor: Color(0xFF333333),
               valueColor: AlwaysStoppedAnimation<Color>(
                 Theme.of(context).colorScheme.primary,
               ),
@@ -298,7 +302,7 @@ class HomePage extends ConsumerWidget {
                     ? "4000+ points"
                     : "$userPoints/${userLevel.maxPoints} points",
                 style: TextStyle(
-                  color: Theme.of(context).colorScheme.surface,
+                  color: Color(0xFF333333),
                   fontWeight: FontWeight.w600,
                   fontSize: 16,
                   fontFamily: 'OpenSans',

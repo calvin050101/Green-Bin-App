@@ -89,7 +89,7 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
 
       if (dialogContext.mounted) Navigator.pop(dialogContext);
 
-      // Show snackbar stating account created
+      // Show message stating account created
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
@@ -97,11 +97,10 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
             style: TextStyle(color: Colors.white),
           ),
           backgroundColor: Colors.green,
-          duration: Duration(seconds: 2),
+          duration: Duration(seconds: 3),
         ),
       );
 
-      // Return to login page
       Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
       if (dialogContext.mounted) Navigator.pop(dialogContext);

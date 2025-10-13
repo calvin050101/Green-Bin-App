@@ -26,7 +26,6 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.light(
           primary: Color(0xFF4CAF50),
           secondary: Color(0xFF03A9F4),
-          surface: Color(0xFF333333),
         ),
         scaffoldBackgroundColor: Color(0xFFF9FBE7),
       ),

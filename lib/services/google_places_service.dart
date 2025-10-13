@@ -50,30 +50,18 @@ class GooglePlacesService {
       );
 
       if (response.status == 'OK') {
-        final distanceCalculator = const Distance();
         final currentLatLng = LatLng(latitude, longitude);
 
-        // Map results -> RecyclingCenter + distance
         List<RecyclingCenter> centers =
-            response.results.map((result) {
-              final center = RecyclingCenter.fromPlaceSearch(result);
-              center.distance = distanceCalculator.as(
-                LengthUnit.Meter,
-                currentLatLng,
-                LatLng(center.latitude, center.longitude),
+            response.results.map(RecyclingCenter.fromPlaceSearch).map((center) {
+                center.updateDistanceFrom(currentLatLng);
+                return center;
+              }).toList()
+              ..sort(
+                (a, b) => a.effectiveDistance.compareTo(b.effectiveDistance),
               );
-              return center;
-            }).toList();
-
-        // Sort nearest first
-        centers.sort(
-          (a, b) => (a.distance ?? double.infinity).compareTo(
-            b.distance ?? double.infinity,
-          ),
-        );
 
         _cache[cacheKey] = centers;
-
         return centers;
       } else if (response.status == 'ZERO_RESULTS') {
         return [];

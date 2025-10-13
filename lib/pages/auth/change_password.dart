@@ -132,13 +132,19 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
             "Password changed successfully",
             style: TextStyle(
               fontSize: 16,
-              color: Colors.black,
+              color: Colors.white,
               fontFamily: 'OpenSans',
             ),
           ),
           backgroundColor: Colors.green,
         ),
       );
+
+      _oldPasswordController.clear();
+      _newPasswordController.clear();
+      _confirmNewPasswordController.clear();
+
+      Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
       if (dialogContext.mounted) Navigator.pop(dialogContext);
       setState(() {

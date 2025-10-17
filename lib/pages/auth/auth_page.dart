@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:green_bin/pages/auth/login.dart';
+import 'package:green_bin/pages/auth/verify_email.dart';
 import '../main_wrapper_screen.dart';
 
 class AuthPage extends ConsumerWidget {
@@ -21,6 +22,10 @@ class AuthPage extends ConsumerWidget {
 
           if (user == null) {
             return const LoginPage();
+          }
+
+          if (!user.emailVerified) {
+            return const VerifyEmailPage();
           }
 
           return const MainWrapperScreen();

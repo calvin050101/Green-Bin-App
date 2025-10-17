@@ -1,4 +1,4 @@
-import 'package:green_bin/pages/auth/auth.dart';
+import 'package:green_bin/pages/auth/auth_page.dart';
 import 'package:green_bin/pages/auth/change_password.dart';
 import 'package:green_bin/pages/auth/create_account.dart';
 import 'package:green_bin/pages/auth/forgot_password.dart';

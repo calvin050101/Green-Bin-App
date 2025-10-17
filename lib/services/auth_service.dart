@@ -10,6 +10,11 @@ final authServiceProvider = Provider<AuthService>((ref) {
   return AuthService(auth: auth);
 });
 
+final authStateProvider = StreamProvider<User?>((ref) {
+  final authService = ref.watch(authServiceProvider);
+  return authService.authStateChanges;
+});
+
 class AuthService {
   final FirebaseAuth _auth;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -19,8 +24,8 @@ class AuthService {
 
   // Auth
   User? get currentUser => _auth.currentUser;
-
   FirebaseAuth get auth => _auth;
+  Stream<User?> get authStateChanges => _auth.authStateChanges();
 
   // Login
   Future<UserCredential> login({

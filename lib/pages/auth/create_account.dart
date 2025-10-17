@@ -93,11 +93,11 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
-            "Account created successfully!",
+            "Account created! Please verify your email before logging in.",
             style: TextStyle(color: Colors.white),
           ),
           backgroundColor: Colors.green,
-          duration: Duration(seconds: 3),
+          duration: Duration(seconds: 5),
         ),
       );
 

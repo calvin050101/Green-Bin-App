@@ -92,53 +92,23 @@ class UserService {
   }
 
   // Stream full user data
-  Stream<UserModel?> watchFullUser() {
-    final authStateChanges = _auth.authStateChanges();
-
-    // Use a StreamController to manage the output stream
-    final controller = StreamController<UserModel?>();
-
-    final subscription = authStateChanges.listen((user) async {
-      if (user == null) {
-        controller.add(null);
-        return;
+  Stream<UserModel?> watchFullUser(String uid) {
+    return _watchUser(uid).asyncMap((baseUser) async {
+      if (baseUser == null) {
+        return UserModel.defaultUser(uid: uid);
       }
 
-      await user.getIdToken(true); // Refresh token
-      final uid = user.uid;
-
-      _watchUser(uid)
-          .asyncMap((baseUser) async {
-            if (baseUser == null) {
-              // Document doesn't exist yet, emit a default user model
-              return UserModel.defaultUser(uid: uid);
-            }
-
-            try {
-              final records = await _getUserRecords(uid);
-              final redeemedVouchers = await _getRedeemedVouchers(uid);
-
-              return baseUser.copyWith(
-                records: records,
-                redeemedVouchers: redeemedVouchers,
-              );
-            } catch (e) {
-              // If fetching subcollections fails, return the base user
-              return baseUser.copyWith(
-                records: const [],
-                redeemedVouchers: const [],
-              );
-            }
-          })
-          .listen(controller.add, onError: controller.addError);
+      try {
+        final records = await _getUserRecords(uid);
+        final redeemedVouchers = await _getRedeemedVouchers(uid);
+        return baseUser.copyWith(
+          records: records,
+          redeemedVouchers: redeemedVouchers,
+        );
+      } catch (e) {
+        return baseUser.copyWith(records: const [], redeemedVouchers: const []);
+      }
     });
-
-    // Clean up the subscription when the listener is cancelled
-    controller.onCancel = () {
-      subscription.cancel();
-    };
-
-    return controller.stream;
   }
 }
 

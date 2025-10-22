@@ -25,7 +25,7 @@ class FunFactCard extends StatelessWidget {
             child: Text(
               text,
               style: TextStyle(
-                color: Theme.of(context).colorScheme.surface,
+                color: Color(0xFF333333),
                 fontFamily: 'OpenSans',
                 fontWeight: FontWeight.w600
               ),

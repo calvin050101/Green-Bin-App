@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:green_bin/pages/auth/login.dart';
 import 'package:green_bin/pages/auth/verify_email.dart';
+import '../../services/auth_service.dart';
 import '../main_wrapper_screen.dart';
 
 class AuthPage extends ConsumerWidget {
@@ -10,6 +11,8 @@ class AuthPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final justSignedUp = ref.watch(justSignedUpProvider);
+
     return Scaffold(
       body: StreamBuilder(
         stream: FirebaseAuth.instance.userChanges(),
@@ -24,7 +27,8 @@ class AuthPage extends ConsumerWidget {
             return const LoginPage();
           }
 
-          if (!user.emailVerified) {
+          // Only show VerifyEmailPage after account creation
+          if (justSignedUp && !user.emailVerified) {
             return const VerifyEmailPage();
           }
 
@@ -34,4 +38,3 @@ class AuthPage extends ConsumerWidget {
     );
   }
 }
-

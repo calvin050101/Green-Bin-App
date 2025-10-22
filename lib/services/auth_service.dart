@@ -5,9 +5,11 @@ import 'package:green_bin/services/user_service.dart';
 
 import '../providers/common_providers.dart';
 
+final justSignedUpProvider = StateProvider<bool>((ref) => false);
+
 final authServiceProvider = Provider<AuthService>((ref) {
   final auth = ref.watch(firebaseAuthProvider);
-  return AuthService(auth: auth);
+  return AuthService(ref: ref, auth: auth);
 });
 
 final authStateProvider = StreamProvider<User?>((ref) {
@@ -17,10 +19,11 @@ final authStateProvider = StreamProvider<User?>((ref) {
 
 class AuthService {
   final FirebaseAuth _auth;
+  final Ref _ref;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  AuthService({FirebaseAuth? auth})
-    : _auth = auth ?? FirebaseAuth.instance;
+  AuthService({required Ref ref, FirebaseAuth? auth})
+    : _ref = ref, _auth = auth ?? FirebaseAuth.instance;
 
   // Auth
   User? get currentUser => _auth.currentUser;
@@ -68,6 +71,10 @@ class AuthService {
     await user.updateDisplayName(username);
     await user.reload();
 
+    await user.sendEmailVerification();
+
+    _ref.read(justSignedUpProvider.notifier).state = true;
+
     return credential;
   }
 
@@ -90,6 +97,7 @@ class AuthService {
     await _auth.signOut();
     ref.invalidate(authServiceProvider);
     ref.invalidate(userServiceProvider);
+    ref.read(justSignedUpProvider.notifier).state = false;
   }
 
   Future<void> resetPassword({

@@ -176,11 +176,11 @@ class _ConfirmWasteTypePageState extends ConsumerState<ConfirmWasteTypePage> {
 
     // Validate weight
     final weight = double.tryParse(_weightController.text);
-    if (weight == null || weight <= 0 || weight > 20) {
+    if (weight == null || weight <= 0 || weight > 10) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
-            "Please enter a valid weight (0–20kg)",
+            "Please enter a valid weight (0–10kg)",
             style: TextStyle(
               fontSize: 16,
               color: Colors.black,
